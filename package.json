@@ -1,0 +1,19 @@
+{
+  "name": "proyecto_final_de_grado",
+  "version": "1.0.0",
+  "description": "Gestión de taller mecanico",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlvaroGT17/PFDG.git"
+  },
+  "author": "Alvaro Gomez Tejada",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlvaroGT17/PFDG/issues"
+  },
+  "homepage": "https://github.com/AlvaroGT17/PFDG#readme"
+}
