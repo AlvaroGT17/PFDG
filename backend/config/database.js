@@ -1,35 +1,32 @@
-import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
+import Sequelize from "sequelize";
+import dotenv from "dotenv";
 
 dotenv.config();
 
-// Configuración de la conexión a PostgreSQL
-const sequelize = new Sequelize(
-    process.env.DB_NOMBRE,
-    process.env.DB_USUARIO,
-    process.env.DB_CONTRASENA,
-    {
-        host: process.env.DB_HOST,
-        dialect: 'postgres',
-        port: process.env.DB_PUERTO,
-        dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false
-            }
+// Configuración de la conexión a PostgreSQL con IPv6
+const sequelize = new Sequelize("postgres", "postgres", "AGT17021983BrfB", {
+    host: "db.gxcexgzaavrffqqmwvxu.supabase.co",
+    dialect: "postgres",
+    dialectOptions: {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false,
         },
-        logging: true // Desactivar logs de SQL en la consola
-    }
-);
+    },
+    logging: false,
+    define: {
+        timestamps: false,
+    },
+});
 
 // Probar conexión
 (async () => {
     try {
         await sequelize.authenticate();
-        console.log('✅ Conexión a PostgreSQL establecida correctamente.');
+        console.log("✅ Conexión a PostgreSQL establecida correctamente.");
     } catch (error) {
-        console.error('❌ Error al conectar a PostgreSQL:', error);
+        console.error("❌ Error al conectar a PostgreSQL:", error);
     }
 })();
 
-export { sequelize };
+export default sequelize;
