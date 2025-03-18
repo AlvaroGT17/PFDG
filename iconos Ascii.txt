@@ -188,3 +188,28 @@
     💰 Dinero
     💳 Tarjeta de crédito
     🏦 Banco
+	
+	👤 Iconos Genéricos de Usuario
+
+    👤 Usuario (individual)
+    👥 Usuarios (grupo)
+    🧑 Persona genérica
+    🧑‍💻 Usuario tecnológico / Programador
+    🧑‍🎓 Usuario estudiante
+    🧑‍🏫 Usuario profesor
+    🧑‍🔧 Usuario mecánico / técnico
+    🧑‍⚕️ Usuario médico
+    🧑‍✈️ Usuario piloto
+    🧑‍🚀 Usuario astronauta (para temas futuristas o tecnológicos)
+
+🛠️ Iconos de Usuario con Roles
+
+    🔑 Usuario con acceso / credenciales
+    🔒 Usuario restringido / Bloqueado
+    🆔 Usuario con identificación
+    🛡 Usuario seguro / Protegido
+    🎭 Usuario anónimo o enmascarado
+    🚀 Usuario nuevo o en crecimiento
+    ⚙️ Usuario con permisos de configuración (admin, técnico, etc.)
+    🏆 Usuario destacado / VIP
+    🌟 Usuario premium o especial
