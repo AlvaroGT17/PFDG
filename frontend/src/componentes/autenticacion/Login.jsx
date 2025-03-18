@@ -1,37 +1,67 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import logo from '../../assets/logo.jpg';
+import '../../index.css';
 
 export default function Login() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-    // Maneja el envío del formulario
-    const handleSubmit = (event) => {
-        event.preventDefault(); // Evita la recarga de la página
-        console.log("Inicio de sesión enviado");
-        // Aquí puedes agregar la lógica de autenticación
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        try {
+            const response = await axios.post('http://localhost:1983/api/auth/login', { email, password });
+
+            // Guardar token en localStorage
+            localStorage.setItem('token', response.data.token);
+
+            // Mostrar mensaje de éxito (Puedes redirigir a otra página)
+            alert('¡Inicio de sesión exitoso!');
+        } catch (err) {
+            setError(err.response?.data?.message || 'Error al iniciar sesión');
+        }
     };
 
     return (
         <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
-            {/* Logo grande y centrado */}
             <img src={logo} alt="Logo del Taller" className="mb-4" style={{ maxWidth: '300px' }} />
 
-            {/* Tarjeta del formulario */}
             <div className="card p-4 shadow-lg" style={{ width: '24rem' }}>
                 <h2 className="text-center mb-4 arial-bold-italic">
                     <span className="text-rey">Iniciar</span> <span className="text-boxes">Sesión</span>
                 </h2>
-                {/* Formulario con el evento onSubmit */}
+
+                {error && <div className="alert alert-danger text-center">{error}</div>}
+
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label">Correo electrónico</label>
-                        <input type="email" className="form-control" placeholder="👤 usuario@correo.com" title="Introduce tu correo electrónico registrado" required />
+                        <input
+                            type="email"
+                            className="form-control"
+                            placeholder="usuario@correo.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
                     </div>
+
                     <div className="mb-3">
                         <label className="form-label">Contraseña</label>
-                        <input type="password" className="form-control" placeholder="🔒 ********" title="Introduce tu contraseña segura" required />
+                        <input
+                            type="password"
+                            className="form-control"
+                            placeholder="********"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
                     </div>
-                    {/* Botón submit para que el Enter funcione */}
-                    <button type="submit" className="btn btn-primary w-100">Entrar</button>
+
+                    <button type="submit" className="btn btn-primary">Entrar</button>
                     <div className="text-center mt-2">
                         <a href="#" className="text-decoration-none">¿Olvidaste tu contraseña?</a>
                     </div>

@@ -1,13 +1,21 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min';
-import './index.css';
-
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import App from './App.jsx';
+import Login from './componentes/autenticacion/Login.jsx';
+import RecuperarCuenta from './componentes/autenticacion/RecuperarCuenta.jsx';
+import VerificarCodigo from './componentes/autenticacion/VerificarCodigo.jsx';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/recuperar-cuenta" element={<RecuperarCuenta />} />
+        <Route path="/verificar-codigo" element={<VerificarCodigo />} />
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>,
-)
+);
