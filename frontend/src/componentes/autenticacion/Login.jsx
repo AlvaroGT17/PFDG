@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
 import axios from 'axios';
 import logo from '../../assets/logo.jpg';
 import '../../index.css';
@@ -7,6 +8,7 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate(); // Hook para redireccionar
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,9 +19,10 @@ export default function Login() {
 
             // Guardar token en localStorage
             localStorage.setItem('token', response.data.token);
+            localStorage.setItem('usuario', JSON.stringify(response.data.usuario)); // Guardamos usuario
 
-            // Mostrar mensaje de éxito (Puedes redirigir a otra página)
-            alert('¡Inicio de sesión exitoso!');
+            // Redirigir al dashboard
+            navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Error al iniciar sesión');
         }

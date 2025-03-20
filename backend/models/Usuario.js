@@ -30,21 +30,25 @@ const Usuario = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        codigo_recuperacion: {
+            type: DataTypes.STRING,  // Asegúrate de que Sequelize reconoce esta columna
+            allowNull: true,
+        },
         created_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
-            field: "created_at", // Forzamos el nombre correcto
+            field: "created_at",
         },
         updated_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
-            field: "updated_at", // Forzamos el nombre correcto
+            field: "updated_at",
         },
     },
     {
-        tableName: "usuarios", // Nombre exacto de la tabla en la BD
-        timestamps: false, // Evita que Sequelize use `createdAt` y `updatedAt`
-        underscored: true, // Asegura que las columnas se usen en `snake_case`
+        tableName: "usuarios",
+        timestamps: false,
+        underscored: true,
     }
 );
 
