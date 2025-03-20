@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
 import axios from 'axios';
 import logo from '../../assets/logo.jpg';
-import '../../index.css';
+
 
 export default function Login() {
     const [email, setEmail] = useState('');
