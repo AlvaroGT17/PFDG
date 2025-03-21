@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
+import { useNavigate, Link } from 'react-router-dom'; // Importamos useNavigate
 import axios from 'axios';
 import logo from '../../assets/logo.jpg';
 
@@ -66,8 +66,11 @@ export default function Login() {
 
                     <button type="submit" className="btn btn-primary">Entrar</button>
                     <div className="text-center mt-2">
-                        <a href="#" className="text-decoration-none">¿Olvidaste tu contraseña?</a>
+                        <Link to="/recuperar-cuenta" className="text-decoration-none">
+                            ¿Olvidaste tu contraseña?
+                        </Link>
                     </div>
+
                 </form>
             </div>
         </div>

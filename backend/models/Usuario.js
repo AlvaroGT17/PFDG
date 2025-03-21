@@ -31,7 +31,11 @@ const Usuario = sequelize.define(
             allowNull: false,
         },
         codigo_recuperacion: {
-            type: DataTypes.STRING,  // Asegúrate de que Sequelize reconoce esta columna
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        expiracion_codigo: {
+            type: DataTypes.DATE,
             allowNull: true,
         },
         created_at: {

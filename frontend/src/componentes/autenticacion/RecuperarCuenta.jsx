@@ -10,7 +10,7 @@ export default function RecuperarCuenta() {
         event.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:5000/api/enviar-otp', {
+            const response = await fetch('http://localhost:1983/api/auth/recuperar-cuenta', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
@@ -32,10 +32,10 @@ export default function RecuperarCuenta() {
     return (
         <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
             <div className="card p-4 shadow-lg" style={{ width: '24rem' }}>
-                <h2 className="text-center mb-4">Recuperar Cuenta</h2>
+                <h2><span className="text-rey">Recuperar</span> <span className="text-boxes">cuenta</span></h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                        <label className="form-label">Correo electrónico</label>
+                        <label className="form-label">Introduce el correo electrónicoasociado a tu cuenta:</label>
                         <input
                             type="email"
                             className="form-control"
