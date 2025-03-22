@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import "../../styles/recuperarCuenta.css";
+
 
 export default function RecuperarCuenta() {
     const [email, setEmail] = useState('');
@@ -32,7 +34,9 @@ export default function RecuperarCuenta() {
     return (
         <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
             <div className="card p-4 shadow-lg" style={{ width: '24rem' }}>
-                <h2><span className="text-rey">Recuperar</span> <span className="text-boxes">cuenta</span></h2>
+                <h2 className="arial-bold-italic text-rey text-center">
+                    Recuperar <span className="text-boxes">cuenta</span>
+                </h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label">Introduce el correo electrónicoasociado a tu cuenta:</label>

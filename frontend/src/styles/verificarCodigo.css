@@ -1,0 +1,92 @@
+/* ========== 📌 CONTENEDOR CENTRAL ========== */
+.verificar-codigo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+/* ========== 📌 TARJETA ========== */
+.verificar-codigo-card {
+    background-color: rgb(115, 132, 150); /* Azul grisáceo oscuro */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 350px;
+}
+
+/* ========== 📌 TÍTULO ========== */
+.verificar-titulo {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 1.8rem; /* Igual que "Iniciar Sesión" */
+    text-align: center;
+    color: white;
+}
+
+.verificar-titulo span {
+    color: #E30613;
+}
+
+/* ========== 📌 BOTONES ========== */
+.verificar-codigo-btn {
+    width: 50%;
+    max-width: 150px;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: block;
+    margin: 10px auto 0;
+    text-align: center;
+}
+
+/* Botón rojo (Validar) */
+.verificar-codigo-btn.validar {
+    background-color: #E30613;
+    color: white;
+}
+
+.verificar-codigo-btn.validar:hover {
+    background-color: #C70511;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.verificar-codigo-btn.validar:active {
+    background-color: #A9040F;
+    transform: translateY(2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Botón gris (Reenviar) */
+.verificar-codigo-btn.reenviar {
+    background-color: #7f8c8d;
+    color: white;
+    margin-top: 10px;
+}
+
+.verificar-codigo-btn.reenviar:hover {
+    background-color: #5e6a70;
+}
+
+/* ========== ⏱️ TEMPORIZADOR ========== */
+.verificar-codigo-tiempo {
+    color: #f1c40f;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/* ========== 📩 MENSAJE DE ESTADO ========== */
+.verificar-codigo-mensaje {
+    text-align: center;
+    color: white;
+    font-size: 16px;
+    margin-top: 15px;
+}

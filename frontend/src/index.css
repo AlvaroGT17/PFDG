@@ -1,13 +1,22 @@
+/* ========== 🎨 ESTILOS GENERALES ========== */
+
+body {
+    background-color: #222831; /* Gris oscuro metálico */
+    background-image: linear-gradient(to bottom right, rgb(129, 133, 138), #393E46);
+    color: white;
+    font-family: Arial, sans-serif;
+}
 
 input {
     caret-color: red !important;
-    background-color: white; /* Para asegurarnos de que se vea */
+    background-color: white;
     color: black;
     border: 2px solid black;
     font-size: 20px;
     padding: 10px;
 }
 
+/* Tipografía general en títulos */
 .arial-bold-italic {
     font-family: Arial, sans-serif;
     font-weight: bold;
@@ -16,71 +25,71 @@ input {
 
 /* Colores del logo */
 .text-rey {
-    color: #333; /* Color de "Rey" en el logo */
+    color: #333;
 }
 
 .text-boxes {
-    color: #E30613; /* Color rojo de "Boxes" en el logo */
+    color: #E30613;
 }
 
-/* Fondo oscuro con tonos metálicos */
-body {
-    background-color: #222831; /* Gris oscuro metálico */
-    background-image: linear-gradient(to bottom right,rgb(129, 133, 138), #393E46); /* Degradado oscuro */
-    color: white; /* Texto en blanco para contraste */
-}
 
-/* Estilos para la tarjeta de login */
+/* ========== 📦 TARJETAS (CARD) ========== */
 .card {
-    background-color:rgb(115, 132, 150); /* Azul grisáceo oscuro */
-    color: white; /* Texto en blanco */
+    background-color: rgb(115, 132, 150); /* Azul grisáceo oscuro */
+    color: white;
     border: none;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Cambiar color de los inputs */
+/* ========== 📝 INPUTS ========== */
 .form-control {
-    background-color:rgb(171, 202, 233); /* Azul grisáceo más claro */
-    color: white;
-    border: 1px solid #4A6377;
+    background-color: rgb(171, 202, 233);
+    color: black;
+    border: 2px solid black;
 }
 
 .form-control::placeholder {
-    color:rgb(63, 65, 66); /* Gris claro para los placeholders */
+    color: rgb(63, 65, 66);
 }
 
-/* Estilos del botón "Entrar" */
+/* ========== 🔘 BOTONES GENERALES CON RELIEVE ========== */
 .btn-primary {
-    background-color: #E30613; /* Rojo "Boxes" */
-    border: none;
+    background-color: #E30613;
+    color: white;
+    font-weight: bold;
     font-size: 16px;
-    padding: 8px 16px; /* Ajustado para hacerlo más compacto */
-    border-radius: 5px;
-    transition: all 0.2s ease-in-out;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 50%; /* Hace que ocupe la mitad del contenedor */
-    max-width: 150px; /* Máximo tamaño para evitar que sea muy grande */
-    display: block; /* Para centrarlo correctamente */
-    margin: 10px auto 0; /* Centrar el botón */
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
     text-align: center;
+    width: 50%;
+    max-width: 150px;
+    display: block;
+    margin: 10px auto 0;
+    cursor: pointer;
+
+    /* Relieve con sombra inferior y profundidad */
+    box-shadow: 0 6px 0rgb(14, 14, 14), 0 8px 15px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease-in-out;
+    transform: translateY(0);
 }
 
-
-/* Efecto hover: que sobresalga un poco */
+/* Hover: se eleva un poco */
 .btn-primary:hover {
     background-color: #C70511;
     transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.35);
 }
 
-/* Efecto click: que parezca que se hunde */
+/* Active: se hunde simulando presión */
 .btn-primary:active {
     background-color: #A9040F;
     transform: translateY(2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Enlace de "¿Olvidaste tu contraseña?" */
+
+/* ========== 🔗 ENLACES ========== */
 .text-decoration-none {
     color: #333;
 }

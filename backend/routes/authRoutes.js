@@ -11,42 +11,47 @@ import { literal } from 'sequelize';
 dotenv.config();
 const router = express.Router();
 
-// Ruta para manejar el login
+// Ruta para login por nombre (mayúsculas)
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    let { nombre, password } = req.body;
 
     try {
-        const usuario = await Usuario.findOne({ where: { email } });
+        nombre = nombre.toUpperCase(); // Convertimos a mayúsculas
+
+        const usuario = await Usuario.findOne({ where: { nombre } });
 
         if (!usuario) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
-        //console.log("💡 Contraseña ingresada por el usuario:", password);
-        //console.log("🔒 Contraseña almacenada en BD:", usuario.password);
-
-        // Comparar contraseña con bcrypt
         const validPassword = await bcrypt.compare(password, usuario.password);
-
         if (!validPassword) {
-            console.log("❌ Las contraseñas NO coinciden");
             return res.status(401).json({ message: 'Contraseña incorrecta' });
         }
 
-        console.log("✅ Contraseña correcta, generando token...");
         const token = jwt.sign(
             { id: usuario.id, email: usuario.email, rol: usuario.rol },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 
-        res.json({ token, usuario: { id: usuario.id, nombre: usuario.nombre, apellido: usuario.apellido, email: usuario.email, rol: usuario.rol } });
+        res.json({
+            token,
+            usuario: {
+                id: usuario.id,
+                nombre: usuario.nombre,
+                apellido: usuario.apellido,
+                email: usuario.email,
+                rol: usuario.rol
+            }
+        });
 
     } catch (error) {
-        console.error("❌ Error en el login:", error);
-        res.status(500).json({ message: 'Error en el servidor', error });
+        console.error('❌ Error en el login:', error);
+        res.status(500).json({ message: 'Error en el servidor' });
     }
 });
+
 
 // Ruta para solicitar recuperación de contraseña
 router.post('/recuperar-cuenta', async (req, res) => {
@@ -100,41 +105,49 @@ router.post('/recuperar-cuenta', async (req, res) => {
             }
         });
 
-        // Configurar correo electrónico
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
             subject: '🔐 Recuperación de cuenta - ReyBoxes',
             html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 10px; background-color: #f8f9fa;">
+                <div style="font-family: Arial, sans-serif; max-width: 600px; color: black; margin: auto; background: #f1f1f1; border-radius: 12px; padding: 20px; border: 1px solid #ccc;">
                     <div style="text-align: center;">
-                        <img src="https://scontent-mad1-1.xx.fbcdn.net/v/t39.30808-1/415751285_874525538008163_7351325140883369283_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=106&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=Q_wgsHHpx2sQ7kNvgGK1c_B&_nc_oc=AdmyZBDIRwkBZpknf5Gzm834ojdZhh8Wn7jllEnHZ7cgNlFUNweEbfZocAaXC33Troc5QQdWWkzwSLDNjAfAhVtb&_nc_zt=24&_nc_ht=scontent-mad1-1.xx&_nc_gid=ysM0cfODDM8xcSfUO8ZX6w&oh=00_AYHmaswlJ02hb0OFRK88L91llLgyKubQOrVGM5QLgduWHg&oe=67E30EBC" alt="ReyBoxes" style="max-width: 200px; margin-bottom: 10px;">
-                        <h2 style="color: #E30613;">Código de recuperación</h2>
+                    <img src="https://scontent-mad1-1.xx.fbcdn.net/v/t39.30808-1/415751285_874525538008163_7351325140883369283_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=106&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=Q_wgsHHpx2sQ7kNvgGK1c_B&_nc_oc=AdmyZBDIRwkBZpknf5Gzm834ojdZhh8Wn7jllEnHZ7cgNlFUNweEbfZocAaXC33Troc5QQdWWkzwSLDNjAfAhVtb&_nc_zt=24&_nc_ht=scontent-mad1-1.xx&_nc_gid=ysM0cfODDM8xcSfUO8ZX6w&oh=00_AYHmaswlJ02hb0OFRK88L91llLgyKubQOrVGM5QLgduWHg&oe=67E30EBC" alt="Logo ReyBoxes" style="max-width: 150px; border-radius: 10px; margin-bottom: 10px;" />
+                    <h2 style="color: #E30613; margin-bottom: 0;">Código de recuperación</h2>
                     </div>
-                    <p style="font-size: 16px; color: #333;">
-                        Hola, <strong>${email}</strong>,
+
+                    <p style="font-size: 16px; color: black;">
+                    Hola, <strong style="color: #E30613;">${usuario.nombre}</strong>,
                     </p>
-                    <p style="font-size: 16px; color: #333;">
-                        Recibimos una solicitud para restablecer tu contraseña en <strong>ReyBoxes</strong>. 
-                        Usa el siguiente código para continuar con el proceso:
+
+                    <p style="font-size: 16px; color: black;">
+                    Recibimos una solicitud para restablecer tu contraseña en <strong style="color:rgb(115, 132, 150);">Rey</strong> <strong style="color: #E30613;">Boxes</strong>.
+                    Usa el siguiente código para continuar con el proceso:
                     </p>
+
                     <div style="text-align: center; margin: 20px 0;">
-                        <span style="font-size: 24px; font-weight: bold; color: #E30613; padding: 10px 20px; border: 2px dashed #E30613; border-radius: 5px; display: inline-block;">
-                            ${codigoRecuperacion}
-                        </span>
+                    <span style="display: inline-block; font-size: 24px; font-weight: bold; color: #FFC107; border: 2px dashed #E30613; padding: 10px 30px; border-radius: 8px;">
+                        ${codigoRecuperacion}
+                    </span>
                     </div>
-                    <p style="font-size: 16px; color: #333;">
-                        Este código expirará en <strong>10 minutos</strong>.
+
+                    <p style="font-size: 16px; color: black;">
+                    Este código expirará en <strong>10 minutos</strong>.
                     </p>
-                    <p style="font-size: 16px; color: #333;">
-                        Si no solicitaste este código, ignora este correo. Tu cuenta sigue protegida.
+
+                    <p style="font-size: 16px; color: black;">
+                    Si no solicitaste este código, simplemente ignora este mensaje. Tu cuenta sigue segura.
                     </p>
-                    <p style="font-size: 14px; color: #888; text-align: center;">
-                        © 2024 ReyBoxes | Mecánica y mantenimiento
+
+                    <hr style="border: none; border-top: 1px solid #ccc; margin: 30px 0;" />
+
+                    <p style="text-align: center; font-size: 13px; color: #999;">
+                    © 2024 <strong style="color:rgb(115, 132, 150);">Rey</strong> <strong style="color: #E30613;">Boxes</strong> | Mecánica y mantenimiento
                     </p>
                 </div>
-            `
+                `
         };
+
 
         // Añadir logs para depuración
         console.log("Enviando correo a:", email);

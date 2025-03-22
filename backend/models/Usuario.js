@@ -12,6 +12,9 @@ const Usuario = sequelize.define(
         nombre: {
             type: DataTypes.STRING,
             allowNull: false,
+            set(value) {
+                this.setDataValue('nombre', value.toUpperCase());
+            }
         },
         apellido: {
             type: DataTypes.STRING,
