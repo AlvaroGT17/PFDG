@@ -14,5 +14,7 @@ app.use('/api/auth', authRoutes);
 // Servidor
 const PORT = process.env.PORT || 1983;
 app.listen(PORT, () => {
-    console.log(`✅ Servidor ejecutándose en:\n   http://localhost:${PORT} 🚀`);
+    console.log(`✅ Servidor ejecutándose en: http://localhost:${PORT} 🚀`);
 });
+
+console.log('🟢 Backend arrancado correctamente');

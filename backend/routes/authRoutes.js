@@ -7,6 +7,7 @@ import nodemailer from 'nodemailer';
 import enviarCorreo from '../util/emailService.js';
 import moment from 'moment';
 import { literal } from 'sequelize';
+import { cambiarContrasena } from '../controllers/authController.js';
 
 dotenv.config();
 const router = express.Router();
@@ -16,9 +17,13 @@ router.post('/login', async (req, res) => {
     let { nombre, password } = req.body;
 
     try {
-        nombre = nombre.toUpperCase(); // Convertimos a mayúsculas
+        nombre = nombre.toUpperCase();
 
-        const usuario = await Usuario.findOne({ where: { nombre } });
+        // ⚠️ Aquí añadimos raw: true para forzar que NO cachee el modelo
+        const usuario = await Usuario.findOne({
+            where: { nombre },
+            raw: true
+        });
 
         if (!usuario) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -51,7 +56,6 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ message: 'Error en el servidor' });
     }
 });
-
 
 // Ruta para solicitar recuperación de contraseña
 router.post('/recuperar-cuenta', async (req, res) => {
@@ -212,14 +216,18 @@ router.post('/nueva-contrasena', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(nuevaContrasena, salt);
 
-        // Actualizar contraseña y limpiar el código de recuperación
-        await Usuario.update(
+        // Actualizar contraseña, limpiar código y actualizar `updated_at`
+        const [filasActualizadas] = await Usuario.update(
             {
                 password: hashedPassword,
-                codigo_recuperacion: null
+                codigo_recuperacion: null,
+                expiracion_codigo: null,
+                updated_at: new Date()
             },
             { where: { email } }
         );
+
+        console.log("🔄 Filas actualizadas:", filasActualizadas);
 
         res.json({ message: 'Contraseña actualizada correctamente.' });
 
@@ -228,5 +236,6 @@ router.post('/nueva-contrasena', async (req, res) => {
         res.status(500).json({ message: 'Error al cambiar la contraseña.', error });
     }
 });
+
 
 export default router;

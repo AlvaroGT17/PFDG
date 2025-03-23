@@ -20,8 +20,8 @@ export default function RecuperarCuenta() {
 
             const data = await response.json();
             if (response.ok) {
-                localStorage.setItem('email', email); // Guardar el email para el siguiente paso
-                navigate('/verificar-codigo'); // Redirigir a la pantalla de verificación
+                localStorage.setItem('email', email);
+                navigate('/verificar-codigo');
             } else {
                 setMensaje(data.error);
             }

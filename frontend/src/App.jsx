@@ -8,12 +8,13 @@ import NuevaContraseña from "./componentes/autenticacion/NuevaContraseña";
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/recuperar-cuenta" element={<RecuperarCuenta />} />
       <Route path="/verificar-codigo" element={<VerificarCodigo />} />
       <Route path="/nueva-contraseña" element={<NuevaContraseña />} />
-      <Route path="*" element={<Login />} /> {/* Fallback por si la ruta no existe */}
+      <Route path="*" element={<Login />} />
+      <Route path="/" element={<Login />} />
     </Routes>
   );
 }

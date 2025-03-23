@@ -1,42 +1,39 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { Pool } = require('pg');
-require('dotenv').config();
+// backend/controllers/authController.js
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import Usuario from '../models/Usuario.js';
+import dotenv from 'dotenv';
+import sequelize from '../config/database.js';
 
-const pool = new Pool({
-    user: process.env.DB_USUARIO,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NOMBRE,
-    password: process.env.DB_CONTRASENA,
-    port: process.env.DB_PUERTO,
-    ssl: { rejectUnauthorized: false }
-});
+dotenv.config();
 
 // ✅ REGISTRO DE USUARIO
-exports.registrarUsuario = async (req, res) => {
+export const registrarUsuario = async (req, res) => {
     let { nombre, apellido, email, password, rol } = req.body;
 
     try {
-        // Asegurar que el nombre se guarda en mayúsculas
         nombre = nombre.toUpperCase();
 
-        // Verificar si el correo ya está registrado
-        const existeUsuario = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
-        if (existeUsuario.rows.length > 0) {
+        // Verificar si el correo ya existe
+        const existe = await Usuario.findOne({ where: { email } });
+        if (existe) {
             return res.status(400).json({ error: 'El correo ya está registrado' });
         }
 
-        // Encriptar la contraseña
+        // Hashear la contraseña
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Insertar el usuario en la base de datos
-        const nuevoUsuario = await pool.query(
-            'INSERT INTO usuarios (nombre, apellido, email, password, rol, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, NOW(), NOW()) RETURNING *',
-            [nombre, apellido, email, hashedPassword, rol]
-        );
+        // Crear nuevo usuario
+        const nuevoUsuario = await Usuario.create({
+            nombre,
+            apellido,
+            email,
+            password: hashedPassword,
+            rol
+        });
 
-        res.status(201).json({ mensaje: 'Usuario registrado exitosamente', usuario: nuevoUsuario.rows[0] });
+        res.status(201).json({ mensaje: 'Usuario registrado exitosamente', usuario: nuevoUsuario });
     } catch (error) {
         console.error('Error en registrarUsuario:', error);
         res.status(500).json({ error: 'Error en el servidor' });
@@ -44,39 +41,80 @@ exports.registrarUsuario = async (req, res) => {
 };
 
 // ✅ LOGIN POR NOMBRE
-exports.loginUsuario = async (req, res) => {
+export const loginUsuario = async (req, res) => {
     let { nombre, password } = req.body;
 
     try {
-        // Convertir nombre a mayúsculas para comparar
         nombre = nombre.toUpperCase();
 
-        // Buscar usuario por nombre
-        const usuario = await pool.query('SELECT * FROM usuarios WHERE nombre = $1', [nombre]);
-        if (usuario.rows.length === 0) {
+        const usuario = await Usuario.findOne({
+            where: { nombre },
+            attributes: ['id', 'nombre', 'apellido', 'email', 'password', 'rol'], // obligamos a traer solo lo necesario
+            raw: true, // 🔁 fuerza a que Sequelize devuelva un objeto plano sin cachear
+            logging: console.log // 👀 opcional, solo para ver la query SQL en consola
+        });
+
+        if (!usuario) {
             return res.status(401).json({ error: 'Credenciales incorrectas' });
         }
 
-        // Validar contraseña
-        const validPassword = await bcrypt.compare(password, usuario.rows[0].password);
+        const validPassword = await bcrypt.compare(password, usuario.password);
         if (!validPassword) {
             return res.status(401).json({ error: 'Credenciales incorrectas' });
         }
 
-        // Generar token
         const token = jwt.sign(
-            {
-                id: usuario.rows[0].id,
-                email: usuario.rows[0].email,
-                rol: usuario.rows[0].rol
-            },
+            { id: usuario.id, email: usuario.email, rol: usuario.rol },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 
-        res.json({ mensaje: 'Inicio de sesión exitoso', token, usuario: usuario.rows[0] });
+        console.log(`✅ Login exitoso: ${usuario.nombre} - ${usuario.email}`);
+
+        res.json({
+            mensaje: 'Inicio de sesión exitoso',
+            token,
+            usuario: {
+                id: usuario.id,
+                nombre: usuario.nombre,
+                apellido: usuario.apellido,
+                email: usuario.email,
+                rol: usuario.rol
+            }
+        });
     } catch (error) {
         console.error('Error en loginUsuario:', error);
         res.status(500).json({ error: 'Error en el servidor' });
+    }
+};
+
+// ✅ CAMBIO DE CONTRASEÑA TRAS VERIFICACIÓN
+export const cambiarContrasena = async (req, res) => {
+    const { email, nuevaContrasena } = req.body;
+
+    try {
+        const usuario = await Usuario.findOne({ where: { email } });
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado.' });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(nuevaContrasena, salt);
+
+        await usuario.update({
+            password: hashedPassword,
+            codigo_recuperacion: null,
+            expiracion_codigo: null,
+            updated_at: new Date()
+        });
+
+        res.json({ mensaje: 'Contraseña actualizada correctamente.' });
+
+        // 🔁 Cierra el pool para evitar cacheo de conexión en Electron
+        await sequelize.connectionManager.close();
+
+    } catch (error) {
+        console.error('Error al cambiar la contraseña:', error);
+        res.status(500).json({ error: 'Error al cambiar la contraseña' });
     }
 };

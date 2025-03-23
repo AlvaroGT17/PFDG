@@ -5,12 +5,19 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../../assets/logo.jpg';
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+
 
 export default function Login() {
     const [nombre, setNombre] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('usuario');
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,6 +30,7 @@ export default function Login() {
                 password,
             });
 
+            console.log('Respuesta del backend:', response.data);
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('usuario', JSON.stringify(response.data.usuario));
 
@@ -77,6 +85,7 @@ export default function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
+                            autoComplete="new-password"
                         />
                     </div>
 

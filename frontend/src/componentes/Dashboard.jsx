@@ -22,15 +22,20 @@ export default function Dashboard() {
         if (usuarioGuardado) {
             setUsuario(JSON.parse(usuarioGuardado));
         } else {
-            navigate('/');
+            window.location.hash = '/login';
+            window.location.reload();
         }
     }, [navigate]);
 
     const cerrarSesion = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('usuario');
-        navigate('/');
+
+        // ✅ Forzar recarga completa para evitar estados cacheados
+        navigate('/login');
+
     };
+
 
     return (
         <div className="dashboard-container">
