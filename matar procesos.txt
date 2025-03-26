@@ -1,4 +1,0 @@
-netstat -ano | findstr :1983
-
-
-taskkill /PID 12345 /F
