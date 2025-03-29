@@ -1,9 +1,9 @@
-from PySide6.QtWidgets import QWidget, QLabel, QApplication
+import sys
 from PySide6.QtGui import QPixmap, Qt
 from PySide6.QtCore import QPropertyAnimation, QRect, QTimer
-import sys
-
+from PySide6.QtWidgets import QWidget, QLabel, QApplication
 from utilidades.rutas import obtener_ruta_absoluta
+from vistas.ventana_login import VentanaLogin
 
 
 class VentanaPresentacion(QWidget):
@@ -33,8 +33,9 @@ class VentanaPresentacion(QWidget):
         self.animacion.start()
 
     def esperar_y_cambiar(self):
-        QTimer.singleShot(3000, self.mostrar_login)
+        QTimer.singleShot(30, self.mostrar_login)
 
     def mostrar_login(self):
-        print("🔐 Aquí se abriría la ventana de login")
+        self.login = VentanaPresentacion()
+        self.login.show()
         self.close()
