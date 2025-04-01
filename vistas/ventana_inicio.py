@@ -1,50 +1,52 @@
-from PySide6.QtWidgets import (
-    QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QGridLayout
-)
-from PySide6.QtGui import QIcon, QFont, QCursor
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout
+from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
 from utilidades.rutas import obtener_ruta_absoluta
+from utilidades.boton_animado import BotonAnimado
 
 
 class VentanaInicio(QWidget):
-    def __init__(self, nombre_usuario, rol_usuario):
+    def __init__(self, nombre, rol):
         super().__init__()
-        self.setWindowTitle("ReyBoxes - Inicio")
-        self.setFixedSize(700, 600)
+        self.setWindowTitle("ReyBoxes - Panel Principal")
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
+        self.setFixedSize(700, 500)
 
+        self.setObjectName("ventana_inicio")
         ruta_css = obtener_ruta_absoluta("css/inicio.css")
         with open(ruta_css, "r", encoding="utf-8") as f:
             self.setStyleSheet(f.read())
 
-        self.nombre_usuario = nombre_usuario
-        self.rol_usuario = rol_usuario
+        self.nombre = nombre.upper()
+        self.rol = rol
+        self.botones = {}
 
         self.inicializar_ui()
 
     def inicializar_ui(self):
-        layout = QVBoxLayout(self)
+        layout_principal = QVBoxLayout(self)
+        layout_principal.setContentsMargins(30, 30, 30, 30)
 
-        # Bienvenida
+        contenedor = QWidget()
+        contenedor.setObjectName("contenedor")
+        layout_contenedor = QVBoxLayout(contenedor)
+
         saludo = QLabel(
-            f"<span>Bienvenido, </span><span style='color:#E30613;'>{self.nombre_usuario}</span>")
-        saludo.setAlignment(Qt.AlignCenter)
+            f"<b><i>Bienvenido, <span style='color:#d90429;'>{self.nombre}</span></i></b>")
         saludo.setObjectName("titulo_bienvenida")
-        layout.addWidget(saludo)
+        saludo.setAlignment(Qt.AlignCenter)
 
-        # Rol
-        rol = QLabel(f"Rol: <b>{self.rol_usuario}</b>")
-        rol.setAlignment(Qt.AlignCenter)
-        rol.setObjectName("texto_rol")
-        layout.addWidget(rol)
+        rol_label = QLabel(f"Rol: <b>{self.rol}</b>")
+        rol_label.setObjectName("texto_rol")
+        rol_label.setAlignment(Qt.AlignCenter)
 
-        # Rejilla de botones
+        layout_contenedor.addWidget(saludo)
+        layout_contenedor.addWidget(rol_label)
+
         grid = QGridLayout()
-        grid.setSpacing(20)
+        grid.setSpacing(15)
 
-        self.botones = {}
-
-        botones_info = [
+        botones = [
             ("Fichar", "fichar.png"),
             ("Reparaciones", "reparacion.png"),
             ("Historial", "historial.png"),
@@ -53,15 +55,14 @@ class VentanaInicio(QWidget):
             ("Facturación", "facturacion.png"),
             ("Reportes", "reportes.png"),
             ("Usuarios", "usuarios.png"),
-            ("Cerrar sesión", "salir.png")
+            ("Cerrar sesión", "salir.png"),
         ]
 
-        for i, (texto, icono) in enumerate(botones_info):
-            btn = QPushButton(texto)
-            btn.setIcon(QIcon(obtener_ruta_absoluta(f"img/{icono}")))
-            btn.setCursor(QCursor(Qt.PointingHandCursor))
-            btn.setObjectName("boton_menu")
-            self.botones[texto] = btn
-            grid.addWidget(btn, i // 3, i % 3)
+        for i, (texto, icono) in enumerate(botones):
+            boton = BotonAnimado(texto, icono)
+            boton.setObjectName("boton_menu")
+            grid.addWidget(boton, i // 3, i % 3)
+            self.botones[texto.lower()] = boton
 
-        layout.addLayout(grid)
+        layout_contenedor.addLayout(grid)
+        layout_principal.addWidget(contenedor, alignment=Qt.AlignCenter)

@@ -1,32 +1,48 @@
-QWidget {
-    background-color: #6c757d;
+QWidget#ventana_inicio {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #555, stop:1 #777);
     font-family: Montserrat, sans-serif;
+}
+
+QWidget#contenedor {
+    background-color: #8193a8;
     border-radius: 12px;
+    padding: 20px;
 }
 
 #titulo_bienvenida {
     font-size: 24px;
     font-weight: bold;
     font-style: italic;
-    margin-top: 10px;
     color: white;
+    margin-top: 10px;
 }
 
 #texto_rol {
     font-size: 16px;
-    margin-bottom: 20px;
     color: navy;
+    margin-bottom: 20px;
 }
 
 QPushButton#boton_menu {
     background-color: #d90429;
     color: white;
-    padding: 15px;
-    border-radius: 12px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: bold;
+    border-radius: 8px;
+    height: 42px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 2px solid #a0001c;
 }
 
 QPushButton#boton_menu:hover {
-    background-color: #c2001d;
+    background-color: #c40324;
+    border: 2px solid #880016;
+}
+
+QPushButton#boton_menu:pressed {
+    background-color: #990016;
+    border: 2px inset #600010;
+    padding-top: 2px;
+    padding-bottom: -2px;
 }
