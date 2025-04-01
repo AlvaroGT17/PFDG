@@ -1,7 +1,10 @@
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout
 from PySide6.QtGui import QPixmap, QCursor, QIcon
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QCoreApplication
 from utilidades.rutas import obtener_ruta_absoluta
+from PySide6.QtWidgets import (
+    QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox
+)
 
 
 class VentanaLogin(QWidget):
@@ -10,6 +13,7 @@ class VentanaLogin(QWidget):
         self.setWindowTitle("ReyBoxes - Inicio de sesión")
         self.setFixedSize(500, 600)
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
+        self.salir_manual = False
 
         ruta_estilo = obtener_ruta_absoluta("css/login.css")
         with open(ruta_estilo, "r", encoding="utf-8") as f:
@@ -61,6 +65,13 @@ class VentanaLogin(QWidget):
         self.btn_entrar.setFixedWidth(200)
         layout_panel.addWidget(self.btn_entrar, alignment=Qt.AlignCenter)
 
+        # 🔴 Botón de salir (nuevo)
+        self.btn_salir = QPushButton("  Salir")
+        self.btn_salir.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_salir.setIcon(QIcon(obtener_ruta_absoluta("img/salir.png")))
+        self.btn_salir.clicked.connect(self.salir_aplicacion)
+        layout_panel.addWidget(self.btn_salir, alignment=Qt.AlignCenter)
+
         self.enlace_recuperar = QLabel(
             '<a href="#">¿Olvidaste tu contraseña?</a>')
         self.enlace_recuperar.setProperty("enlace", True)
@@ -94,3 +105,19 @@ class VentanaLogin(QWidget):
         layout.addWidget(icono)
         layout.addWidget(input_texto)
         return layout
+
+    # 🔒 Bloquear el cierre con el aspa (❌)
+    def closeEvent(self, event):
+        if self.salir_manual:
+            event.accept()
+        else:
+            QMessageBox.information(
+                self,
+                "Cierre no permitido",
+                "Utiliza el botón 'Salir' para cerrar el programa.",
+            )
+            event.ignore()
+
+    def salir_aplicacion(self):
+        self.salir_manual = True
+        self.close()  # Esto llama a closeEvent()

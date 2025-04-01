@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QApplication
 from vistas.ventana_presentacion import VentanaPresentacion
 from controladores.login_controlador import LoginControlador
 from controladores.recuperar_controlador import RecuperarControlador
+from controladores.inicio_controlador import InicioControlador
 
 
 class Aplicacion:
@@ -40,8 +41,10 @@ class Aplicacion:
         self.controlador_recuperar.mostrar()
 
     def mostrar_dashboard(self, usuario):
-        print(f"🧠 Login correcto: {usuario['nombre']} ({usuario['rol']})")
-        # Aquí mostrarías la ventana principal según el rol del usuario
+        self.controlador_inicio = InicioControlador(
+            usuario["nombre"], usuario["rol"])
+        self.controlador_inicio.senal_cerrar_sesion.connect(self.mostrar_login)
+        self.controlador_inicio.mostrar()
 
     def ejecutar(self):
         sys.exit(self.app.exec())

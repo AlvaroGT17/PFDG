@@ -7,16 +7,17 @@ from modelos.conexion_bd import obtener_conexion
 def obtener_usuario_por_nombre(nombre: str):
     """
     Devuelve los datos del usuario con ese nombre (en mayúsculas),
-    o None si no existe. Se usa para login.
+    incluyendo el rol asociado desde la tabla 'roles'.
     """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
 
         consulta = sql.SQL("""
-            SELECT id, nombre, apellido, email, password, rol
-            FROM usuarios
-            WHERE UPPER(nombre) = %s
+            SELECT u.id, u.nombre, u.apellido, u.email, u.password, r.nombre AS rol
+            FROM usuarios u
+            JOIN roles r ON u.rol_id = r.id
+            WHERE UPPER(u.nombre) = %s
             LIMIT 1
         """)
 
@@ -29,7 +30,7 @@ def obtener_usuario_por_nombre(nombre: str):
                 "nombre": resultado[1],
                 "apellido": resultado[2],
                 "email": resultado[3],
-                "password": resultado[4],  # hash
+                "password": resultado[4],
                 "rol": resultado[5]
             }
 
