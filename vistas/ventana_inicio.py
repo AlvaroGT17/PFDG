@@ -43,10 +43,10 @@ class VentanaInicio(QWidget):
         layout_contenedor.addWidget(saludo)
         layout_contenedor.addWidget(rol_label)
 
-        grid = QGridLayout()
-        grid.setSpacing(15)
+        self.grid_layout = QGridLayout()
+        self.grid_layout.setSpacing(15)
 
-        botones = [
+        botones_definidos = [
             ("Fichar", "fichar.png"),
             ("Reparaciones", "reparacion.png"),
             ("Historial", "historial.png"),
@@ -58,11 +58,28 @@ class VentanaInicio(QWidget):
             ("Cerrar sesión", "salir.png"),
         ]
 
-        for i, (texto, icono) in enumerate(botones):
-            boton = BotonAnimado(texto, icono)
-            boton.setObjectName("boton_menu")
-            grid.addWidget(boton, i // 3, i % 3)
-            self.botones[texto.lower()] = boton
+        accesos_por_rol = {
+            "ADMINISTRADOR": ["fichar", "reparaciones", "historial", "clientes", "vehículos", "facturación", "reportes", "usuarios", "cerrar sesión"],
+            "MECANICO": ["fichar", "reparaciones", "vehículos", "cerrar sesión"],
+            "COMPRA/VENTA": ["fichar", "reportes", "cerrar sesión"],
+            "ADMINISTRATIVO": ["fichar", "clientes", "historial", "facturación", "cerrar sesión"]
+        }
 
-        layout_contenedor.addLayout(grid)
+        rol_normalizado = self.rol.upper().strip()
+        botones_visibles = accesos_por_rol.get(rol_normalizado, [])
+
+        fila = columna = 0
+        for texto, icono in botones_definidos:
+            if texto.lower() in [b.lower() for b in botones_visibles]:
+                boton = BotonAnimado(texto, icono)
+                boton.setObjectName("boton_menu")
+                self.grid_layout.addWidget(boton, fila, columna)
+                self.botones[texto.lower()] = boton
+
+                columna += 1
+                if columna == 3:
+                    columna = 0
+                    fila += 1
+
+        layout_contenedor.addLayout(self.grid_layout)
         layout_principal.addWidget(contenedor, alignment=Qt.AlignCenter)

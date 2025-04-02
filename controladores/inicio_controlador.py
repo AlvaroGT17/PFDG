@@ -10,7 +10,8 @@ class InicioControlador(QObject):
         self.ventana = VentanaInicio(nombre, rol)
 
         # 🔧 Conectar botón de cerrar sesión usando clave en minúsculas
-        self.ventana.botones["cerrar sesión"].clicked.connect(self.cerrar)
+        if "cerrar sesión" in self.ventana.botones:
+            self.ventana.botones["cerrar sesión"].clicked.connect(self.cerrar)
 
     def mostrar(self):
         self.ventana.show()
