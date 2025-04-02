@@ -1,6 +1,7 @@
 from PySide6.QtCore import QObject, Signal
 from vistas.ventana_inicio import VentanaInicio
 from controladores.fichar_controlador import FicharControlador
+from controladores.historial_controlador import HistorialControlador
 
 
 class InicioControlador(QObject):
@@ -21,6 +22,10 @@ class InicioControlador(QObject):
         if "fichar" in self.ventana.botones:
             self.ventana.botones["fichar"].clicked.connect(self.abrir_fichaje)
 
+        if "historial" in self.ventana.botones:
+            self.ventana.botones["historial"].clicked.connect(
+                self.abrir_historial)
+
     def mostrar(self):
         self.ventana.show()
 
@@ -40,3 +45,10 @@ class InicioControlador(QObject):
         from modelos.login_consultas import obtener_usuario_por_nombre
         usuario = obtener_usuario_por_nombre(self.nombre)
         return usuario["id"] if usuario else None
+
+    def abrir_historial(self):
+        self.controlador_historial = HistorialControlador(
+            usuario_id=self.usuario_id,
+            es_admin=(self.rol.upper() == "ADMINISTRADOR")
+        )
+        self.controlador_historial.mostrar()

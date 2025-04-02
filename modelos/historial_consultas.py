@@ -43,3 +43,19 @@ def obtener_fichajes_globales():
     finally:
         cursor.close()
         conexion.close()
+
+
+def obtener_nombre_usuario(usuario_id):
+    """
+    Devuelve el nombre de un usuario dado su ID.
+    """
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute(
+            "SELECT nombre FROM usuarios WHERE id = %s", (usuario_id,))
+        resultado = cursor.fetchone()
+        return resultado[0] if resultado else "Desconocido"
+    finally:
+        cursor.close()
+        conexion.close()

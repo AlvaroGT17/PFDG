@@ -59,3 +59,11 @@ QTableWidget::item:selected {
     background-color: #ffb703;
     color: black;
 }
+
+QTableWidget#tabla_fichajes {
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    background-color: white;
+    gridline-color: #aaa;
+    padding: 4px;
+}
