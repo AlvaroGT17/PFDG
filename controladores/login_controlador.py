@@ -23,6 +23,7 @@ class LoginControlador(QObject):
         self.ventana.show()
 
     def cerrar(self):
+        self.ventana.cierre_autorizado = True
         self.ventana.close()
 
     def abrir_recuperacion(self):

@@ -13,7 +13,7 @@ class VentanaLogin(QWidget):
         self.setWindowTitle("ReyBoxes - Inicio de sesión")
         self.setFixedSize(500, 600)
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
-        self.salir_manual = False
+        self.cierre_autorizado = False
 
         ruta_estilo = obtener_ruta_absoluta("css/login.css")
         with open(ruta_estilo, "r", encoding="utf-8") as f:
@@ -108,16 +108,17 @@ class VentanaLogin(QWidget):
 
     # 🔒 Bloquear el cierre con el aspa (❌)
     def closeEvent(self, event):
-        if self.salir_manual:
-            event.accept()
-        else:
+        if not self.cierre_autorizado:
             QMessageBox.information(
                 self,
                 "Cierre no permitido",
                 "Utiliza el botón 'Salir' para cerrar el programa.",
+                QMessageBox.StandardButton.Ok
             )
             event.ignore()
+        else:
+            event.accept()
 
     def salir_aplicacion(self):
-        self.salir_manual = True
-        self.close()  # Esto llama a closeEvent()
+        self.cierre_autorizado = True
+        self.close()
