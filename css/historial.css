@@ -1,0 +1,61 @@
+QWidget#ventana_historial {
+    background-color: #8193A8;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Título */
+#titulo_historial {
+    font-size: 24px;
+    font-weight: bold;
+    color: #d90429;
+}
+
+/* Tabla */
+#tabla_fichajes {
+    border: none;
+    gridline-color: #ccc;
+    selection-background-color: #fdd835;
+    font-size: 14px;
+}
+
+#tabla_fichajes QHeaderView::section {
+    background-color: #d90429;
+    color: white;
+    font-weight: bold;
+    padding: 4px;
+    border: 1px solid #c4001e;
+}
+
+QToolButton#boton_exportar_csv,
+QToolButton#boton_exportar_pdf,
+QToolButton#boton_volver {
+    background-color: #d90429;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 10px;
+    min-width: 120px;
+    min-height: 100px;
+    qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#boton_exportar_csv:hover,
+QToolButton#boton_exportar_pdf:hover,
+QToolButton#boton_volver:hover {
+    background-color: #c40324;
+}
+
+QToolButton#boton_exportar_csv:pressed,
+QToolButton#boton_exportar_pdf:pressed,
+QToolButton#boton_volver:pressed {
+    background-color: #990016;
+    padding-top: 2px;
+    padding-bottom: -2px;
+}
+
+QTableWidget::item:selected {
+    background-color: #ffb703;
+    color: black;
+}
