@@ -1,0 +1,64 @@
+#ventana_usuarios {
+    background-color: #6A6A6A;
+    font-family: 'Montserrat';
+}
+
+#contenedor {
+    background-color: #8193a8;
+    border-radius: 20px;
+    padding: 20px 20px 30px 20px;
+    max-width: 420px;
+    border: 1px solid #ddd;
+}
+
+#titulo_usuario {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2c2c2c;
+    margin-bottom: 10px;
+}
+
+/* CAMPOS DE TEXTO */
+QLineEdit, QComboBox {
+    padding: 0px;
+    padding-left: 5px;
+    font-size: 16px;
+    color: #2c2c2c;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+QLineEdit::placeholder, QComboBox::placeholder {
+    color:rgb(190, 32, 32);
+}
+
+QLineEdit:focus, QComboBox:focus {
+    border: 2px solid #E30613;
+}
+
+/* BOTONES CON ICONO Y TEXTO (ToolButtons) */
+QToolButton {
+    background-color: #E30613;
+    color: white;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 12px;
+    min-width: 100px;
+    min-height: 85px;
+}
+
+QToolButton:hover {
+    background-color: #c00011;
+}
+
+QToolButton:pressed {
+    background-color: #a00010;
+    padding-top: 12px;  
+    padding-bottom: 8px;
+}
+
+QToolButton::icon {
+    margin-bottom: 5px;
+}

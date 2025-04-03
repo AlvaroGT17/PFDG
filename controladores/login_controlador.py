@@ -18,6 +18,7 @@ class LoginControlador(QObject):
         self.ventana.input_usuario.returnPressed.connect(self.verificar_login)
         self.ventana.input_contrasena.returnPressed.connect(
             self.verificar_login)
+        self.ventana.btn_entrar.setDefault(True)
 
     def mostrar(self):
         self.ventana.show()

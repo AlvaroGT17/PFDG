@@ -13,7 +13,7 @@ QWidget#contenedor {
     font-size: 24px;
     font-weight: bold;
     font-style: italic;
-    color: white;
+    color: #FFFFFF;
     margin-top: 10px;
 }
 
@@ -45,4 +45,36 @@ QPushButton#boton_menu:pressed {
     border: 2px inset #600010;
     padding-top: 2px;
     padding-bottom: -2px;
+}
+
+#scroll_botones {
+    border: none;
+    background-color: transparent;
+}
+
+QScrollBar:vertical {
+    width: 12px;
+    background: #ccc;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:vertical {
+    background: #E30613;
+    border-radius: 6px;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+#grid_fondo {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+#scroll_botones {
+    border: none;
+    background-color: transparent;
 }
