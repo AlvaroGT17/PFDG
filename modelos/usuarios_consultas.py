@@ -53,3 +53,32 @@ def crear_usuario(nombre, apellido, email, contrasena, rol_id):
     except Exception as e:
         print(f"Error al crear usuario: {e}")
         return False
+
+
+def existe_usuario_por_nombre(nombre):
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute(
+            "SELECT id FROM usuarios WHERE nombre = %s", (nombre.upper(),))
+        resultado = cursor.fetchone()
+        cursor.close()
+        conexion.close()
+        return resultado is not None
+    except Exception as e:
+        print(f"Error al comprobar existencia de usuario por nombre: {e}")
+        return False
+
+
+def existe_usuario_por_email(email):
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute("SELECT id FROM usuarios WHERE email = %s", (email,))
+        resultado = cursor.fetchone()
+        cursor.close()
+        conexion.close()
+        return resultado is not None
+    except Exception as e:
+        print(f"Error al comprobar existencia de usuario por email: {e}")
+        return False

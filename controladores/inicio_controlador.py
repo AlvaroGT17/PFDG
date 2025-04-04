@@ -3,6 +3,7 @@ from vistas.ventana_inicio import VentanaInicio
 from controladores.fichar_controlador import FicharControlador
 from controladores.historial_controlador import HistorialControlador
 from controladores.usuarios_controlador import UsuariosControlador
+from controladores.clientes_controlador import ClientesControlador
 
 
 class InicioControlador(QObject):
@@ -30,6 +31,11 @@ class InicioControlador(QObject):
         if self.rol.upper() == "ADMINISTRADOR":
             self.ventana.botones["crear usuarios"].clicked.connect(
                 self.abrir_gestion_usuarios)
+
+        if self.rol.upper() in ["ADMINISTRADOR", "ADMINISTRATIVO"]:
+            if "crear clientes" in self.ventana.botones:
+                self.ventana.botones["crear clientes"].clicked.connect(
+                    self.abrir_clientes)
 
     def mostrar(self):
         self.ventana.show()
@@ -61,3 +67,7 @@ class InicioControlador(QObject):
     def abrir_gestion_usuarios(self):
         self.ventana.hide()
         self.usuarios_controlador = UsuariosControlador(self.ventana)
+
+    def abrir_clientes(self):
+        self.ventana.hide()
+        self.clientes_controlador = ClientesControlador(self.ventana)

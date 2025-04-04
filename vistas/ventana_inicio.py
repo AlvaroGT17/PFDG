@@ -52,6 +52,7 @@ class VentanaInicio(QWidget):
             ("Fichar", "fichar.png"),
             ("Historial", "historial.png"),
             ("Crear usuarios", "crear.png"),
+            ("Crear clientes", "clientes.png"),
             ("Reparaciones", "reparacion.png"),
             ("Clientes", "clientes.png"),
             ("Vehículos", "vehiculos.png"),
@@ -62,10 +63,10 @@ class VentanaInicio(QWidget):
         ]
 
         accesos_por_rol = {
-            "ADMINISTRADOR": ["fichar", "historial", "crear usuarios", "reparaciones", "clientes", "vehículos", "facturación", "reportes", "usuarios", "cerrar sesión"],
+            "ADMINISTRADOR": ["fichar", "historial", "crear usuarios", "crear clientes", "reparaciones", "clientes", "vehículos", "facturación", "reportes", "usuarios", "cerrar sesión"],
             "MECANICO": ["fichar", "historial", "reparaciones", "vehículos", "cerrar sesión"],
             "COMPRA/VENTA": ["fichar", "historial", "reportes", "cerrar sesión"],
-            "ADMINISTRATIVO": ["fichar", "historial", "clientes", "facturación", "cerrar sesión"]
+            "ADMINISTRATIVO": ["fichar", "historial", "crear clientes", "facturación", "cerrar sesión"]
         }
 
         rol_normalizado = self.rol.upper().strip()

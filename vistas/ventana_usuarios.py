@@ -15,6 +15,7 @@ class VentanaUsuarios(QWidget):
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
         self.setFixedSize(500, 600)
         self.setObjectName("ventana_usuarios")
+        self.cierre_autorizado = False
 
         self.setup_ui()
         self.aplicar_estilos()
@@ -108,3 +109,9 @@ class VentanaUsuarios(QWidget):
         else:
             self.titulo.setText(
                 "<span style='color: #FFFFFF;'>Crear usuario</span>")
+
+    def closeEvent(self, event):
+        if self.cierre_autorizado:
+            event.accept()
+        else:
+            event.ignore()

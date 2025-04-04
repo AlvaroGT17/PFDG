@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QMessageBox
 from vistas.ventana_usuarios import VentanaUsuarios
-from modelos.usuarios_consultas import obtener_roles, crear_usuario
+from modelos.usuarios_consultas import obtener_roles, crear_usuario, existe_usuario_por_nombre, existe_usuario_por_email
 import re
 
 
@@ -32,6 +32,7 @@ class UsuariosControlador:
         self.ventana.combo_rol.setCurrentIndex(0)
 
     def volver(self):
+        self.ventana.cierre_autorizado = True
         self.ventana.close()
         self.ventana_anterior.show()
 
@@ -57,6 +58,16 @@ class UsuariosControlador:
 
         if password != repetir:
             self.mostrar_error("Las contraseñas no coinciden.")
+            return
+
+        if existe_usuario_por_nombre(nombre):
+            self.mostrar_error(
+                "Ya existe un usuario con ese nombre. Por favor, elige otro.")
+            return
+
+        if existe_usuario_por_email(email):
+            self.mostrar_error(
+                "Ya existe un usuario con ese correo electrónico.")
             return
 
         exito = crear_usuario(nombre, apellido, email, password, rol_id)
