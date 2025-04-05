@@ -1,0 +1,44 @@
+#ventana_crear_cliente_rapido {
+    background-color: #2e2e2e;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+}
+
+QLineEdit {
+    background-color: white;
+    color: #222;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 15px;
+}
+
+QLineEdit:focus {
+    border: 2px solid #D90429;
+    background-color: #fff;
+}
+
+QLabel {
+    color: white;
+    font-weight: bold;
+    padding-left: 4px;
+}
+
+QPushButton {
+    background-color: #D90429;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 15px;
+}
+
+QPushButton:hover {
+    background-color: #b30321;
+}
+
+QPushButton:disabled {
+    background-color: #888;
+    color: #ccc;
+}

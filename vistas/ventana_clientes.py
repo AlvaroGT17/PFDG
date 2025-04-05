@@ -12,7 +12,7 @@ class VentanaClientes(QWidget):
         super().__init__()
         self.setWindowTitle("ReyBoxes - Registrar cliente")
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
-        self.setFixedSize(620, 700)
+        self.setFixedSize(860, 720)
         self.setObjectName("ventana_clientes")
 
         self.setup_ui()
@@ -23,20 +23,50 @@ class VentanaClientes(QWidget):
         layout_principal.setContentsMargins(20, 20, 20, 20)
         layout_principal.setSpacing(15)
 
-        # Título fijo
+        # 🔎 Buscadores por nombre, DNI y teléfono
+        layout_busqueda = QHBoxLayout()
+        layout_busqueda.setSpacing(10)
+
+        # Nombre
+        label_nombre = QLabel("Nombre:")
+        self.input_buscar_nombre = QLineEdit()
+        self.input_buscar_nombre.setPlaceholderText("Nombre y apellidos")
+
+        # DNI
+        label_dni = QLabel("DNI:")
+        self.input_buscar_dni = QLineEdit()
+        self.input_buscar_dni.setPlaceholderText("DNI")
+        self.input_buscar_dni.setFixedWidth(130)
+
+        # Teléfono
+        label_tel = QLabel("Teléfono:")
+        self.input_buscar_telefono = QLineEdit()
+        self.input_buscar_telefono.setPlaceholderText("Teléfono")
+        self.input_buscar_telefono.setFixedWidth(130)
+
+        # Añadir al layout
+        layout_busqueda.addWidget(label_nombre)
+        layout_busqueda.addWidget(self.input_buscar_nombre, stretch=1)
+        layout_busqueda.addWidget(label_dni)
+        layout_busqueda.addWidget(self.input_buscar_dni)
+        layout_busqueda.addWidget(label_tel)
+        layout_busqueda.addWidget(self.input_buscar_telefono)
+
+        layout_principal.addLayout(layout_busqueda)
+
+        # 🧾 Título
         self.titulo = QLabel()
         self.titulo.setObjectName("titulo_cliente")
         self.titulo.setAlignment(Qt.AlignCenter)
         self.actualizar_titulo("")
         layout_principal.addWidget(self.titulo)
 
-        # Contenedor para los campos con scroll
+        # 📜 Scroll con los campos
         contenedor = QWidget()
         contenedor.setObjectName("contenedor")
         layout_contenedor = QVBoxLayout(contenedor)
         layout_contenedor.setSpacing(12)
 
-        # Campos del cliente
         self.input_nombre = QLineEdit()
         self.input_nombre.setPlaceholderText("Nombre")
 
@@ -71,7 +101,6 @@ class VentanaClientes(QWidget):
         self.input_observaciones.setPlaceholderText("Observaciones (opcional)")
         self.input_observaciones.setFixedHeight(80)
 
-        # Añadir campos al layout del contenedor
         layout_contenedor.addWidget(self.input_nombre)
         layout_contenedor.addWidget(self.input_apellido1)
         layout_contenedor.addWidget(self.input_apellido2)
@@ -84,15 +113,16 @@ class VentanaClientes(QWidget):
         layout_contenedor.addWidget(self.input_provincia)
         layout_contenedor.addWidget(self.input_observaciones)
 
-        # Scroll solo para el formulario
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setObjectName("scroll_area")
         scroll.setWidget(contenedor)
         layout_principal.addWidget(scroll)
 
-        # Botones fijos (fuera del scroll)
+        # 🔘 Botones
         layout_botones = QHBoxLayout()
+        layout_botones.setSpacing(30)
+        layout_botones.setAlignment(Qt.AlignCenter)
 
         self.boton_guardar = QToolButton()
         self.boton_guardar.setText("Registrar")
@@ -101,12 +131,26 @@ class VentanaClientes(QWidget):
             QIcon(obtener_ruta_absoluta("img/guardar.png")))
         self.boton_guardar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
+        self.boton_modificar = QToolButton()
+        self.boton_modificar.setText("Modificar")
+        self.boton_modificar.setIconSize(QSize(48, 48))
+        self.boton_modificar.setIcon(
+            QIcon(obtener_ruta_absoluta("img/modificar_registro.png")))
+        self.boton_modificar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+
         self.boton_limpiar = QToolButton()
         self.boton_limpiar.setText("Limpiar")
         self.boton_limpiar.setIconSize(QSize(48, 48))
         self.boton_limpiar.setIcon(
             QIcon(obtener_ruta_absoluta("img/escoba.png")))
         self.boton_limpiar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+
+        self.boton_eliminar = QToolButton()
+        self.boton_eliminar.setText("Eliminar")
+        self.boton_eliminar.setIconSize(QSize(48, 48))
+        self.boton_eliminar.setIcon(
+            QIcon(obtener_ruta_absoluta("img/borrar_registro.png")))
+        self.boton_eliminar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         self.boton_volver = QToolButton()
         self.boton_volver.setText("Volver")
@@ -116,12 +160,14 @@ class VentanaClientes(QWidget):
         self.boton_volver.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         layout_botones.addWidget(self.boton_guardar)
+        layout_botones.addWidget(self.boton_modificar)
         layout_botones.addWidget(self.boton_limpiar)
+        layout_botones.addWidget(self.boton_eliminar)
         layout_botones.addWidget(self.boton_volver)
 
         layout_principal.addLayout(layout_botones)
 
-        # Título dinámico con nombre
+        # 🔄 Título dinámico
         self.input_nombre.textChanged.connect(self.actualizar_titulo)
 
     def aplicar_estilos(self):
@@ -139,3 +185,6 @@ class VentanaClientes(QWidget):
         else:
             self.titulo.setText(
                 "<span style='color: #FFFFFF;'>Registrar cliente</span>")
+
+    def closeEvent(self, event):
+        event.ignore()

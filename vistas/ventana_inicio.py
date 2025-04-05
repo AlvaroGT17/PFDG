@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QScrollArea, QHBoxLayout
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QScrollArea
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
 from utilidades.rutas import obtener_ruta_absoluta
@@ -10,8 +10,7 @@ class VentanaInicio(QWidget):
         super().__init__()
         self.setWindowTitle("ReyBoxes - Panel Principal")
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
-        # ⬅️ Ventana ensanchada para 3 columnas sin scroll horizontal
-        self.setFixedSize(880, 560)
+        self.setFixedSize(900, 720)  # ⬅️ Ventana más ancha para margen lateral
 
         self.setObjectName("ventana_inicio")
         ruta_css = obtener_ruta_absoluta("css/inicio.css")
@@ -30,7 +29,8 @@ class VentanaInicio(QWidget):
 
         contenedor = QWidget()
         contenedor.setObjectName("contenedor")
-        contenedor.setFixedWidth(800)  # ⬅️ Área central (gris) más ancha
+        # ⬅️ Más ancho para que haya margen blanco a la derecha
+        contenedor.setFixedWidth(840)
         layout_contenedor = QVBoxLayout(contenedor)
 
         saludo = QLabel(
@@ -52,10 +52,9 @@ class VentanaInicio(QWidget):
             ("Fichar", "fichar.png"),
             ("Historial", "historial.png"),
             ("Crear usuarios", "crear.png"),
-            ("Crear clientes", "clientes.png"),
-            ("Reparaciones", "reparacion.png"),
             ("Clientes", "clientes.png"),
             ("Vehículos", "vehiculos.png"),
+            ("Reparaciones", "reparacion.png"),
             ("Facturación", "facturacion.png"),
             ("Reportes", "reportes.png"),
             ("Usuarios", "usuarios.png"),
@@ -63,10 +62,10 @@ class VentanaInicio(QWidget):
         ]
 
         accesos_por_rol = {
-            "ADMINISTRADOR": ["fichar", "historial", "crear usuarios", "crear clientes", "reparaciones", "clientes", "vehículos", "facturación", "reportes", "usuarios", "cerrar sesión"],
-            "MECANICO": ["fichar", "historial", "reparaciones", "vehículos", "cerrar sesión"],
-            "COMPRA/VENTA": ["fichar", "historial", "reportes", "cerrar sesión"],
-            "ADMINISTRATIVO": ["fichar", "historial", "crear clientes", "facturación", "cerrar sesión"]
+            "ADMINISTRADOR": ["fichar", "historial", "crear usuarios", "clientes", "vehículos", "reparaciones", "facturación", "reportes", "usuarios", "cerrar sesión"],
+            "MECANICO": ["fichar", "historial", "vehículos", "reparaciones", "vehículos", "cerrar sesión"],
+            "COMPRA/VENTA": ["fichar", "historial", "vehículos", "reportes", "cerrar sesión"],
+            "ADMINISTRATIVO": ["fichar", "historial", "clientes", "vehículos", "facturación", "cerrar sesión"]
         }
 
         rol_normalizado = self.rol.upper().strip()
@@ -88,8 +87,8 @@ class VentanaInicio(QWidget):
         contenedor_grid = QWidget()
         contenedor_grid.setObjectName("grid_fondo")
         contenedor_grid.setLayout(self.grid_layout)
-        # ⬅️ ancho perfecto para 3 columnas sin scroll horizontal
-        contenedor_grid.setFixedWidth(740)
+        # ⬅️ Perfecto para 3 columnas sin scroll horizontal
+        contenedor_grid.setFixedWidth(780)
 
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
@@ -97,7 +96,14 @@ class VentanaInicio(QWidget):
         scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         scroll.setWidget(contenedor_grid)
         scroll.setObjectName("scroll_botones")
-        scroll.setFixedHeight(380)
+        scroll.setFixedHeight(400)
 
         layout_contenedor.addWidget(scroll)
         layout_principal.addWidget(contenedor, alignment=Qt.AlignCenter)
+
+    def closeEvent(self, event):
+        # Solo ignorar si NO es cierre programático (por código)
+        if not getattr(self, "forzar_cierre", False):
+            event.ignore()
+        else:
+            event.accept()

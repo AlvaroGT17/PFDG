@@ -84,3 +84,7 @@ QToolButton:disabled {
     color: #666666;
     border: 1px solid #888888;
 }
+
+QLabel {
+    color: navy;
+}

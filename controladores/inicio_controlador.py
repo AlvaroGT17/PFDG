@@ -4,6 +4,7 @@ from controladores.fichar_controlador import FicharControlador
 from controladores.historial_controlador import HistorialControlador
 from controladores.usuarios_controlador import UsuariosControlador
 from controladores.clientes_controlador import ClientesControlador
+from controladores.vehiculos_controlador import VehiculosControlador
 
 
 class InicioControlador(QObject):
@@ -33,14 +34,20 @@ class InicioControlador(QObject):
                 self.abrir_gestion_usuarios)
 
         if self.rol.upper() in ["ADMINISTRADOR", "ADMINISTRATIVO"]:
-            if "crear clientes" in self.ventana.botones:
-                self.ventana.botones["crear clientes"].clicked.connect(
+            if "clientes" in self.ventana.botones:
+                self.ventana.botones["clientes"].clicked.connect(
                     self.abrir_clientes)
+
+        if self.rol.upper() in ["ADMINISTRADOR", "ADMINISTRATIVO", "COMPRA/VENTA", "MECANICO"]:
+            if "vehículos" in self.ventana.botones:
+                self.ventana.botones["vehículos"].clicked.connect(
+                    self.abrir_vehiculos)
 
     def mostrar(self):
         self.ventana.show()
 
     def cerrar(self):
+        self.ventana.forzar_cierre = True  # <-- permite cierre
         self.ventana.close()
         self.senal_cerrar_sesion.emit()
 
@@ -71,3 +78,7 @@ class InicioControlador(QObject):
     def abrir_clientes(self):
         self.ventana.hide()
         self.clientes_controlador = ClientesControlador(self.ventana)
+
+    def abrir_vehiculos(self):
+        self.ventana.hide()
+        self.vehiculos_controlador = VehiculosControlador(self.ventana)
