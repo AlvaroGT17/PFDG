@@ -1,0 +1,119 @@
+/* Estilo general */
+QDialog#ventana_recepcionamiento {
+    background-color: #656565;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+}
+
+/* Título principal */
+#titulo_recepcionamiento {
+    margin: 10px;
+}
+
+/* ScrollArea general */
+#scroll_area_recepcionamiento {
+    border: none;
+    background-color: #656565;
+}
+
+#scroll_area_recepcionamiento > QWidget > QWidget {
+    border-radius: 15px;
+    background-color: #8193A8;
+}
+
+/* Scrollbar vertical personalizada */
+#scroll_area_recepcionamiento QScrollBar:vertical {
+    background: transparent;
+    width: 12px;
+    margin: 0px;
+}
+
+#scroll_area_recepcionamiento QScrollBar::handle:vertical {
+    background: #E30613;
+    min-height: 20px;
+    border-radius: 6px;
+}
+
+#scroll_area_recepcionamiento QScrollBar::add-line:vertical,
+#scroll_area_recepcionamiento QScrollBar::sub-line:vertical {
+    height: 0px;
+    background: none;
+    border: none;
+}
+
+/* Secciones plegables */
+QGroupBox {
+    font-weight: bold;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 15px;
+    background-color: #444444;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 6px;
+    font-size: 15px;
+    color: white;
+}
+
+/* Contenido de campos */
+QLineEdit, QComboBox, QTextEdit {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 6px;
+    background-color: #ffffff;
+}
+
+QLabel {
+    color: white;
+}
+
+/* Radios y checks */
+QRadioButton, QCheckBox {
+    color: white;
+    padding: 4px;
+    font-weight: normal;
+}
+
+/* Botones inferiores */
+QToolButton {
+    padding: 10px;
+    background-color: #e30613;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    qproperty-toolButtonStyle: ToolButtonTextUnderIcon;
+}
+
+QToolButton:hover {
+    background-color: #b00010;
+}
+
+QToolButton:disabled {
+    background-color: #ccc;
+    color: #666;
+}
+
+/* Botón plegable con imagen (expandir/colapsar) */
+QGroupBox QToolButton {
+    background-color: #2E2E2E; /* Color cuadrado alrededor del icono */
+    border: none;
+    border-radius: 4px;
+    min-width: 36px;
+    min-height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+    padding: 4px;
+}
+
+QGroupBox QToolButton:hover {
+    background-color: #2E2E2E;
+}
+
+QGroupBox QToolButton:checked {
+    background-color: #444444;
+}

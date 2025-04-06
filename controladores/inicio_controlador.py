@@ -5,6 +5,8 @@ from controladores.historial_controlador import HistorialControlador
 from controladores.usuarios_controlador import UsuariosControlador
 from controladores.clientes_controlador import ClientesControlador
 from controladores.vehiculos_controlador import VehiculosControlador
+from controladores.recepcionamiento_controlador import RecepcionamientoControlador
+from vistas.ventana_recepcionamiento import VentanaRecepcionamiento
 
 
 class InicioControlador(QObject):
@@ -42,6 +44,10 @@ class InicioControlador(QObject):
             if "vehículos" in self.ventana.botones:
                 self.ventana.botones["vehículos"].clicked.connect(
                     self.abrir_vehiculos)
+
+        if "recepcionamiento" in self.ventana.botones:
+            self.ventana.botones["recepcionamiento"].clicked.connect(
+                self.abrir_recepcionamiento)
 
     def mostrar(self):
         self.ventana.show()
@@ -82,3 +88,9 @@ class InicioControlador(QObject):
     def abrir_vehiculos(self):
         self.ventana.hide()
         self.vehiculos_controlador = VehiculosControlador(self.ventana)
+
+    def abrir_recepcionamiento(self):
+        self.recepcionamiento = VentanaRecepcionamiento()
+        self.controlador_recepcionamiento = RecepcionamientoControlador(
+            self.recepcionamiento)
+        self.recepcionamiento.exec()

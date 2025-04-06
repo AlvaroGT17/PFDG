@@ -3,6 +3,8 @@ from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
 from utilidades.rutas import obtener_ruta_absoluta
 from utilidades.boton_animado import BotonAnimado
+from vistas.ventana_recepcionamiento import VentanaRecepcionamiento
+from controladores.recepcionamiento_controlador import RecepcionamientoControlador
 
 
 class VentanaInicio(QWidget):
@@ -54,6 +56,7 @@ class VentanaInicio(QWidget):
             ("Crear usuarios", "crear.png"),
             ("Clientes", "clientes.png"),
             ("Vehículos", "vehiculos.png"),
+            ("Recepcionamiento", "recepcionamiento.png"),
             ("Reparaciones", "reparacion.png"),
             ("Facturación", "facturacion.png"),
             ("Reportes", "reportes.png"),
@@ -62,10 +65,10 @@ class VentanaInicio(QWidget):
         ]
 
         accesos_por_rol = {
-            "ADMINISTRADOR": ["fichar", "historial", "crear usuarios", "clientes", "vehículos", "reparaciones", "facturación", "reportes", "usuarios", "cerrar sesión"],
-            "MECANICO": ["fichar", "historial", "vehículos", "reparaciones", "vehículos", "cerrar sesión"],
-            "COMPRA/VENTA": ["fichar", "historial", "vehículos", "reportes", "cerrar sesión"],
-            "ADMINISTRATIVO": ["fichar", "historial", "clientes", "vehículos", "facturación", "cerrar sesión"]
+            "ADMINISTRADOR": ["fichar", "historial", "crear usuarios", "clientes", "vehículos", "recepcionamiento", "reparaciones", "facturación", "reportes", "usuarios", "cerrar sesión"],
+            "MECANICO": ["fichar", "historial", "vehículos", "recepcionamiento", "reparaciones", "cerrar sesión"],
+            "COMPRA/VENTA": ["fichar", "historial", "vehículos", "recepcionamiento", "reportes", "cerrar sesión"],
+            "ADMINISTRATIVO": ["fichar", "historial", "clientes", "vehículos", "recepcionamiento", "facturación", "cerrar sesión"]
         }
 
         rol_normalizado = self.rol.upper().strip()

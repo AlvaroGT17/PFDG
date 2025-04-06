@@ -1,8 +1,9 @@
+/* Fondo general */
 #ventana_vehiculos {
-    background-color: #1e1e1e;
+    background-color: #595959;
 }
 
-/* Título */
+/* 🟥 Título principal */
 #titulo_principal {
     font-family: "Montserrat", sans-serif;
     font-size: 24px;
@@ -11,7 +12,7 @@
     margin-bottom: 20px;
 }
 
-/* Inputs generales */
+/* 🧾 Inputs generales */
 QLineEdit, QTextEdit {
     padding: 6px;
     border-radius: 6px;
@@ -25,15 +26,15 @@ QLineEdit:focus, QTextEdit:focus {
     border: 2px solid #D90429;
 }
 
-/* Scroll areas */
+/* 🧾 Scroll areas */
 QScrollArea {
     border: none;
-    background-color: #f1f1f1;
+    background-color: #8193A8;
     border-radius: 10px;
     padding: 10px;
 }
 
-/* Botones */
+/* 🔘 Botones inferiores */
 QToolButton {
     background-color: #D90429;
     color: white;
@@ -50,21 +51,40 @@ QToolButton:pressed {
     background-color: #7b0118;
 }
 
-/* ComboBox de categoría y tipo de vehículo */
-#combo_categoria, #combo_tipo {
-    min-width: 150px;
-    max-width: 190px;
-    padding: 6px 10px;
-    border-radius: 6px;
+/* 🚗 ComboBox unificados: categoría, tipo, combustible */
+QComboBox {
+    background-color: white;
     border: 2px solid #ccc;
-    background-color: #f9f9f9;
+    border-radius: 6px;
+    padding: 4px 8px;
     font-size: 14px;
     color: #333;
+    min-height: 30px;
 }
 
-#combo_categoria:focus, #combo_tipo:focus {
+QComboBox:focus {
     border: 2px solid #D90429;
-    background-color: #fff;
     color: #000;
+    background-color: #fff;
 }
 
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+QComboBox QAbstractItemView {
+    background-color: white;
+    border: 1px solid #ccc;
+    selection-background-color: #d90429;
+    selection-color: white;
+}
+
+#contenedor_scroll {
+    background-color: #8193A8;
+    border-radius: 10px;
+    padding: 10px;
+}

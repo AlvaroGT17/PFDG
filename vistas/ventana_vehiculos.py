@@ -64,6 +64,7 @@ class VentanaVehiculos(QWidget):
         scroll_cliente = QScrollArea()
         scroll_cliente.setWidgetResizable(True)
         contenedor_cliente = QWidget()
+        contenedor_cliente.setObjectName("contenedor_scroll")
         layout_cliente = QVBoxLayout(contenedor_cliente)
         layout_cliente.setSpacing(10)
 
@@ -100,6 +101,18 @@ class VentanaVehiculos(QWidget):
         self.input_provincia = QLineEdit()
         self.input_provincia.setPlaceholderText("Provincia")
 
+        # Hacer los campos del cliente solo lectura (no editables)
+        self.input_nombre.setReadOnly(True)
+        self.input_apellido1.setReadOnly(True)
+        self.input_apellido2.setReadOnly(True)
+        self.input_dni.setReadOnly(True)
+        self.input_telefono.setReadOnly(True)
+        self.input_email.setReadOnly(True)
+        self.input_direccion.setReadOnly(True)
+        self.input_cp.setReadOnly(True)
+        self.input_localidad.setReadOnly(True)
+        self.input_provincia.setReadOnly(True)
+
         layout_cliente.addWidget(self.input_nombre)
         layout_cliente.addWidget(self.input_apellido1)
         layout_cliente.addWidget(self.input_apellido2)
@@ -115,6 +128,7 @@ class VentanaVehiculos(QWidget):
         scroll_vehiculo = QScrollArea()
         scroll_vehiculo.setWidgetResizable(True)
         contenedor_vehiculo = QWidget()
+        contenedor_vehiculo.setObjectName("contenedor_scroll")
         layout_vehiculo = QVBoxLayout(contenedor_vehiculo)
         layout_vehiculo.setSpacing(10)
 
@@ -126,9 +140,26 @@ class VentanaVehiculos(QWidget):
         self.input_modelo.setPlaceholderText("Modelo")
         self.input_color = QLineEdit()
         self.input_color.setPlaceholderText("Color")
+
+        # Año y Combustible en la misma línea
+        layout_anyo_combustible = QHBoxLayout()
+        layout_anyo_combustible.setSpacing(10)
+
         self.input_anyo = QLineEdit()
         self.input_anyo.setPlaceholderText("Año")
+        self.input_anyo.setFixedWidth(100)
 
+        self.combo_combustible = QComboBox()
+        self.combo_combustible.setObjectName("combo_combustible")
+        self.combo_combustible.setMinimumWidth(200)
+
+        layout_anyo_combustible.addWidget(self.input_anyo)
+        layout_anyo_combustible.addWidget(self.combo_combustible)
+
+        self.input_numero_bastidor = QLineEdit()
+        self.input_numero_bastidor.setPlaceholderText("Número de bastidor")
+
+        # Categoría y Tipo
         layout_categoria_tipo = QHBoxLayout()
         layout_categoria_tipo.setSpacing(10)
 
@@ -147,7 +178,8 @@ class VentanaVehiculos(QWidget):
         layout_vehiculo.addWidget(self.input_marca)
         layout_vehiculo.addWidget(self.input_modelo)
         layout_vehiculo.addWidget(self.input_color)
-        layout_vehiculo.addWidget(self.input_anyo)
+        layout_vehiculo.addLayout(layout_anyo_combustible)
+        layout_vehiculo.addWidget(self.input_numero_bastidor)
         layout_vehiculo.addLayout(layout_categoria_tipo)
 
         self.input_observaciones = QTextEdit()

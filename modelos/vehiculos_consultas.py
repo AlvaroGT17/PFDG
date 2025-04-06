@@ -9,9 +9,11 @@ def buscar_vehiculo_por_matricula(matricula):
         cursor.execute("""
             SELECT v.id, v.matricula, v.marca, v.modelo, v.color, v.anyo,
                    v.tipo_vehiculo, v.cliente_id, v.observaciones,
-                   t.nombre AS tipo_nombre, t.categoria
+                   t.nombre AS tipo_nombre, t.categoria,
+                   v.numero_bastidor, c.nombre AS combustible_nombre, v.combustible_id
             FROM vehiculos v
             JOIN tipos_vehiculo t ON v.tipo_vehiculo = t.id
+            LEFT JOIN combustibles c ON v.combustible_id = c.id
             WHERE v.matricula = %s
         """, (matricula,))
         fila = cursor.fetchone()
@@ -30,12 +32,44 @@ def buscar_vehiculo_por_matricula(matricula):
                 "cliente_id": fila[7],
                 "observaciones": fila[8],
                 "tipo_nombre": fila[9],
-                "categoria": fila[10]
+                "categoria": fila[10],
+                "numero_bastidor": fila[11],
+                "combustible": fila[12],
+                "combustible_id": fila[13]
             }
         return None
     except Exception as e:
         print(f"Error al buscar vehículo: {e}")
         return None
+
+
+def obtener_combustibles():
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute("SELECT id, nombre FROM combustibles ORDER BY nombre")
+        resultado = [{"id": fila[0], "nombre": fila[1]}
+                     for fila in cursor.fetchall()]
+        cursor.close()
+        conexion.close()
+        return resultado
+    except Exception as e:
+        print(f"Error al obtener combustibles: {e}")
+        return []
+
+
+def obtener_matriculas_existentes():
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute("SELECT matricula FROM vehiculos ORDER BY matricula")
+        matriculas = [fila[0] for fila in cursor.fetchall()]
+        cursor.close()
+        conexion.close()
+        return matriculas
+    except Exception as e:
+        print(f"Error al obtener matrículas existentes: {e}")
+        return []
 
 
 def matricula_ya_existe(matricula, excluir_id=None):
@@ -61,19 +95,23 @@ def matricula_ya_existe(matricula, excluir_id=None):
         return False
 
 
-def crear_vehiculo(matricula, marca, modelo, color, tipo_vehiculo, cliente_id, observaciones=None):
+def crear_vehiculo(matricula, marca, modelo, color, tipo_vehiculo, cliente_id,
+                   numero_bastidor, combustible_id, anyo, observaciones=None):
     try:
         if matricula_ya_existe(matricula):
-            return False  # Ya existe
+            return False
 
         conexion = obtener_conexion()
         cursor = conexion.cursor()
         cursor.execute("""
             INSERT INTO vehiculos (
-                matricula, marca, modelo, color, tipo_vehiculo, cliente_id, observaciones, created_at, updated_at
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                matricula, marca, modelo, color, tipo_vehiculo,
+                cliente_id, numero_bastidor, combustible_id, anyo,
+                observaciones, created_at, updated_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
-            matricula, marca, modelo, color, tipo_vehiculo, cliente_id,
+            matricula, marca, modelo, color, tipo_vehiculo,
+            cliente_id, numero_bastidor, combustible_id, anyo,
             observaciones, datetime.now(), datetime.now()
         ))
         conexion.commit()
@@ -85,10 +123,11 @@ def crear_vehiculo(matricula, marca, modelo, color, tipo_vehiculo, cliente_id, o
         return False
 
 
-def modificar_vehiculo(vehiculo_id, matricula, marca, modelo, color, tipo_vehiculo, cliente_id, observaciones=None):
+def modificar_vehiculo(vehiculo_id, matricula, marca, modelo, color, tipo_vehiculo,
+                       cliente_id, numero_bastidor, combustible_id, anyo, observaciones=None):
     try:
         if matricula_ya_existe(matricula, excluir_id=vehiculo_id):
-            return False  # Ya existe otra igual
+            return False
 
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -100,11 +139,15 @@ def modificar_vehiculo(vehiculo_id, matricula, marca, modelo, color, tipo_vehicu
                 color = %s,
                 tipo_vehiculo = %s,
                 cliente_id = %s,
+                numero_bastidor = %s,
+                combustible_id = %s,
+                anyo = %s,
                 observaciones = %s,
                 updated_at = %s
             WHERE id = %s
         """, (
-            matricula, marca, modelo, color, tipo_vehiculo, cliente_id,
+            matricula, marca, modelo, color, tipo_vehiculo,
+            cliente_id, numero_bastidor, combustible_id, anyo,
             observaciones, datetime.now(), vehiculo_id
         ))
         conexion.commit()
@@ -183,18 +226,4 @@ def obtener_categorias():
         return categorias
     except Exception as e:
         print(f"Error al obtener categorías: {e}")
-        return []
-
-
-def obtener_matriculas_existentes():
-    try:
-        conexion = obtener_conexion()
-        cursor = conexion.cursor()
-        cursor.execute("SELECT matricula FROM vehiculos ORDER BY matricula")
-        matriculas = [fila[0] for fila in cursor.fetchall()]
-        cursor.close()
-        conexion.close()
-        return matriculas
-    except Exception as e:
-        print(f"Error al obtener matrículas existentes: {e}")
         return []

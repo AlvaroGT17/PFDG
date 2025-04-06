@@ -9,6 +9,7 @@ from modelos.vehiculos_consultas import (
     obtener_categorias,
     obtener_tipos_por_categoria,
     obtener_matriculas_existentes,
+    obtener_combustibles,
 )
 from modelos.clientes_consultas import obtener_cliente_por_id, obtener_clientes
 from controladores.crear_cliente_rapido_controlador import CrearClienteRapidoControlador
@@ -70,6 +71,13 @@ class VehiculosControlador(QObject):
 
         categorias = obtener_categorias()
         self.ventana.combo_categoria.addItems(categorias)
+
+        # 🛢️ Cargar combustibles
+        self.lista_combustibles = obtener_combustibles()
+        self.ventana.combo_combustible.addItem("Selecciona combustible", -1)
+        for combustible in self.lista_combustibles:
+            self.ventana.combo_combustible.addItem(
+                combustible["nombre"], combustible["id"])
 
         self.ventana.show()
 
@@ -197,6 +205,17 @@ class VehiculosControlador(QObject):
         self.ventana.input_observaciones.setPlainText(
             datos["observaciones"] or "")
 
+        self.ventana.input_numero_bastidor.setText(
+            datos["numero_bastidor"] or "")
+
+        # Seleccionar combustible
+        index_combustible = self.ventana.combo_combustible.findData(
+            datos["combustible_id"])
+        if index_combustible != -1:
+            self.ventana.combo_combustible.setCurrentIndex(index_combustible)
+        else:
+            self.ventana.combo_combustible.setCurrentIndex(0)
+
         # 🟥 Seleccionar categoría
         indice_categoria = self.ventana.combo_categoria.findText(
             datos["categoria"], Qt.MatchFixedString
@@ -223,13 +242,20 @@ class VehiculosControlador(QObject):
 
         exito = crear_vehiculo(
             self.matricula, self.marca, self.modelo, self.color,
-            self.anio, self.tipo, self.observaciones, self.cliente_id_actual
+            self.tipo, self.cliente_id_actual,
+            self.numero_bastidor, self.combustible_id, self.anio,
+            self.observaciones
         )
+
         if exito:
             self.mostrar_info("Vehículo registrado correctamente.")
             self.limpiar_campos()
         else:
             self.mostrar_error("No se pudo registrar el vehículo.")
+
+        self.lista_matriculas = obtener_matriculas_existentes()
+        self.ventana.input_buscar_matricula.setCompleter(
+            QCompleter(self.lista_matriculas))
 
     def modificar_vehiculo(self):
         if not self.vehiculo_id_actual:
@@ -242,13 +268,20 @@ class VehiculosControlador(QObject):
         exito = modificar_vehiculo(
             self.vehiculo_id_actual,
             self.matricula, self.marca, self.modelo, self.color,
-            self.anio, self.tipo, self.observaciones, self.cliente_id_actual
+            self.tipo, self.cliente_id_actual,
+            self.numero_bastidor, self.combustible_id, self.anio,
+            self.observaciones
         )
+
         if exito:
             self.mostrar_info("Vehículo modificado correctamente.")
             self.limpiar_campos()
         else:
             self.mostrar_error("No se pudo modificar el vehículo.")
+
+        self.lista_matriculas = obtener_matriculas_existentes()
+        self.ventana.input_buscar_matricula.setCompleter(
+            QCompleter(self.lista_matriculas))
 
     def eliminar_vehiculo(self):
         if not self.vehiculo_id_actual:
@@ -275,7 +308,9 @@ class VehiculosControlador(QObject):
         self.modelo = self.ventana.input_modelo.text().strip()
         self.color = self.ventana.input_color.text().strip()
         self.anio = self.ventana.input_anyo.text().strip()
-        self.tipo = self.ventana.combo_tipo.currentIndex() + 1
+        self.tipo = self.ventana.combo_tipo.currentIndex()
+        self.numero_bastidor = self.ventana.input_numero_bastidor.text().strip().upper()
+        self.combustible_id = self.ventana.combo_combustible.currentData()
         self.observaciones = self.ventana.input_observaciones.toPlainText().strip()
 
         if not nombre_cliente or nombre_cliente not in self.clientes_dict_nombre:
@@ -286,6 +321,18 @@ class VehiculosControlador(QObject):
 
         if not self.matricula or not self.marca or not self.modelo:
             self.mostrar_error("Matrícula, marca y modelo son obligatorios.")
+            return False
+
+        if not self.numero_bastidor:
+            self.mostrar_error("El número de bastidor es obligatorio.")
+            return False
+
+        if self.combustible_id == -1:
+            self.mostrar_error("Debes seleccionar un tipo de combustible.")
+            return False
+
+        if self.tipo <= 0:
+            self.mostrar_error("Debes seleccionar un tipo de vehículo.")
             return False
 
         return True
@@ -317,6 +364,8 @@ class VehiculosControlador(QObject):
         self.ventana.input_observaciones.clear()
 
         self.ventana.boton_modificar.setEnabled(False)
+        self.ventana.input_numero_bastidor.clear()
+        self.ventana.combo_combustible.setCurrentIndex(0)
         self.ventana.boton_eliminar.setEnabled(False)
 
     def volver(self):
