@@ -117,3 +117,21 @@ QGroupBox QToolButton:hover {
 QGroupBox QToolButton:checked {
     background-color: #444444;
 }
+
+/* Alineación de etiquetas y separación reducida */
+QGridLayout QLabel {
+    padding-right: 4px;
+    min-width: 120px;
+}
+
+/* Ajustes extra para QLabel dentro de QGridLayout de secciones */
+QGroupBox QLabel {
+    margin-bottom: 2px;
+    padding-bottom: 2px;
+    padding-right: 6px;
+}
+
+/* Input más pequeño para fechas y campos numéricos */
+QDateEdit, QLineEdit[maxLength="4"] {
+    max-width: 100px;
+}
