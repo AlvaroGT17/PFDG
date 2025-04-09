@@ -174,7 +174,9 @@ class VentanaRecepcionamiento(QDialog):
         layout = QGridLayout()
         grupo['contenido'].setLayout(layout)
 
-        self.input_matricula = QLineEdit()
+        self.input_matricula = QComboBox()
+        self.input_matricula.setEditable(True)
+        self.input_matricula.setPlaceholderText("Seleccione una matrícula")
         self.input_marca = QLineEdit()
         self.input_modelo = QLineEdit()
         self.input_color = QLineEdit()
