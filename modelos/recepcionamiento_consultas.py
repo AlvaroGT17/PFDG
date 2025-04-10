@@ -146,3 +146,31 @@ def obtener_siguiente_numero_recepcionamiento():
     except Exception as e:
         print(f"Error al obtener el siguiente número de recepcionamiento: {e}")
         return 1
+
+
+def obtener_motivos():
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute("SELECT id, nombre FROM tipos_intervencion ORDER BY id")
+        resultados = cursor.fetchall()
+        cursor.close()
+        conexion.close()
+        return [{"id": fila[0], "nombre": fila[1]} for fila in resultados]
+    except Exception as e:
+        print(f"Error al obtener motivos: {e}")
+        return []
+
+
+def obtener_urgencias():
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute("SELECT id, descripcion FROM urgencias ORDER BY id")
+        resultados = cursor.fetchall()
+        cursor.close()
+        conexion.close()
+        return [{"id": fila[0], "descripcion": fila[1]} for fila in resultados]
+    except Exception as e:
+        print(f"Error al obtener urgencias: {e}")
+        return []

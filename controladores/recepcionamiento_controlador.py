@@ -42,8 +42,13 @@ class RecepcionamientoControlador:
                 return
             datos["Correo destino"] = correo
 
-        firma = capturar_firma()  # Por ahora devuelve None
-        ruta_pdf = generar_documento_pdf(datos, firma)
+        # Capturar firma como imagen desde el widget
+        firma_pixmap = self.vista.zona_firma.obtener_firma()
+        ruta_firma = "firma_temporal.png"
+        firma_pixmap.save(ruta_firma, "PNG")
+
+        # Generar PDF con la firma capturada
+        ruta_pdf = generar_documento_pdf(datos, ruta_firma)
 
         QMessageBox.information(
             self.vista, "Recepcionamiento generado", f"Documento generado:\n{ruta_pdf}")

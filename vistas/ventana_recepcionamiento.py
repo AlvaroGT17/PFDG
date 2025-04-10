@@ -1,10 +1,12 @@
 from PySide6.QtWidgets import (
     QDialog, QLabel, QLineEdit, QTextEdit, QComboBox, QCheckBox,
-    QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox, QDateEdit, QButtonGroup,
-    QWidget, QStackedLayout, QScrollArea, QToolButton, QSizePolicy, QMessageBox, QGridLayout, QScrollArea, QPushButton, QRadioButton, QFileDialog
+    QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox, QDateEdit,
+    QWidget, QScrollArea, QToolButton, QSizePolicy, QMessageBox, QGridLayout, QScrollArea, QPushButton, QFileDialog
 )
-from PySide6.QtCore import Qt, QSize, QDate
+from PySide6.QtCore import Qt, QSize, QDate, QEvent
 from PySide6.QtGui import QIcon
+from utilidades.capturador_firma import CapturadorFirma
+from modelos.recepcionamiento_consultas import obtener_motivos, obtener_urgencias
 from utilidades.rutas import obtener_ruta_absoluta
 
 
@@ -53,6 +55,12 @@ class VentanaRecepcionamiento(QDialog):
         self.setFixedSize(900, 720)
         self.setWindowFlag(Qt.WindowCloseButtonHint, False)
         self.setObjectName("ventana_recepcionamiento")
+        self.mensaje_firma = QLabel(
+            "✍️ Firma activada – pulse ENTER para finalizar")
+        self.mensaje_firma.setStyleSheet("color: red; font-weight: bold;")
+        self.mensaje_firma.setVisible(False)
+        self.installEventFilter(self)
+        self.modo_firma_activo = False
 
         ruta_css = obtener_ruta_absoluta("css/recepcionamiento.css")
         with open(ruta_css, "r", encoding="utf-8") as f:
@@ -82,10 +90,12 @@ class VentanaRecepcionamiento(QDialog):
         layout_scroll.addWidget(self.crear_seccion_datos_vehiculo())
         layout_scroll.addWidget(self.crear_seccion_motivo_recepcionamiento())
         layout_scroll.addWidget(self.crear_seccion_entrega_documento())
+        self.cargar_motivos_y_urgencias()
 
         layout_botones = QHBoxLayout()
 
         self.boton_confirmar = QToolButton()
+        self.boton_confirmar.setObjectName("boton_recepcionamiento")
         self.boton_confirmar.setText("Confirmar")
         self.boton_confirmar.setIcon(
             QIcon(obtener_ruta_absoluta("img/confirmar.png")))
@@ -93,6 +103,7 @@ class VentanaRecepcionamiento(QDialog):
         self.boton_confirmar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         self.boton_limpiar = QToolButton()
+        self.boton_limpiar.setObjectName("boton_recepcionamiento")
         self.boton_limpiar.setText("Borrar todo")
         self.boton_limpiar.setIcon(
             QIcon(obtener_ruta_absoluta("img/escoba.png")))
@@ -101,6 +112,7 @@ class VentanaRecepcionamiento(QDialog):
         self.boton_limpiar.clicked.connect(self.confirmar_borrado)
 
         self.boton_cancelar = QToolButton()
+        self.boton_cancelar.setObjectName("boton_recepcionamiento")
         self.boton_cancelar.setText("Cancelar")
         self.boton_cancelar.setIcon(
             QIcon(obtener_ruta_absoluta("img/volver.png")))
@@ -338,11 +350,11 @@ class VentanaRecepcionamiento(QDialog):
         label_correo = QLabel("Correo destino:")
         self.input_correo = QLineEdit()
         self.input_correo.setPlaceholderText("Correo electrónico destino")
-        self.input_correo.setEnabled(False)
-        self.checkbox_enviar_correo.stateChanged.connect(
-            lambda estado: self.input_correo.setEnabled(
-                estado == Qt.CheckState.Checked)
-        )
+
+        # Conectar el cambio de estado del checkbox
+        def actualizar_estado_correo(estado):
+            self.input_correo.setEnabled(estado == Qt.Checked)
+
         fila2.addWidget(label_correo)
         fila2.addWidget(self.input_correo)
         fila2.addStretch()
@@ -351,12 +363,47 @@ class VentanaRecepcionamiento(QDialog):
         # Fila 3: Firma
         fila3 = QVBoxLayout()
         label_firma = QLabel("Firma del cliente:")
-        self.zona_firma = QLabel("[ Aquí se capturará la firma ⬇️ ]")
-        self.zona_firma.setStyleSheet(
-            "background-color: white; border: 1px solid #ccc; min-height: 100px; max-width: 400px;")
         fila3.addWidget(label_firma)
-        fila3.addWidget(self.zona_firma)
-        fila1.setAlignment(Qt.AlignLeft)
+
+        fila_firma = QHBoxLayout()
+        self.zona_firma = CapturadorFirma()
+        self.zona_firma.setObjectName("zona_firma")
+
+        # Botón Activar firma
+        self.boton_activar_firma = QToolButton()
+        self.boton_activar_firma.setObjectName("boton_recepcionamiento")
+        self.boton_activar_firma.setText("Activar firma")
+        self.boton_activar_firma.setIcon(
+            QIcon(obtener_ruta_absoluta("img/firma.png")))
+        self.boton_activar_firma.setIconSize(QSize(48, 48))
+        self.boton_activar_firma.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.boton_activar_firma.setFixedSize(110, 110)
+        self.boton_activar_firma.clicked.connect(self.activar_modo_firma)
+
+        # Botón Limpiar firma
+        self.boton_limpiar_firma = QToolButton()
+        self.boton_limpiar_firma.setObjectName("boton_recepcionamiento")
+        self.boton_limpiar_firma.setText("Limpiar firma")
+        self.boton_limpiar_firma.setIcon(
+            QIcon(obtener_ruta_absoluta("img/limpiar_firma.png")))
+        self.boton_limpiar_firma.setIconSize(QSize(48, 48))
+        self.boton_limpiar_firma.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.boton_limpiar_firma.setFixedSize(110, 110)
+        self.boton_limpiar_firma.clicked.connect(self.zona_firma.limpiar)
+
+        # Añadir widgets al layout de firma
+        fila_firma.addWidget(self.zona_firma)
+        fila_firma.addWidget(self.boton_activar_firma)
+        fila_firma.addWidget(self.boton_limpiar_firma)
+        fila3.addLayout(fila_firma)
+
+        # Mensaje visual de firma activada
+        self.mensaje_firma = QLabel(
+            "✍️ Firma activada – pulse ENTER para finalizar")
+        self.mensaje_firma.setStyleSheet("color: red; font-weight: bold;")
+        self.mensaje_firma.setVisible(False)
+        fila3.addWidget(self.mensaje_firma)
+
         layout.addLayout(fila3)
 
         # Fila 4: Ruta de guardado
@@ -375,8 +422,90 @@ class VentanaRecepcionamiento(QDialog):
 
         return grupo['grupo']
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
+            self.mensaje_firma.setVisible(False)
+
     def seleccionar_ruta_guardado(self):
         ruta = QFileDialog.getExistingDirectory(
             self, "Seleccionar carpeta de guardado")
         if ruta:
             self.input_ruta_guardado.setText(ruta)
+
+    def activar_modo_firma(self):
+        self.modo_firma_activo = True
+        self.mensaje_firma.setVisible(True)
+        self.zona_firma.activar_firma(True)
+        self.zona_firma.setFocus()
+        print("Modo firma activado")
+
+        def liberar_firma():
+            self.boton_limpiar_firma.setEnabled(True)
+            self.zona_firma.unsetCursor()
+            self.zona_firma.removeEventFilter(self)
+
+    def eventFilter(self, source, event):
+        if self.modo_firma_activo and event.type() == QEvent.KeyPress:
+            if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+                self.modo_firma_activo = False
+                self.mensaje_firma.setVisible(False)
+                self.zona_firma.activar_firma(False)
+                return True
+        return super().eventFilter(source, event)
+
+    def cargar_motivos_y_urgencias(self):
+        self.combo_motivo.clear()
+        self.combo_urgencia.clear()
+        self.motivos_dict = {}
+        self.urgencias_dict = {}
+
+        for item in obtener_motivos():
+            self.combo_motivo.addItem(item["nombre"])
+            self.motivos_dict[item["nombre"]] = item["id"]
+
+        for item in obtener_urgencias():
+            self.combo_urgencia.addItem(item["descripcion"])
+            self.urgencias_dict[item["descripcion"]] = item["id"]
+
+    def borrar_todo(self):
+        # Limpiar todos los QLineEdit y QTextEdit
+        campos_texto = [
+            self.input_nombre, self.input_dni, self.input_telefono, self.input_email, self.input_direccion,
+            self.input_marca, self.input_modelo, self.input_color, self.input_anio,
+            self.input_kilometros, self.input_vin, self.input_compania,
+            self.input_ultima_revision, self.input_max_autorizado,
+            self.input_valor_estimado, self.input_estado_exterior,
+            self.input_estado_interior, self.input_observaciones,
+            self.input_numero_recepcion, self.input_correo, self.input_ruta_guardado
+        ]
+
+        for campo in campos_texto:
+            if isinstance(campo, (QLineEdit, QTextEdit)):
+                campo.clear()
+
+        # ComboBoxes
+        self.input_matricula.setCurrentIndex(-1)
+        self.combo_combustible.setCurrentIndex(-1)
+        self.combo_tipo.setCurrentIndex(-1)
+        self.combo_categoria.setCurrentIndex(-1)
+        self.combo_motivo.setCurrentIndex(-1)
+        self.combo_urgencia.setCurrentIndex(0)
+
+        # Checkboxes
+        self.check_arranca.setChecked(False)
+        self.check_grua.setChecked(False)
+        self.check_itv.setChecked(False)
+        self.check_presupuesto_escrito.setChecked(False)
+        self.check_seguro.setChecked(False)
+        self.checkbox_imprimir.setChecked(False)
+        self.checkbox_enviar_correo.setChecked(False)
+        self.checkbox_ruta_predeterminada.setChecked(False)
+
+        # Fecha recepción al día actual
+        # self.fecha_recepcion.setDate(QDate.currentDate())
+
+        # Limpiar firma y ocultar mensaje
+        self.zona_firma.limpiar()
+        self.zona_firma.activar_firma(False)
+        self.mensaje_firma.setVisible(False)
+        self.modo_firma_activo = False

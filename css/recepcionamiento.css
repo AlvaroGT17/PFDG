@@ -135,3 +135,62 @@ QGroupBox QLabel {
 QDateEdit, QLineEdit[maxLength="4"] {
     max-width: 100px;
 }
+
+#zona_firma {
+    background-color: white;
+    border: 1px solid #ccc;
+    min-height: 100px;
+    max-width: 400px;
+}
+
+QToolButton#boton_recepcionamiento {
+    background-color: #d90429;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 6px;
+    border: 2px solid #a0001c;
+    qproperty-toolButtonStyle: ToolButtonTextUnderIcon;
+}
+
+QToolButton#boton_recepcionamiento:hover {
+    background-color: #c40324;
+    border: 2px solid #880016;
+}
+
+QToolButton#boton_recepcionamiento:pressed {
+    background-color: #990016;
+    border: 2px inset #600010;
+    padding-top: 2px;
+    padding-bottom: -2px;
+}
+
+
+QMessageBox {
+    background-color: #2E2E2E;
+    color: white;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+QMessageBox QLabel {
+    color: white;
+}
+
+QMessageBox QPushButton {
+    background-color: #d90429;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    min-width: 70px;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #b0001c;
+}
+
+QMessageBox QPushButton:default {
+    border: 2px solid #880016;
+}
