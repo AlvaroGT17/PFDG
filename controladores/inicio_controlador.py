@@ -1,4 +1,4 @@
-from PySide6.QtCore import QObject, Signal
+from PySide6.QtCore import QObject, Signal, QTimer
 from vistas.ventana_inicio import VentanaInicio
 from controladores.fichar_controlador import FicharControlador
 from controladores.historial_controlador import HistorialControlador
@@ -7,6 +7,19 @@ from controladores.clientes_controlador import ClientesControlador
 from controladores.vehiculos_controlador import VehiculosControlador
 from controladores.recepcionamiento_controlador import RecepcionamientoControlador
 from vistas.ventana_recepcionamiento import VentanaRecepcionamiento
+from vistas.ventana_carga_gif import VentanaCargaGif
+from utilidades.abridor_con_carga import AbridorConCarga
+from utilidades.hilos.hilo_carga_recepcionamiento import HiloCargaRecepcionamiento
+from utilidades.abridor_con_carga import AbridorConCarga
+from vistas.ventana_recepcionamiento import VentanaRecepcionamiento
+from controladores.recepcionamiento_controlador import RecepcionamientoControlador
+from modelos.recepcionamiento_consultas import (
+    obtener_motivos,
+    obtener_urgencias,
+    obtener_categorias_vehiculo,
+    obtener_tipos_vehiculo,
+    obtener_combustibles
+)
 
 
 class InicioControlador(QObject):
@@ -90,7 +103,25 @@ class InicioControlador(QObject):
         self.vehiculos_controlador = VehiculosControlador(self.ventana)
 
     def abrir_recepcionamiento(self):
+        def cargar_datos():
+            return {
+                "motivos": obtener_motivos(),
+                "urgencias": obtener_urgencias(),
+                "categorias": obtener_categorias_vehiculo(),
+                "tipos": obtener_tipos_vehiculo(),
+                "combustibles": obtener_combustibles()
+            }
+
+        self.abridor_recepcionamiento = AbridorConCarga(
+            ventana_padre=self.ventana,
+            clase_ventana=VentanaRecepcionamiento,
+            clase_controlador=RecepcionamientoControlador,
+            funcion_carga=cargar_datos
+        )
+
+    def mostrar_recepcionamiento(self):
         self.recepcionamiento = VentanaRecepcionamiento()
         self.controlador_recepcionamiento = RecepcionamientoControlador(
             self.recepcionamiento)
+        self.ventana_carga.cerrar()
         self.recepcionamiento.exec()

@@ -410,6 +410,7 @@ class VentanaRecepcionamiento(QDialog):
         fila4 = QHBoxLayout()
         self.checkbox_ruta_predeterminada = QCheckBox(
             "Guardar en la ruta por defecto")
+        self.checkbox_ruta_predeterminada.setChecked(True)
         layout.addWidget(self.checkbox_ruta_predeterminada)
 
         fila5 = QHBoxLayout()

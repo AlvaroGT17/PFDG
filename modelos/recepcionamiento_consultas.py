@@ -174,3 +174,60 @@ def obtener_urgencias():
     except Exception as e:
         print(f"Error al obtener urgencias: {e}")
         return []
+
+
+def obtener_datos_completos_recepcionamiento():
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+
+        cursor.execute("""
+            SELECT 'motivo' AS tipo, id, nombre FROM tipos_intervencion
+            UNION ALL
+            SELECT 'urgencia', id, descripcion FROM urgencias
+            UNION ALL
+            SELECT 'categoria', NULL AS id, categoria FROM (
+                SELECT DISTINCT categoria FROM tipos_vehiculo
+            ) AS sub
+            UNION ALL
+            SELECT 'tipo', NULL, nombre FROM tipos_vehiculo
+            UNION ALL
+            SELECT 'combustible', NULL, nombre FROM combustibles
+        """)
+
+        resultados = cursor.fetchall()
+
+        datos = {
+            "motivos": [],
+            "urgencias": [],
+            "categorias": [],
+            "tipos": [],
+            "combustibles": []
+        }
+
+        for tipo, id_valor, nombre in resultados:
+            if tipo == "motivo":
+                datos["motivos"].append({"id": id_valor, "nombre": nombre})
+            elif tipo == "urgencia":
+                datos["urgencias"].append(
+                    {"id": id_valor, "descripcion": nombre})
+            elif tipo == "categoria":
+                datos["categorias"].append(nombre)
+            elif tipo == "tipo":
+                # Puedes añadir más si quieres categoría
+                datos["tipos"].append({"nombre": nombre})
+            elif tipo == "combustible":
+                datos["combustibles"].append(nombre)
+
+        cursor.close()
+        conexion.close()
+        return datos
+    except Exception as e:
+        print(f"Error al obtener datos completos de recepcionamiento: {e}")
+        return {
+            "motivos": [],
+            "urgencias": [],
+            "categorias": [],
+            "tipos": [],
+            "combustibles": []
+        }

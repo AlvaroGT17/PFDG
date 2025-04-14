@@ -1,0 +1,103 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.contenedor {
+    max-width: 900px;
+    margin: 30px auto;
+    background-color: #fff;
+    padding: 25px 30px;
+    border: 2px solid #e30613;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+}
+
+.cabecera-superior {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.titulo-logo {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.rey {
+    color: #738496;
+}
+
+.boxes {
+    color: #e30613;
+}
+
+.encabezado {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.contenido-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.info-taller {
+    flex: 1;
+}
+
+.info-taller p {
+    margin: 2px 0;
+    font-size: 14px;
+    line-height: 1.3;
+}
+
+.logo-derecha {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 130px;
+}
+
+.logo-derecha img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 5px;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 30px;
+    color: #333;
+}
+
+.seccion {
+    margin-top: 25px;
+}
+
+.seccion h3 {
+    color: #e30613;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+}
+
+.seccion p {
+    margin: 6px 0;
+}
+
+.firma {
+    margin-top: 30px;
+}
+
+.firma-img {
+    margin-top: 10px;
+    max-width: 300px;
+    height: auto;
+    border: 1px solid #ccc;
+}

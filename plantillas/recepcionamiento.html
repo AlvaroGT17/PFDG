@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Recepcionamiento de Vehículo</title>
+    <link rel="stylesheet" href="recepcionamiento.css">
+</head>
+
+<body>
+    <div class="contenedor">
+        <header class="encabezado">
+            <div class="cabecera-superior">
+                <h1 class="titulo-logo">
+                    <span class="rey">Rey</span><span class="boxes">Boxes</span>
+                </h1>
+            </div>
+            <div class="contenido-cabecera">
+                <div class="info-taller">
+                    <p>Calle Fco. Medina y Mendoza parcela 1 nave 65</p>
+                    <p>Cabanillas del Campo, Spain</p>
+                    <p>📞 656 46 18 37</p>
+                    <p>📱 +34 656 46 18 37</p>
+                    <p>✉️ taller@reyboxes.es</p>
+                    <p>🌐 <a href="https://reycars.com">reycars.com</a></p>
+                </div>
+                <div class="logo-derecha">
+                    <img src="img/logo.jpg" alt="Logo ReyBoxes">
+                </div>
+            </div>
+        </header>
+
+
+        <h2 class="titulo-recepcionamiento">Recepcionamiento de Vehículo</h2>
+
+        <div class="seccion">
+            <h3>Datos del Cliente</h3>
+            <p><strong>Nombre:</strong> {{ datos.Nombre }}</p>
+            <p><strong>DNI:</strong> {{ datos.DNI }}</p>
+            <p><strong>Teléfono:</strong> {{ datos.Teléfono }}</p>
+            <p><strong>Email:</strong> {{ datos.Email }}</p>
+            <p><strong>Dirección:</strong> {{ datos.Dirección }}</p>
+        </div>
+
+        <div class="seccion">
+            <h3>Datos del Vehículo</h3>
+            <p><strong>Matrícula:</strong> {{ datos.Matrícula }}</p>
+            <p><strong>Marca:</strong> {{ datos.Marca }}</p>
+            <p><strong>Modelo:</strong> {{ datos.Modelo }}</p>
+            <p><strong>Color:</strong> {{ datos.Color }}</p>
+            <p><strong>Año:</strong> {{ datos.Año }}</p>
+            <p><strong>Kilómetros:</strong> {{ datos.Kilómetros }}</p>
+            <p><strong>Combustible:</strong> {{ datos.Combustible }}</p>
+            <p><strong>VIN:</strong> {{ datos.VIN }}</p>
+            <p><strong>Tipo de vehículo:</strong> {{ datos['Tipo de vehículo'] }}</p>
+        </div>
+
+        <div class="seccion">
+            <h3>Motivo de Recepción</h3>
+            <p><strong>Motivo:</strong> {{ datos.Motivo }}</p>
+        </div>
+
+        <div class="firma">
+            <p><strong>Firma del Cliente:</strong></p>
+            <img src="{{ firma_path }}" alt="Firma del Cliente" class="firma-img">
+        </div>
+    </div>
+</body>
+
+</html>

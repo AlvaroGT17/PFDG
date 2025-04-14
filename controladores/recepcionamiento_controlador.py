@@ -1,26 +1,26 @@
 from PySide6.QtWidgets import QMessageBox, QCompleter
 from PySide6.QtCore import Qt
-from utilidades.recepcionamiento_utilidades import validar_correo, generar_documento_pdf, capturar_firma
+from utilidades.recepcionamiento_utilidades import validar_correo, generar_documento_pdf
 from modelos.clientes_consultas import obtener_clientes
+from utilidades.rutas_guardado import obtener_ruta_predeterminada_recepcionamientos
 from modelos.recepcionamiento_consultas import (
     obtener_matriculas_existentes,
     obtener_siguiente_numero_recepcionamiento,
     obtener_datos_vehiculo_por_matricula,
     obtener_matriculas_por_cliente,
-    obtener_categorias_vehiculo,
-    obtener_tipos_vehiculo,
-    obtener_combustibles
 )
 
 
 class RecepcionamientoControlador:
-    def __init__(self, vista):
+    def __init__(self, vista, datos):
         self.vista = vista
+        self.datos = datos
         self._conectar_eventos()
+        self._cargar_datos_completos()
         self._configurar_autocompletado_clientes()
-        self._cargar_combobox_vehiculos()
         self._configurar_autocompletado_matricula()
         self._asignar_numero_recepcionamiento()
+        self._activar_ruta_predeterminada()
 
     def _conectar_eventos(self):
         self.vista.boton_confirmar.clicked.connect(
@@ -42,29 +42,56 @@ class RecepcionamientoControlador:
                 return
             datos["Correo destino"] = correo
 
-        # Capturar firma como imagen desde el widget
         firma_pixmap = self.vista.zona_firma.obtener_firma()
         ruta_firma = "firma_temporal.png"
         firma_pixmap.save(ruta_firma, "PNG")
 
-        # Generar PDF con la firma capturada
-        ruta_pdf = generar_documento_pdf(datos, ruta_firma)
+        ruta_guardado = self.vista.input_ruta_guardado.text().strip()
+        if not ruta_guardado:
+            QMessageBox.warning(self.vista, "Ruta no válida",
+                                "Debe especificar una ruta de guardado válida.")
+            return
+
+        ruta_pdf = generar_documento_pdf(datos, ruta_firma, ruta_guardado)
 
         QMessageBox.information(
             self.vista, "Recepcionamiento generado", f"Documento generado:\n{ruta_pdf}")
-
         self.vista.close()
 
-    def _recopilar_datos(self):
-        motivo = self.vista.combo_motivo.currentText()
+    def _cargar_datos_completos(self):
+        self.tipos_vehiculos = self.datos.get("tipos", [])
 
+        self.vista.combo_categoria.clear()
+        self.vista.combo_categoria.addItem("Seleccione la categoría")
+        self.vista.combo_categoria.addItems(self.datos.get("categorias", []))
+
+        self.vista.combo_tipo.clear()
+        self.vista.combo_tipo.addItem("Seleccione el tipo")
+
+        self.vista.combo_combustible.clear()
+        self.vista.combo_combustible.addItem("Seleccione el combustible")
+        self.vista.combo_combustible.addItems(
+            self.datos.get("combustibles", []))
+
+        self.vista.combo_motivo.clear()
+        self.motivos_dict = {}
+        for item in self.datos.get("motivos", []):
+            self.vista.combo_motivo.addItem(item["nombre"])
+            self.motivos_dict[item["nombre"]] = item["id"]
+
+        self.vista.combo_urgencia.clear()
+        self.urgencias_dict = {}
+        for item in self.datos.get("urgencias", []):
+            self.vista.combo_urgencia.addItem(item["descripcion"])
+            self.urgencias_dict[item["descripcion"]] = item["id"]
+
+    def _recopilar_datos(self):
         return {
             "Nombre": self.vista.input_nombre.text(),
             "DNI": self.vista.input_dni.text(),
             "Teléfono": self.vista.input_telefono.text(),
             "Email": self.vista.input_email.text(),
             "Dirección": self.vista.input_direccion.text(),
-
             "Matrícula": self.vista.input_matricula.text(),
             "Marca": self.vista.input_marca.text(),
             "Modelo": self.vista.input_modelo.text(),
@@ -74,17 +101,14 @@ class RecepcionamientoControlador:
             "Combustible": self.vista.input_combustible.text(),
             "VIN": self.vista.input_vin.text(),
             "Tipo de vehículo": self.vista.combo_tipo.currentText(),
-
-            "Motivo": motivo,
+            "Motivo": self.vista.combo_motivo.currentText(),
         }
 
     def _configurar_autocompletado_clientes(self):
         self.datos_clientes = obtener_clientes()
 
-        nombres = [
-            f"{c['nombre']} {c['primer_apellido']} {c['segundo_apellido']}".strip()
-            for c in self.datos_clientes
-        ]
+        nombres = [f"{c['nombre']} {c['primer_apellido']} {c['segundo_apellido']}".strip()
+                   for c in self.datos_clientes]
         completer_nombres = QCompleter(nombres)
         completer_nombres.setCaseSensitivity(Qt.CaseInsensitive)
         self.vista.input_nombre.setCompleter(completer_nombres)
@@ -100,8 +124,9 @@ class RecepcionamientoControlador:
 
     def _autocompletar_por_nombre(self):
         texto = self.vista.input_nombre.text().strip().upper()
-        cliente = next((c for c in self.datos_clientes if
-                        f"{c['nombre']} {c['primer_apellido']} {c['segundo_apellido']}".strip().upper() == texto), None)
+        cliente = next((c for c in self.datos_clientes
+                        if f"{c['nombre']} {c['primer_apellido']} {c['segundo_apellido']}".strip().upper() == texto),
+                       None)
         if cliente:
             self._rellenar_campos_cliente(cliente)
 
@@ -141,40 +166,12 @@ class RecepcionamientoControlador:
             self.vista.combo_categoria.setCurrentText(datos["categoria"] or "")
             self.vista.combo_tipo.setCurrentText(datos["tipo"] or "")
 
-    def _cargar_combobox_vehiculos(self):
-        categorias = obtener_categorias_vehiculo()
-        self.tipos_vehiculos = obtener_tipos_vehiculo()
-        combustibles = obtener_combustibles()
-
-        # CATEGORÍAS
-        self.vista.combo_categoria.clear()
-        self.vista.combo_categoria.addItem("Seleccione la categoría")
-        self.vista.combo_categoria.addItems(categorias)
-
-        # TIPOS
-        self.vista.combo_tipo.clear()
-        self.vista.combo_tipo.addItem("Seleccione el tipo")
-
-        # Si hay al menos una categoría, precargar sus tipos correspondientes
-        if categorias:
-            tipos_filtrados = [
-                tipo['nombre'] for tipo in self.tipos_vehiculos if tipo['categoria'] == categorias[0]]
-            self.vista.combo_tipo.addItems(tipos_filtrados)
-
-        # COMBUSTIBLES
-        self.vista.combo_combustible.clear()
-        self.vista.combo_combustible.addItem("Seleccione el combustible")
-        self.vista.combo_combustible.addItems(combustibles)
-
-        self.vista.combo_categoria.currentTextChanged.connect(
-            self._filtrar_tipos_por_categoria)
-
     def _filtrar_tipos_por_categoria(self):
         categoria_seleccionada = self.vista.combo_categoria.currentText()
-        tipos_filtrados = [
-            tipo['nombre'] for tipo in self.tipos_vehiculos if tipo['categoria'] == categoria_seleccionada
-        ]
         self.vista.combo_tipo.clear()
+        self.vista.combo_tipo.addItem("Seleccione el tipo")
+        tipos_filtrados = [tipo['nombre']
+                           for tipo in self.tipos_vehiculos if tipo['categoria'] == categoria_seleccionada]
         self.vista.combo_tipo.addItems(tipos_filtrados)
 
     def _configurar_autocompletado_matricula(self):
@@ -186,12 +183,29 @@ class RecepcionamientoControlador:
     def _actualizar_autocompletado_matriculas(self, dni_cliente):
         self.vista.input_matricula.clear()
         self.vista.input_matricula.addItem("Seleccione una matrícula")
-
         matriculas = obtener_matriculas_por_cliente(dni_cliente)
         self.vista.input_matricula.addItems(matriculas)
 
     def _asignar_numero_recepcionamiento(self):
         numero = obtener_siguiente_numero_recepcionamiento()
-        self.vista.input_numero_recepcion.setText(
-            str(numero).zfill(5))  # Por ejemplo 00001
+        self.vista.input_numero_recepcion.setText(str(numero).zfill(5))
         self.vista.input_numero_recepcion.setReadOnly(True)
+
+    def _activar_ruta_predeterminada(self):
+        if self.vista.checkbox_ruta_predeterminada.isChecked():
+            ruta = obtener_ruta_predeterminada_recepcionamientos()
+            self.vista.input_ruta_guardado.setText(ruta)
+
+        self.vista.checkbox_ruta_predeterminada.toggled.connect(
+            self._manejar_checkbox_ruta)
+
+    def _manejar_checkbox_ruta(self, estado):
+        if estado:
+            ruta = obtener_ruta_predeterminada_recepcionamientos()
+            self.vista.input_ruta_guardado.setText(ruta)
+            self.vista.input_ruta_guardado.setDisabled(True)
+            self.vista.boton_buscar_ruta.setDisabled(True)
+        else:
+            self.vista.input_ruta_guardado.clear()
+            self.vista.input_ruta_guardado.setDisabled(False)
+            self.vista.boton_buscar_ruta.setDisabled(False)
