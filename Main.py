@@ -1,3 +1,4 @@
+import os
 import sys
 from PySide6.QtWidgets import QApplication
 from vistas.ventana_presentacion import VentanaPresentacion
@@ -8,6 +9,7 @@ from controladores.inicio_controlador import InicioControlador
 
 class Aplicacion:
     def __init__(self):
+        os.environ["G_MESSAGES_DEBUG"] = "none"
         self.app = QApplication(sys.argv)
 
         # Ventana de presentación

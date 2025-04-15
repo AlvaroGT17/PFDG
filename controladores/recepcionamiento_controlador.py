@@ -87,21 +87,47 @@ class RecepcionamientoControlador:
 
     def _recopilar_datos(self):
         return {
+            # Datos del cliente
             "Nombre": self.vista.input_nombre.text(),
             "DNI": self.vista.input_dni.text(),
             "Teléfono": self.vista.input_telefono.text(),
             "Email": self.vista.input_email.text(),
             "Dirección": self.vista.input_direccion.text(),
-            "Matrícula": self.vista.input_matricula.text(),
+
+            # Datos del vehículo
+            "Matrícula": self.vista.input_matricula.currentText(),
             "Marca": self.vista.input_marca.text(),
             "Modelo": self.vista.input_modelo.text(),
             "Color": self.vista.input_color.text(),
             "Año": self.vista.input_anio.text(),
             "Kilómetros": self.vista.input_kilometros.text(),
-            "Combustible": self.vista.input_combustible.text(),
+            "Combustible": self.vista.combo_combustible.currentText(),
             "VIN": self.vista.input_vin.text(),
             "Tipo de vehículo": self.vista.combo_tipo.currentText(),
+
+            # Motivo de recepción
             "Motivo": self.vista.combo_motivo.currentText(),
+            "Urgencia": self.vista.combo_urgencia.currentText(),
+            "FechaRecepcion": self.vista.fecha_recepcion.text(),
+
+            "Arranca": "Sí" if self.vista.check_arranca.isChecked() else "No",
+            "Grúa": "Sí" if self.vista.check_grua.isChecked() else "No",
+            "ITV": "Sí" if self.vista.check_itv.isChecked() else "No",
+            "Presupuesto": "Sí" if self.vista.check_presupuesto_escrito.isChecked() else "No",
+
+            "Seguro": "Sí" if self.vista.check_seguro.isChecked() else "No",
+            "SeguroCompania": self.vista.input_compania.text(),
+
+            "UltimaRevision": self.vista.input_ultima_revision.text(),
+            "ReparacionHasta": self.vista.input_max_autorizado.text(),
+            "ValorEstimado": self.vista.input_valor_estimado.text(),
+
+            "EstadoExterior": self.vista.input_estado_exterior.toPlainText(),
+            "EstadoInterior": self.vista.input_estado_interior.toPlainText(),
+            "Observaciones": self.vista.input_observaciones.toPlainText(),
+
+            # Número de recepción para el nombre del archivo
+            "NumeroRecepcion": self.vista.input_numero_recepcion.text(),
         }
 
     def _configurar_autocompletado_clientes(self):

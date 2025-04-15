@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QWidget
-from PySide6.QtGui import QPainter, QPen, QColor, QMouseEvent
+from PySide6.QtGui import QPainter, QPen, QColor, QMouseEvent, QPixmap
 from PySide6.QtCore import Qt, QPoint
 
 
@@ -57,3 +57,12 @@ class CapturadorFirma(QWidget):
         if not self.puntos:
             painter.setPen(QColor(180, 180, 180))
             painter.drawText(self.rect(), Qt.AlignCenter, "Espacio para firma")
+
+    def obtener_firma(self):
+        """Devuelve un QPixmap con la firma actual."""
+        pixmap = QPixmap(self.size())
+        pixmap.fill(Qt.white)
+        painter = QPainter(pixmap)
+        self.render(painter, QPoint(0, 0))
+        painter.end()
+        return pixmap

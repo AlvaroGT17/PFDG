@@ -31,40 +31,99 @@
         </header>
 
 
-        <h2 class="titulo-recepcionamiento">Recepcionamiento de Vehículo</h2>
+        <h2 class="titulo-recepcionamiento">Recepcionamiento de Vehículo </h2>
+        <p class="numero-recepcion">N.º de Recepción: {{ datos.NúmeroRecepcion }}</p>
 
         <div class="seccion">
             <h3>Datos del Cliente</h3>
-            <p><strong>Nombre:</strong> {{ datos.Nombre }}</p>
-            <p><strong>DNI:</strong> {{ datos.DNI }}</p>
-            <p><strong>Teléfono:</strong> {{ datos.Teléfono }}</p>
-            <p><strong>Email:</strong> {{ datos.Email }}</p>
-            <p><strong>Dirección:</strong> {{ datos.Dirección }}</p>
+            <div class="fila-datos">
+                <p><strong>Nombre:</strong> {{ datos.Nombre }}</p>
+                <p><strong>DNI:</strong> {{ datos.DNI }}</p>
+            </div>
+            <div class="fila-datos">
+                <p><strong>Teléfono:</strong> {{ datos.Teléfono }}</p>
+                <p><strong>Email:</strong> {{ datos.Email }}</p>
+            </div>
+            <div class="fila-datos">
+                <p><strong>Dirección:</strong> {{ datos.Dirección }}</p>
+            </div>
         </div>
 
         <div class="seccion">
             <h3>Datos del Vehículo</h3>
-            <p><strong>Matrícula:</strong> {{ datos.Matrícula }}</p>
-            <p><strong>Marca:</strong> {{ datos.Marca }}</p>
-            <p><strong>Modelo:</strong> {{ datos.Modelo }}</p>
-            <p><strong>Color:</strong> {{ datos.Color }}</p>
-            <p><strong>Año:</strong> {{ datos.Año }}</p>
-            <p><strong>Kilómetros:</strong> {{ datos.Kilómetros }}</p>
-            <p><strong>Combustible:</strong> {{ datos.Combustible }}</p>
-            <p><strong>VIN:</strong> {{ datos.VIN }}</p>
-            <p><strong>Tipo de vehículo:</strong> {{ datos['Tipo de vehículo'] }}</p>
+            <div class="fila">
+                <div><strong>Matrícula:</strong> {{ datos.Matrícula }}</div>
+                <div><strong>VIN:</strong> {{ datos.VIN }}</div>
+            </div>
+            <div class="fila">
+                <div><strong>Marca:</strong> {{ datos.Marca }}</div>
+                <div><strong>Modelo:</strong> {{ datos.Modelo }}</div>
+            </div>
+            <div class="fila">
+                <div><strong>Color:</strong> {{ datos.Color }}</div>
+                <div><strong>Año:</strong> {{ datos.Año }}</div>
+            </div>
+            <div class="fila">
+                <div><strong>Combustible:</strong> {{ datos.Combustible }}</div>
+                <div><strong>Kilómetros:</strong> {{ datos.Kilómetros }}</div>
+                <div><strong>Tipo de vehículo:</strong> {{ datos['Tipo de vehículo'] }}</div>
+            </div>
         </div>
 
         <div class="seccion">
             <h3>Motivo de Recepción</h3>
-            <p><strong>Motivo:</strong> {{ datos.Motivo }}</p>
+
+            <div class="fila">
+                <p><strong>Motivo:</strong> {{ datos.Motivo or 'Sin especificar' }}</p>
+                <p><strong>Urgencia:</strong> {{ datos.Urgencia or 'Sin especificar' }}</p>
+                <p><strong>Fecha de Recepción:</strong> {{ datos.FechaRecepcion or 'Sin especificar' }}</p>
+            </div>
+
+            <div class="fila">
+                <p><strong>Arranca:</strong> {{ 'Sí' if datos.Arranca else 'No' }}</p>
+                <p><strong>Viene con grúa:</strong> {{ 'Sí' if datos.Grúa else 'No' }}</p>
+                <p><strong>ITV en vigor:</strong> {{ 'Sí' if datos.ITV else 'No' }}</p>
+                <p><strong>Presupuesto escrito:</strong> {{ 'Sí' if datos.Presupuesto else 'No' }}</p>
+            </div>
+
+            <div class="fila">
+                <p><strong>Tiene seguro:</strong> {{ 'Sí' if datos.Seguro else 'No' }}</p>
+                <p><strong>Compañía de Seguro:</strong> {{ datos.SeguroCompania or 'Sin especificar' }}</p>
+            </div>
+
+            <div class="fila">
+                <p><strong>Última revisión:</strong> {{ datos.UltimaRevision or 'Sin especificar' }}</p>
+                <p><strong>Reparación hasta:</strong> {{ datos.ReparacionHasta or 'Sin especificar' }}</p>
+                <p><strong>Valor estimado:</strong> {{ datos.ValorEstimado or 'Sin especificar' }}</p>
+            </div>
+
+            <div class="fila">
+                <p><strong>Estado exterior:</strong><br> {{ datos.EstadoExterior or 'Sin especificar' }}</p>
+            </div>
+
+            <div class="fila">
+                <p><strong>Estado interior:</strong><br> {{ datos.EstadoInterior or 'Sin especificar' }}</p>
+            </div>
+
+            <div class="fila">
+                <p><strong>Observaciones generales:</strong><br> {{ datos.Observaciones or 'Sin especificar' }}</p>
+            </div>
         </div>
 
-        <div class="firma">
-            <p><strong>Firma del Cliente:</strong></p>
-            <img src="{{ firma_path }}" alt="Firma del Cliente" class="firma-img">
+
+        <div class="firmas">
+            <div class="firma-individual">
+                <p><strong>Firma del Cliente:</strong></p>
+                <img src="{{ firma_path }}" alt="Firma del Cliente" class="firma-img">
+            </div>
+            <div class="firma-individual">
+                <p><strong>Firma del Taller:</strong></p>
+                <img src="img/firmataller.png" alt="Firma del Taller" class="firma-img">
+            </div>
         </div>
+
     </div>
+
 </body>
 
 </html>
