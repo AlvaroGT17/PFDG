@@ -35,6 +35,8 @@ if __name__ == "__main__":
         "combustibles": ["Gasolina", "Diésel", "Eléctrico", "Híbrido"],
         "motivos": [{"id": 1, "nombre": "Mantenimiento"}, {"id": 2, "nombre": "Avería"}],
         "urgencias": [{"id": 1, "descripcion": "Alta"}, {"id": 2, "descripcion": "Media"}, {"id": 3, "descripcion": "Baja"}],
+        "usuario_id": 6,
+        "estado_id": 1,
     }
 
     # Cargar controlador con ventana y datos simulados
@@ -44,21 +46,22 @@ if __name__ == "__main__":
     firma_path = os.path.join(os.getcwd(), "firma_temporal.png")
     simular_firma(firma_path)
 
-    # Rellenar todos los campos automáticamente
-    ventana.input_nombre.setText("Juan Pérez")
-    ventana.input_dni.setText("12345678Z")
-    ventana.input_telefono.setText("600123456")
-    ventana.input_email.setText("juan@example.com")
-    ventana.input_direccion.setText("Calle Falsa 123")
+    # CLIENTE 5 - Carlos Gómez Hernández
+    ventana.input_nombre.setText("Carlos Gómez Hernández")
+    ventana.input_dni.setText("23456789B")
+    ventana.input_telefono.setText("622345678")
+    ventana.input_email.setText("carlos.gomez@example.com")
+    ventana.input_direccion.setText("Avda. de la Paz 45")
 
-    ventana.input_matricula.setCurrentText("1234ABC")
-    ventana.input_marca.setText("Toyota")
-    ventana.input_modelo.setText("Corolla")
-    ventana.input_color.setText("Rojo")
+    # Vehículo vinculado - Matrícula: 4567DEF
+    ventana.input_matricula.setCurrentText("4567DEF")
+    ventana.input_marca.setText("OPEL")
+    ventana.input_modelo.setText("Corsa")
+    ventana.input_color.setText("Negro")
     ventana.input_anio.setText("2020")
-    ventana.input_kilometros.setText("35000")
+    ventana.input_kilometros.setText("85000")
     ventana.combo_combustible.setCurrentText("Gasolina")
-    ventana.input_vin.setText("ABCDEFGH123456789")
+    ventana.input_vin.setText("W0L0XEP08R4000004")
     ventana.combo_categoria.setCurrentText("Terrestre")
     ventana.combo_tipo.setCurrentText("Turismo")
 
@@ -81,7 +84,7 @@ if __name__ == "__main__":
     ventana.input_observaciones.setPlainText(
         "Se requiere diagnóstico completo")
 
-    ventana.input_correo.setText("juan@example.com")
+    ventana.input_correo.setText("cresnik17021983@gmail.com")
     ventana.checkbox_ruta_predeterminada.setChecked(True)
     ventana.checkbox_enviar_correo.setChecked(False)
     ventana.checkbox_imprimir.setChecked(False)

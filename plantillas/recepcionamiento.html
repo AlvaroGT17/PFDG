@@ -31,8 +31,10 @@
         </header>
 
 
-        <h2 class="titulo-recepcionamiento">Recepcionamiento de Vehículo </h2>
+        <h2 class="titulo-recepcionamiento">Recepcionamiento de Vehículo</h2>
         <p class="numero-recepcion">N.º de Recepción: {{ datos.NúmeroRecepcion }}</p>
+        <p class="fecha-emision">Fecha de emisión: {{ fecha_emision }}</p>
+
 
         <div class="seccion">
             <h3>Datos del Cliente</h3>
@@ -70,46 +72,49 @@
             </div>
         </div>
 
-        <div class="seccion">
+        <div class="seccion salto-pagina">
             <h3>Motivo de Recepción</h3>
 
             <div class="fila">
-                <p><strong>Motivo:</strong> {{ datos.Motivo or 'Sin especificar' }}</p>
-                <p><strong>Urgencia:</strong> {{ datos.Urgencia or 'Sin especificar' }}</p>
-                <p><strong>Fecha de Recepción:</strong> {{ datos.FechaRecepcion or 'Sin especificar' }}</p>
+                <div><strong>Motivo:</strong> {{ datos.Motivo or 'Sin especificar' }}</div>
+                <div><strong>Urgencia:</strong> {{ datos.Urgencia or 'Sin especificar' }}</div>
+                <div><strong>Fecha de Recepción:</strong> {{ datos.FechaRecepcion or 'Sin especificar' }}</div>
             </div>
 
             <div class="fila">
-                <p><strong>Arranca:</strong> {{ 'Sí' if datos.Arranca else 'No' }}</p>
-                <p><strong>Viene con grúa:</strong> {{ 'Sí' if datos.Grúa else 'No' }}</p>
-                <p><strong>ITV en vigor:</strong> {{ 'Sí' if datos.ITV else 'No' }}</p>
-                <p><strong>Presupuesto escrito:</strong> {{ 'Sí' if datos.Presupuesto else 'No' }}</p>
+                <div><strong>Arranca:</strong> {{ datos.Arranca }}</div>
+                <div><strong>Viene con grúa:</strong> {{ datos.Grúa }}</div>
+                <div><strong>ITV en vigor:</strong> {{ datos.ITV }}</div>
+                <div><strong>Presupuesto escrito:</strong> {{ datos.Presupuesto }}</div>
             </div>
 
             <div class="fila">
-                <p><strong>Tiene seguro:</strong> {{ 'Sí' if datos.Seguro else 'No' }}</p>
-                <p><strong>Compañía de Seguro:</strong> {{ datos.SeguroCompania or 'Sin especificar' }}</p>
+                <div><strong>Tiene seguro:</strong> {{ datos.Seguro }}</div>
+                <div><strong>Compañía de Seguro:</strong> {{ datos.SeguroCompania or 'Sin especificar' }}</div>
             </div>
 
             <div class="fila">
-                <p><strong>Última revisión:</strong> {{ datos.UltimaRevision or 'Sin especificar' }}</p>
-                <p><strong>Reparación hasta:</strong> {{ datos.ReparacionHasta or 'Sin especificar' }}</p>
-                <p><strong>Valor estimado:</strong> {{ datos.ValorEstimado or 'Sin especificar' }}</p>
+                <div><strong>Última revisión:</strong> {{ datos.UltimaRevision or 'Sin especificar' }}</div>
+                <div><strong>Reparación hasta:</strong> {{ datos.ReparacionHasta or 'Sin especificar' }}</div>
+                <div><strong>Valor estimado:</strong> {{ datos.ValorEstimado or 'Sin especificar' }}</div>
             </div>
 
             <div class="fila">
-                <p><strong>Estado exterior:</strong><br> {{ datos.EstadoExterior or 'Sin especificar' }}</p>
+                <div><strong>Estado exterior:</strong><br>{{ datos.EstadoExterior or 'Sin especificar' }}</div>
             </div>
 
             <div class="fila">
-                <p><strong>Estado interior:</strong><br> {{ datos.EstadoInterior or 'Sin especificar' }}</p>
+                <div><strong>Estado interior:</strong><br>{{ datos.EstadoInterior or 'Sin especificar' }}</div>
             </div>
 
             <div class="fila">
-                <p><strong>Observaciones generales:</strong><br> {{ datos.Observaciones or 'Sin especificar' }}</p>
+                <div><strong>Observaciones generales:</strong><br>{{ datos.Observaciones or 'Sin especificar' }}</div>
             </div>
         </div>
 
+
+
+        <hr class="separador-firmas">
 
         <div class="firmas">
             <div class="firma-individual">
@@ -121,6 +126,7 @@
                 <img src="img/firmataller.png" alt="Firma del Taller" class="firma-img">
             </div>
         </div>
+
 
     </div>
 

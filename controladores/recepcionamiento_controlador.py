@@ -1,5 +1,11 @@
-from PySide6.QtWidgets import QMessageBox, QCompleter
+import os
+import smtplib
+import subprocess
+import platform
+from datetime import datetime
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QMessageBox, QCompleter
+from utilidades.correo_recepcionamiento import enviar_correo_con_pdf
 from utilidades.recepcionamiento_utilidades import validar_correo, generar_documento_pdf
 from modelos.clientes_consultas import obtener_clientes
 from utilidades.rutas_guardado import obtener_ruta_predeterminada_recepcionamientos
@@ -8,6 +14,12 @@ from modelos.recepcionamiento_consultas import (
     obtener_siguiente_numero_recepcionamiento,
     obtener_datos_vehiculo_por_matricula,
     obtener_matriculas_por_cliente,
+)
+from modelos.recepcionamiento_consultas import (
+    obtener_cliente_id_por_dni,
+    obtener_vehiculo_id_por_matricula,
+    obtener_estado_id_por_defecto,
+    insertar_recepcionamiento_en_bd,
 )
 
 
@@ -34,28 +46,159 @@ class RecepcionamientoControlador:
     def confirmar_recepcionamiento(self):
         datos = self._recopilar_datos()
 
-        if self.vista.checkbox_enviar_correo.isChecked():
-            correo = self.vista.input_correo.text().strip()
-            if not validar_correo(correo):
-                QMessageBox.warning(self.vista, "Correo inválido",
-                                    "El correo electrónico introducido no es válido.")
-                return
-            datos["Correo destino"] = correo
+        # 🔍 Cliente
+        print("🪪 DNI introducido por el usuario:", datos["DNI"])
+        cliente_id = obtener_cliente_id_por_dni(datos["DNI"])
+        print("👤 ID del cliente obtenido en base de datos:", cliente_id)
 
+        # 🔐 Usuario
+        print("👨‍💻 ID del usuario (empleado) actual:",
+              self.datos.get("usuario_id"))
+
+        # 📂 Estado
+        estado_id = obtener_estado_id_por_defecto()
+        print("📥 ID del estado por defecto (Pendiente):", estado_id)
+
+        # ⚙️ Motivo
+        print(f"📝 Motivo seleccionado en el formulario:", datos["Motivo"])
+        print(f"🆔 ID correspondiente del motivo:",
+              self.motivos_dict.get(datos["Motivo"]))
+
+        # Obtener correos
+        correo_destino = self.vista.input_correo.text().strip()
+        correo_cliente = datos["Email"].strip()
+
+        correo_final = None
+
+        if self.vista.checkbox_enviar_correo.isChecked():
+            # Caso 1: el usuario no ha rellenado 'Correo destino'
+            if not correo_destino:
+                if correo_cliente:
+                    correo_final = correo_cliente  # usamos el del cliente
+                else:
+                    QMessageBox.warning(
+                        self.vista,
+                        "Correo no disponible",
+                        "No se ha especificado ningún correo para enviar el documento.\n"
+                        "Rellena el campo 'Correo destino' o asegúrate de que el cliente tiene un correo registrado."
+                    )
+                    return
+            else:
+                # Si ha puesto uno en destino, lo usamos aunque el cliente tenga uno diferente
+                correo_final = correo_destino
+
+            # Validación del correo final
+            if not validar_correo(correo_final):
+                QMessageBox.warning(
+                    self.vista,
+                    "Correo inválido",
+                    f"El correo '{correo_final}' no es válido. Corrige el campo antes de continuar."
+                )
+                return
+
+            # lo añadimos a los datos para usarlo luego
+            datos["Correo destino"] = correo_final
+
+        # Obtener firma del cliente
         firma_pixmap = self.vista.zona_firma.obtener_firma()
         ruta_firma = "firma_temporal.png"
         firma_pixmap.save(ruta_firma, "PNG")
 
+        # Ruta de guardado
         ruta_guardado = self.vista.input_ruta_guardado.text().strip()
         if not ruta_guardado:
             QMessageBox.warning(self.vista, "Ruta no válida",
                                 "Debe especificar una ruta de guardado válida.")
             return
 
+        # Generar PDF
         ruta_pdf = generar_documento_pdf(datos, ruta_firma, ruta_guardado)
 
+        # Mostrar mensaje
         QMessageBox.information(
-            self.vista, "Recepcionamiento generado", f"Documento generado:\n{ruta_pdf}")
+            self.vista, "Recepcionamiento generado", f"Documento generado:\n{ruta_pdf}"
+        )
+
+        # Guardar en la base de datos
+        cliente_id = obtener_cliente_id_por_dni(datos["DNI"])
+        vehiculo_id = obtener_vehiculo_id_por_matricula(datos["Matrícula"])
+        estado_id = obtener_estado_id_por_defecto()
+        # ← Asegúrate de tenerlo al instanciar
+        usuario_id = self.datos.get("usuario_id")
+
+        try:
+            datos["UltimaRevision"] = datetime.strptime(
+                datos["UltimaRevision"], "%d/%m/%Y").date()
+        except Exception as e:
+            datos["UltimaRevision"] = None  # o mostrar un mensaje si prefieres
+
+        datos_bd = {
+            "cliente_id": cliente_id,
+            "usuario_id": usuario_id,
+            "vehiculo_id": vehiculo_id,
+            "estado_id": estado_id,
+            "motivo_id": self.motivos_dict.get(datos["Motivo"]),
+            "arranca": datos["Arranca"] == "Sí",
+            "grua": datos["Grúa"] == "Sí",
+            "seguro": datos["Seguro"] == "Sí",
+            "compania_seguro": datos["SeguroCompania"],
+            "valor_estimado": datos["ValorEstimado"],
+            "presupuesto": datos["Presupuesto"] == "Sí",
+            "itv": datos["ITV"] == "Sí",
+            "ultima_revision": datos["UltimaRevision"],
+            "desea_presupuesto": datos["Presupuesto"] == "Sí",
+            "reparacion_hasta": datos["ReparacionHasta"],
+            "estado_exterior": datos["EstadoExterior"],
+            "estado_interior": datos["EstadoInterior"],
+            "observaciones": datos["Observaciones"],
+            "enviar_correo": "Correo destino" in datos,
+            "entregar_impreso": False,  # luego puedes añadir un checkbox
+            "ruta_pdf": ruta_pdf,
+            "numero_recepcionamiento": datos["NúmeroRecepcion"],
+            "urgencia_id": self.urgencias_dict.get(datos["Urgencia"]),
+        }
+
+        exito, error = insertar_recepcionamiento_en_bd(datos_bd)
+        if not exito:
+            QMessageBox.critical(
+                self.vista,
+                "Error al guardar",
+                f"No se pudo guardar el recepcionamiento en la base de datos.\n\nDetalle: {error}"
+            )
+            return
+
+        # Enviar por correo si está activado
+        if self.vista.checkbox_enviar_correo.isChecked():
+            exito, error = enviar_correo_con_pdf(correo_final, ruta_pdf, datos)
+            if not exito:
+                QMessageBox.critical(
+                    self.vista,
+                    "Error al enviar el correo",
+                    f"No se pudo enviar el documento por correo.\n\nDetalle del error:\n{error}"
+                )
+            else:
+                QMessageBox.information(
+                    self.vista,
+                    "Correo enviado",
+                    f"El documento se ha enviado correctamente a:\n{correo_final}"
+                )
+
+        # Imprimir si está activado
+        if self.vista.checkbox_imprimir.isChecked():
+            try:
+                if platform.system() == "Windows":
+                    os.startfile(ruta_pdf, "print")
+                elif platform.system() == "Darwin":  # macOS
+                    subprocess.run(["lp", ruta_pdf], check=True)
+                else:  # Linux
+                    subprocess.run(["lpr", ruta_pdf], check=True)
+            except Exception as e:
+                QMessageBox.critical(
+                    self.vista,
+                    "Error al imprimir",
+                    f"No se pudo enviar el documento a la impresora predeterminada.\n\nDetalle del error:\n{str(e)}"
+                )
+
         self.vista.close()
 
     def _cargar_datos_completos(self):
@@ -127,7 +270,8 @@ class RecepcionamientoControlador:
             "Observaciones": self.vista.input_observaciones.toPlainText(),
 
             # Número de recepción para el nombre del archivo
-            "NumeroRecepcion": self.vista.input_numero_recepcion.text(),
+            "NúmeroRecepcion": self.vista.input_numero_recepcion.text(),
+
         }
 
     def _configurar_autocompletado_clientes(self):

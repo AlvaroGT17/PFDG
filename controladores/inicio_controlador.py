@@ -109,7 +109,8 @@ class InicioControlador(QObject):
                 "urgencias": obtener_urgencias(),
                 "categorias": obtener_categorias_vehiculo(),
                 "tipos": obtener_tipos_vehiculo(),
-                "combustibles": obtener_combustibles()
+                "combustibles": obtener_combustibles(),
+                "usuario_id": self.usuario_id
             }
 
         self.abridor_recepcionamiento = AbridorConCarga(

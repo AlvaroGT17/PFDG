@@ -231,3 +231,141 @@ def obtener_datos_completos_recepcionamiento():
             "tipos": [],
             "combustibles": []
         }
+
+
+def obtener_cliente_id_por_dni(dni):
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute(
+            "SELECT id FROM clientes WHERE UPPER(dni) = %s", (dni.upper(),))
+        resultado = cursor.fetchone()
+        cursor.close()
+        conexion.close()
+        return resultado[0] if resultado else None
+    except Exception as e:
+        print(f"Error al obtener cliente_id: {e}")
+        return None
+
+
+def obtener_vehiculo_id_por_matricula(matricula):
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute(
+            "SELECT id FROM vehiculos WHERE UPPER(matricula) = %s", (matricula.upper(),))
+        resultado = cursor.fetchone()
+        cursor.close()
+        conexion.close()
+        return resultado[0] if resultado else None
+    except Exception as e:
+        print(f"Error al obtener vehiculo_id: {e}")
+        return None
+
+
+def obtener_estado_id_por_defecto():
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute(
+            "SELECT id FROM estados_intervencion WHERE nombre ILIKE 'pendiente' LIMIT 1"
+        )
+        resultado = cursor.fetchone()
+        cursor.close()
+        conexion.close()
+        return resultado[0] if resultado else None
+    except Exception as e:
+        print(f"Error al obtener estado por defecto: {e}")
+        return None
+
+
+def insertar_recepcionamiento_en_bd(datos):
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+
+        cursor.execute("""
+            INSERT INTO recepcionamientos (
+                urgencia_id,
+                cliente_id,
+                vehiculo_id,
+                usuario_id,
+                estado_id,
+                fecha,
+                itv_en_vigor,
+                ultima_revision,
+                desea_presupuesto_por_escrito,
+                entregar_impreso,
+                enviar_por_correo,
+                num_recepcionamiento,
+                arranca,
+                viene_con_grua,
+                tiene_seguro,
+                acepta_reparacion_hasta,
+                valor_estimado,
+                motivo_id,
+                estado_interior,
+                observaciones_generales,
+                ruta_documento,
+                compania_seguro,
+                lista_averias_cliente,
+                estado_exterior
+            ) VALUES (
+                %(urgencia_id)s,
+                %(cliente_id)s,
+                %(vehiculo_id)s,
+                %(usuario_id)s,
+                %(estado_id)s,
+                NOW(),
+                %(itv)s,
+                %(ultima_revision)s,
+                %(desea_presupuesto)s,
+                %(entregar_impreso)s,
+                %(enviar_correo)s,
+                %(numero_recepcionamiento)s,
+                %(arranca)s,
+                %(grua)s,
+                %(seguro)s,
+                %(reparacion_hasta)s,
+                %(valor_estimado)s,
+                %(motivo_id)s,
+                %(estado_interior)s,
+                %(observaciones)s,
+                %(ruta_pdf)s,
+                %(compania_seguro)s,
+                %(lista_averias)s,
+                %(estado_exterior)s
+            )
+        """, {
+            "urgencia_id": datos["urgencia_id"],
+            "cliente_id": datos["cliente_id"],
+            "vehiculo_id": datos["vehiculo_id"],
+            "usuario_id": datos["usuario_id"],
+            "estado_id": datos["estado_id"],
+            "itv": datos["itv"],
+            "ultima_revision": datos["ultima_revision"] or None,
+            "desea_presupuesto": datos["desea_presupuesto"],
+            "entregar_impreso": datos.get("entregar_impreso", False),
+            "enviar_correo": datos.get("enviar_correo", False),
+            "numero_recepcionamiento": datos["numero_recepcionamiento"],
+            "arranca": datos["arranca"],
+            "grua": datos["grua"],
+            "seguro": datos["seguro"],
+            "reparacion_hasta": datos["reparacion_hasta"] or 0,
+            "valor_estimado": datos["valor_estimado"] or 0,
+            "motivo_id": datos["motivo_id"],
+            "estado_interior": datos["estado_interior"],
+            "observaciones": datos["observaciones"],
+            "ruta_pdf": datos["ruta_pdf"],
+            "compania_seguro": datos["compania_seguro"],
+            "lista_averias": datos.get("lista_averias", "Sin especificar"),
+            "estado_exterior": datos["estado_exterior"]
+        })
+
+        conexion.commit()
+        cursor.close()
+        conexion.close()
+        return True, None
+
+    except Exception as e:
+        return False, str(e)
