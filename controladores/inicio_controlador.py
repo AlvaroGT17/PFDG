@@ -12,6 +12,7 @@ from utilidades.abridor_con_carga import AbridorConCarga
 from utilidades.hilos.hilo_carga_recepcionamiento import HiloCargaRecepcionamiento
 from utilidades.abridor_con_carga import AbridorConCarga
 from vistas.ventana_recepcionamiento import VentanaRecepcionamiento
+from vistas.ventana_compraventa import VentanaCompraventa
 from controladores.recepcionamiento_controlador import RecepcionamientoControlador
 from modelos.recepcionamiento_consultas import (
     obtener_motivos,
@@ -61,6 +62,11 @@ class InicioControlador(QObject):
         if "recepcionamiento" in self.ventana.botones:
             self.ventana.botones["recepcionamiento"].clicked.connect(
                 self.abrir_recepcionamiento)
+
+        if self.rol.upper() in ["ADMINISTRADOR", "COMPRA/VENTA"]:
+            if "compraventa" in self.ventana.botones:
+                self.ventana.botones["compraventa"].clicked.connect(
+                    self.abrir_compraventa)
 
     def mostrar(self):
         self.ventana.show()
@@ -126,3 +132,8 @@ class InicioControlador(QObject):
             self.recepcionamiento)
         self.ventana_carga.cerrar()
         self.recepcionamiento.exec()
+
+    def abrir_compraventa(self):
+        self.ventana.hide()
+        self.controlador_compraventa = VentanaCompraventa(self.ventana)
+        self.controlador_compraventa.show()

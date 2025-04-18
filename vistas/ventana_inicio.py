@@ -57,6 +57,7 @@ class VentanaInicio(QWidget):
             ("Clientes", "clientes.png"),
             ("Vehículos", "vehiculos.png"),
             ("Recepcionamiento", "recepcionamiento.png"),
+            ("Compraventa", "compraventa.png"),
             ("Reparaciones", "reparacion.png"),
             ("Facturación", "facturacion.png"),
             ("Reportes", "reportes.png"),
@@ -65,9 +66,9 @@ class VentanaInicio(QWidget):
         ]
 
         accesos_por_rol = {
-            "ADMINISTRADOR": ["fichar", "historial", "crear usuarios", "clientes", "vehículos", "recepcionamiento", "reparaciones", "facturación", "reportes", "usuarios", "cerrar sesión"],
+            "ADMINISTRADOR": ["fichar", "historial", "crear usuarios", "clientes", "vehículos", "recepcionamiento", "compraventa", "reparaciones", "facturación", "reportes", "usuarios", "cerrar sesión"],
             "MECANICO": ["fichar", "historial", "vehículos", "recepcionamiento", "reparaciones", "cerrar sesión"],
-            "COMPRA/VENTA": ["fichar", "historial", "vehículos", "recepcionamiento", "reportes", "cerrar sesión"],
+            "COMPRA/VENTA": ["fichar", "historial", "vehículos", "recepcionamiento", "compraventa", "reportes", "cerrar sesión"],
             "ADMINISTRATIVO": ["fichar", "historial", "clientes", "vehículos", "recepcionamiento", "facturación", "cerrar sesión"]
         }
 

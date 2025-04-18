@@ -1,0 +1,73 @@
+#ventana_compraventa {
+    background-color: #2e2e2e;
+    color: white;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 14px;
+}
+
+#titulo_compraventa {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+QGroupBox {
+    background-color: #3a3a3a;
+    border: 2px solid #E30613;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 3px;
+    color: white;
+}
+
+QLabel {
+    color: white;
+    font-weight: normal;
+}
+
+QLineEdit, QComboBox, QTextEdit {
+    background-color: white;
+    color: black;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+}
+
+QToolButton {
+    background: transparent;
+    border: none;
+}
+
+QPushButton {
+    background-color: #E30613;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #b5050f;
+}
+
+QScrollArea {
+    background-color: transparent;
+    border: none;
+}
+
+QTextEdit {
+    font-family: "Segoe UI", sans-serif;
+    font-size: 13px;
+}
