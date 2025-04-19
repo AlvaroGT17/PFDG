@@ -38,15 +38,15 @@ QLineEdit, QComboBox, QTextEdit {
     padding: 4px;
 }
 
+QToolButton {
+    background: transparent;
+    border: none;
+}
+
 QComboBox::drop-down {
     subcontrol-origin: padding;
     subcontrol-position: top right;
     width: 20px;
-}
-
-QToolButton {
-    background: transparent;
-    border: none;
 }
 
 QPushButton {
@@ -62,12 +62,175 @@ QPushButton:hover {
     background-color: #b5050f;
 }
 
-QScrollArea {
-    background-color: transparent;
+/* ✅ Área scroll principal */
+QScrollArea#scroll_area_compraventa {
+    background-color: transparent; /* evita superposición */
     border: none;
+    border-radius: 15px;
+    padding: 0px;
+    margin: 0px;
+}
+
+/* ✅ Contenedor interno que se ve blanco */
+#scroll_widget {
+    background-color: #2e2e2e;
+    border-radius: 15px;
+    padding: 0;
+    margin: 0;
+}
+
+/* Scrollbar vertical */
+QScrollBar:vertical {
+    background: #2e2e2e;
+    width: 12px;
+    margin: 0;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:vertical {
+    background: red;
+    min-height: 30px;
+    border-radius: 6px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0;
+    width: 0;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+/* Scrollbar horizontal */
+QScrollBar:horizontal {
+    background: #1e1e1e;
+    height: 12px;
+    margin: 0;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #E30613;
+    min-width: 25px;
+    border-radius: 6px;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
+
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+    background: none;
 }
 
 QTextEdit {
     font-family: "Segoe UI", sans-serif;
     font-size: 13px;
+}
+
+QComboBox {
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    padding: 5px;
+    font-weight: bold;
+    border: 1px solid #999;
+    min-width: 150px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid #aaa;
+}
+
+QComboBox::down-arrow {
+    image: url(img/mas.png); /* si tienes una imagen personalizada */
+    width: 12px;
+    height: 12px;
+}
+
+QToolButton#boton_compraventa {
+    background-color: #d90429;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 10px;
+    width: 95px;
+    height: 80px;
+    padding: 6px;
+    border: none;
+    margin: 5px; /* 🌟 SEPARACIÓN ENTRE BOTONES */
+    qproperty-iconSize: 32px;
+}
+
+QToolButton#boton_compraventa:hover {
+    background-color: #c40324;
+    border: 2px solid #880016;
+}
+
+QToolButton#boton_compraventa:pressed {
+    background-color: #990016;
+    border: 2px inset #600010;
+    padding-top: 2px;
+    padding-bottom: -2px;
+}
+
+/* Simulamos profundidad con un borde más oscuro y ligero margen */
+QToolButton#boton_compraventa {
+    border: 2px solid #a0001c;
+    margin: 5px; /* espacio entre botones */
+}
+
+QTableWidget {
+    border: 2px solid #ccc;
+    border-radius: 12px; /* ✅ Redondeado */
+    background-color: white;
+    gridline-color: #ccc;
+    padding: 4px;
+}
+
+QTableWidget::item {
+    padding: 6px;
+}
+
+QHeaderView::section {
+    background-color: #444;
+    color: white;
+    font-weight: bold;
+    padding: 5px;
+    border: none;
+}
+
+/* seccion de ventas */
+
+QToolButton#boton_compraventa_venta {
+    background-color: #d90429;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 10px;
+    width: 95px;
+    height: 80px;
+    padding: 6px;
+    border: none;
+    margin: 5px; /* 🌟 Separación entre botones */
+    qproperty-iconSize: 32px;
+    border: 2px solid #a0001c; /* Borde similar al otro */
+}
+
+QToolButton#boton_compraventa_venta:hover {
+    background-color: #c40324;
+    border: 2px solid #880016;
+}
+
+QToolButton#boton_compraventa_venta:pressed {
+    background-color: #990016;
+    border: 2px inset #600010;
+    padding-top: 2px;
+    padding-bottom: -2px;
 }
