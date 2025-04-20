@@ -64,14 +64,13 @@ QPushButton:hover {
 
 /* ✅ Área scroll principal */
 QScrollArea#scroll_area_compraventa {
-    background-color: transparent; /* evita superposición */
+    background-color: transparent;
     border: none;
     border-radius: 15px;
     padding: 0px;
     margin: 0px;
 }
 
-/* ✅ Contenedor interno que se ve blanco */
 #scroll_widget {
     background-color: #2e2e2e;
     border-radius: 15px;
@@ -164,8 +163,9 @@ QToolButton#boton_compraventa {
     height: 80px;
     padding: 6px;
     border: none;
-    margin: 5px; /* 🌟 SEPARACIÓN ENTRE BOTONES */
+    margin: 5px;
     qproperty-iconSize: 32px;
+    border: 2px solid #a0001c;
 }
 
 QToolButton#boton_compraventa:hover {
@@ -180,15 +180,9 @@ QToolButton#boton_compraventa:pressed {
     padding-bottom: -2px;
 }
 
-/* Simulamos profundidad con un borde más oscuro y ligero margen */
-QToolButton#boton_compraventa {
-    border: 2px solid #a0001c;
-    margin: 5px; /* espacio entre botones */
-}
-
 QTableWidget {
     border: 2px solid #ccc;
-    border-radius: 12px; /* ✅ Redondeado */
+    border-radius: 12px;
     background-color: white;
     gridline-color: #ccc;
     padding: 4px;
@@ -218,9 +212,9 @@ QToolButton#boton_compraventa_venta {
     height: 80px;
     padding: 6px;
     border: none;
-    margin: 5px; /* 🌟 Separación entre botones */
+    margin: 5px;
     qproperty-iconSize: 32px;
-    border: 2px solid #a0001c; /* Borde similar al otro */
+    border: 2px solid #a0001c;
 }
 
 QToolButton#boton_compraventa_venta:hover {
@@ -233,4 +227,46 @@ QToolButton#boton_compraventa_venta:pressed {
     border: 2px inset #600010;
     padding-top: 2px;
     padding-bottom: -2px;
+}
+
+/* Checkboxes de impresión y correo */
+QCheckBox {
+    color: white;
+    font-weight: bold;
+    spacing: 6px;
+    padding-left: 2px;
+}
+
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid #E30613;
+    background-color: white;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #E30613;
+}
+
+/* Ruta de guardado personalizada */
+QLineEdit[ruta_guardado="true"] {
+    background-color: #f5f5f5;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 6px;
+    font-weight: normal;
+}
+
+QPushButton[ruta_guardado="true"] {
+    background-color: #444;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    padding: 6px 12px;
+}
+
+QPushButton[ruta_guardado="true"]:hover {
+    background-color: #555;
 }

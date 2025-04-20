@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Contrato de Venta - ReyBoxes</title>
+    <link rel="stylesheet" href="contrato_compraventa.css">
+</head>
+
+<body>
+    <div class="encabezado">
+        <img src="img/logo.jpg" alt="Logo ReyBoxes" class="logo">
+        <h1>CONTRATO DE COMPRAVENTA DE VEHÍCULO</h1>
+    </div>
+
+    <p>En Guadalajara, a {{fecha_actual}}</p>
+
+    <div class="seccion">
+        <h3>REUNIDOS</h3>
+        <p>
+            De una parte, <strong>REYBOXES S.L.</strong>, con CIF B12345678, domicilio en Calle del Taller 42, Madrid,
+            y número de teléfono 912 345 678, en adelante <strong>EL VENDEDOR</strong>.
+        </p>
+        <p>
+            Y de otra, <strong>{{nombre_completo}}</strong>, con DNI número {{dni}}, domicilio en {{direccion}},
+            {{localidad}}, {{provincia}}, y teléfono {{telefono}}, en adelante <strong>EL COMPRADOR</strong>.
+        </p>
+        <p>Ambas partes se reconocen mutuamente la capacidad legal necesaria para celebrar este contrato y a tal efecto:
+        </p>
+    </div>
+
+    <div class="seccion">
+        <h3>EXPONEN</h3>
+        <p>Que EL VENDEDOR es propietario del siguiente vehículo:</p>
+        <ul>
+            <li><strong>Matrícula:</strong> {{matricula}}</li>
+            <li><strong>Marca / Modelo:</strong> {{marca}} {{modelo}}</li>
+            <li><strong>Versión:</strong> {{version}}</li>
+            <li><strong>Nº Bastidor (VIN):</strong> {{bastidor}}</li>
+            <li><strong>Año:</strong> {{anio}}</li>
+            <li><strong>Kilómetros:</strong> {{km}}</li>
+            <li><strong>Color:</strong> {{color}}</li>
+        </ul>
+        <p>
+            Que EL COMPRADOR está interesado en adquirir dicho vehículo y ambas partes acuerdan la operación bajo las
+            siguientes:
+        </p>
+    </div>
+
+    <div class="seccion">
+        <h3>CLÁUSULAS</h3>
+        <p>1ª) El vendedor vende al comprador el vehículo de su propiedad anteriormente especificado por la cantidad de
+            <strong>{{precio_final}} euros</strong>, sin incluir los impuestos correspondientes, que serán a cargo del
+            comprador.
+        </p>
+
+        <p>2ª) El vendedor declara que no pesa sobre el vehículo ninguna carga o gravamen ni impuesto, deuda o sanción
+            pendientes de abono en la fecha de la firma de este contrato, comprometiéndose en caso contrario a
+            regularizar tal situación a su exclusivo cargo.</p>
+
+        <p>3ª) El vendedor se compromete a facilitar los distintos documentos relativos al vehículo, así como a firmar
+            cuantos documentos aparte de éste sean necesarios para que el vehículo quede correctamente inscrito a nombre
+            del comprador en los correspondientes organismos públicos, siendo todos los gastos a cargo del comprador.
+        </p>
+
+        <p>4ª) Una vez realizada la correspondiente transferencia en Tráfico, el vendedor entregará materialmente al
+            comprador la posesión del vehículo, haciéndose el comprador cargo de cuantas responsabilidades puedan
+            contraerse por la propiedad del vehículo y su tenencia y uso a partir de dicho momento de la entrega.</p>
+
+        <p>5ª) El vehículo dispone de seguro en vigor hasta fecha de <strong>{{fecha_seguro}}</strong> y se encuentra al
+            corriente respecto a las obligaciones derivadas de la ITV (Inspección Técnica de Vehículos).</p>
+
+        <p>6ª) El comprador declara conocer el estado actual del vehículo, por lo que exime al vendedor de garantía por
+            vicios o defectos que surjan con posterioridad a la entrega, salvo aquellos ocultos que tengan su origen en
+            dolo o mala fe del vendedor.</p>
+
+        <p>7ª) Para cualquier litigio que surja entre las partes de la interpretación o cumplimiento del presente
+            contrato, éstas, con expresa renuncia al fuero que pudiera corresponderles, se someterán a los Juzgados y
+            Tribunales de <strong>Guadalajara</strong>.</p>
+    </div>
+
+
+    <div class="firma">
+        <div class="bloque-firma">
+            <p>Firmado por EL COMPRADOR</p>
+            <img src="{{firma_cliente}}" alt="Firma del cliente" class="firma-imagen">
+        </div>
+        <div class="bloque-firma">
+            <p>Firmado por EL VENDEDOR</p>
+            <img src="img/firmataller.png" alt="Firma del taller" class="firma-imagen">
+        </div>
+    </div>
+
+</body>
+
+</html>

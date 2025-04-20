@@ -21,3 +21,17 @@ def obtener_ruta_absoluta(ruta_relativa: str) -> str:
         raise FileNotFoundError(f"El recurso no existe: {ruta_absoluta}")
 
     return ruta_absoluta
+
+
+def obtener_ruta_predeterminada_compras():
+    from datetime import datetime
+    import os
+    mes_anio = datetime.now().strftime("%B_%Y").upper()
+    return os.path.join("D:\\Proyecto_Final_de_Grado\\PFDG\\documentos\\compras", mes_anio)
+
+
+def obtener_ruta_predeterminada_ventas():
+    from datetime import datetime
+    import os
+    mes_anio = datetime.now().strftime("%B_%Y").upper()
+    return os.path.join("D:\\Proyecto_Final_de_Grado\\PFDG\\documentos\\ventas", mes_anio)

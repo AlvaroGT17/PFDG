@@ -106,7 +106,7 @@ class VentanaNuevoClienteCompraventas(QWidget):
             QMessageBox.information(self, "Cliente creado",
                                     f"Cliente creado correctamente con ID {nuevo_id}.")
             if self.callback_guardar:
-                self.callback_guardar(datos)
+                self.callback_guardar(nuevo_id)
             self.close()
         else:
             QMessageBox.critical(self, "Error",

@@ -2,13 +2,15 @@ from PySide6.QtWidgets import (
     QWidget, QLabel, QLineEdit, QTextEdit, QComboBox,
     QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox,
     QScrollArea, QToolButton, QSizePolicy, QGridLayout,
-    QPushButton, QTableWidget, QTableWidgetItem, QHeaderView
+    QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
+    QCheckBox, QSizePolicy
 )
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QIcon
-from utilidades.rutas import obtener_ruta_absoluta
+from utilidades.rutas import obtener_ruta_absoluta, obtener_ruta_predeterminada_compras, obtener_ruta_predeterminada_ventas
 from utilidades.capturador_firma import CapturadorFirma
 from modelos.compraventa_consulta import obtener_vehiculos_disponibles
+from controladores.compraventa_controlador import CompraventaControlador
 
 
 class VentanaCompraventa(QWidget):
@@ -55,12 +57,14 @@ class VentanaCompraventa(QWidget):
         self.setObjectName("ventana_compraventa")
         self.ventana_anterior = ventana_anterior
 
+        # Cargar estilo CSS
         ruta_css = obtener_ruta_absoluta("css/compraventa.css")
         with open(ruta_css, "r", encoding="utf-8") as f:
             self.setStyleSheet(f.read())
 
         layout_general = QVBoxLayout(self)
 
+        # Título
         titulo = QLabel(
             "<h1><span style='color:#738496;'>Rey</span><span style='color:#E30613;'>Boxes</span> - Compraventa</h1>")
         titulo.setAlignment(Qt.AlignCenter)
@@ -72,42 +76,53 @@ class VentanaCompraventa(QWidget):
         fila_selector.setContentsMargins(30, 10, 30, 10)
         self.combo_operacion = QComboBox()
         self.combo_operacion.addItem("Seleccione la operación deseada")
-        self.combo_operacion.addItems(
-            ["Compra por parte del concesionario", "Venta por parte del concesionario"])
+        self.combo_operacion.addItems([
+            "Compra por parte del concesionario",
+            "Venta por parte del concesionario"
+        ])
         fila_selector.addWidget(QLabel("Tipo de operación:"))
         fila_selector.addWidget(self.combo_operacion)
         fila_selector.addStretch()
         layout_general.addLayout(fila_selector)
 
-        self.combo_operacion.currentTextChanged.connect(
-            self.actualizar_secciones)
-
-        # Scroll
+        # Scroll central
         scroll_area = QScrollArea()
         scroll_area.setObjectName("scroll_area_compraventa")
         scroll_area.setWidgetResizable(True)
-        scroll_area.setContentsMargins(0, 0, 0, 0)  # ✅ Márgenes a 0
+        scroll_area.setContentsMargins(0, 0, 0, 0)
         layout_general.addWidget(scroll_area)
 
         self.scroll_widget = QWidget()
-        self.scroll_widget.setObjectName(
-            "scroll_widget")  # ✅ Nombre importante
+        self.scroll_widget.setObjectName("scroll_widget")
         self.scroll_layout = QVBoxLayout(self.scroll_widget)
         self.scroll_layout.setAlignment(Qt.AlignTop)
-        self.scroll_layout.setContentsMargins(
-            0, 0, 0, 0)  # ✅ Márgenes internos a 0
+        self.scroll_layout.setContentsMargins(0, 0, 0, 0)
         scroll_area.setWidget(self.scroll_widget)
 
-        # Secciones
+        # ✅ Crear primero las secciones que no dependen del controlador
         self.seccion_cliente = self.crear_seccion_datos_cliente()
         self.seccion_vehiculo = self.crear_seccion_datos_vehiculo()
+
+        # ✅ Crear el controlador (ya puede usar atributos como cliente_nombre, etc.)
+        self.controlador = CompraventaControlador(self)
+
+        # Forzar ruta de guardado de compra si el checkbox está activo
+        self.controlador.toggle_ruta_guardado(
+            self.checkbox_ruta_predeterminada_compra.isChecked(),
+            self.input_ruta_guardado_compra,
+            self.boton_buscar_ruta_compra,
+            "compra"
+        )
+
+        # ✅ Ahora sí podemos crear la sección que usa controlador directamente
         self.seccion_operacion = self.crear_seccion_datos_operacion()
 
+        # Añadir secciones al layout
         self.scroll_layout.addWidget(self.seccion_cliente['grupo'])
         self.scroll_layout.addWidget(self.seccion_vehiculo['grupo'])
         self.scroll_layout.addWidget(self.seccion_operacion['grupo'])
 
-        # Botones
+        # Botones inferiores
         botones = QHBoxLayout()
         self.boton_confirmar = QPushButton("Confirmar")
         self.boton_borrar = QPushButton("Borrar todo")
@@ -120,7 +135,19 @@ class VentanaCompraventa(QWidget):
         botones.addWidget(self.boton_cancelar)
         layout_general.addLayout(botones)
 
+        # Conectar combo de operación
+        self.combo_operacion.currentTextChanged.connect(
+            self.actualizar_secciones)
         self.actualizar_secciones(self.combo_operacion.currentText())
+
+        # Conectar botones de rutas
+        self.boton_buscar_ruta_compra.clicked.connect(
+            self.controlador.seleccionar_ruta_guardado_compra)
+        self.boton_buscar_ruta_venta.clicked.connect(
+            self.controlador.seleccionar_ruta_guardado_venta)
+
+        # Inicializar tabla de vehículos al arrancar
+        self.controlador.inicializar_datos_vehiculos()
 
     def crear_seccion_plegable(self, titulo):
         grupo = QGroupBox()
@@ -130,10 +157,12 @@ class VentanaCompraventa(QWidget):
         boton_toggle = QToolButton()
         icono_expandir = QIcon(obtener_ruta_absoluta("img/mas.png"))
         icono_colapsar = QIcon(obtener_ruta_absoluta("img/menos.png"))
+
         boton_toggle.setIcon(icono_expandir)
         boton_toggle.setCheckable(True)
         boton_toggle.setChecked(False)
         boton_toggle.setIconSize(QSize(24, 24))
+
         etiqueta = QLabel(f"<b>{titulo}</b>")
         etiqueta.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         etiqueta.setStyleSheet("color: white")
@@ -155,7 +184,11 @@ class VentanaCompraventa(QWidget):
         layout.addLayout(cabecera)
         layout.addWidget(contenido)
 
-        return {"grupo": grupo, "contenido": contenido, "toggle": boton_toggle}
+        return {
+            "grupo": grupo,
+            "contenido": contenido,
+            "toggle": boton_toggle
+        }
 
     def crear_seccion_datos_cliente(self):
         grupo = self.crear_seccion_plegable("Datos del Cliente")
@@ -208,12 +241,6 @@ class VentanaCompraventa(QWidget):
         grupo['contenido'].setLayout(layout)
 
         # Línea 1
-        self.vehiculo_id = QLineEdit()
-        self.vehiculo_id.setReadOnly(True)
-        self.vehiculo_id.setObjectName("vehiculo_id")
-        self.vehiculo_id.setToolTip(
-            "Identificador único asignado automáticamente por el sistema")
-
         self.vehiculo_matricula = QLineEdit()
         self.vehiculo_matricula.setToolTip(
             "Matrícula del vehículo. Ejemplo: 1234-ABC")
@@ -226,14 +253,12 @@ class VentanaCompraventa(QWidget):
         self.vehiculo_modelo.setToolTip(
             "Modelo comercial del vehículo. Ejemplo: Clio, Yaris...")
 
-        layout.addWidget(QLabel("ID:"), 0, 0)
-        layout.addWidget(self.vehiculo_id, 0, 1)
-        layout.addWidget(QLabel("Matrícula:"), 0, 2)
-        layout.addWidget(self.vehiculo_matricula, 0, 3)
-        layout.addWidget(QLabel("Marca:"), 0, 4)
-        layout.addWidget(self.vehiculo_marca, 0, 5)
-        layout.addWidget(QLabel("Modelo:"), 0, 6)
-        layout.addWidget(self.vehiculo_modelo, 0, 7)
+        layout.addWidget(QLabel("Matrícula:"), 0, 0)
+        layout.addWidget(self.vehiculo_matricula, 0, 1)
+        layout.addWidget(QLabel("Marca:"), 0, 2)
+        layout.addWidget(self.vehiculo_marca, 0, 3)
+        layout.addWidget(QLabel("Modelo:"), 0, 4)
+        layout.addWidget(self.vehiculo_modelo, 0, 5)
 
         # Línea 2
         self.vehiculo_version = QLineEdit()
@@ -319,16 +344,22 @@ class VentanaCompraventa(QWidget):
         layout.addWidget(QLabel("Descuento máx. (%):"), 4, 4)
         layout.addWidget(self.vehiculo_descuento, 4, 5)
 
-        # Línea 6: Firma del cliente
+        # Línea 6: Checkboxes de impresión y correo
+        self.checkbox_imprimir_compra = QCheckBox("Imprimir documento")
+        self.checkbox_correo_compra = QCheckBox("Enviar por correo")
+        layout.addWidget(self.checkbox_imprimir_compra, 5, 0)
+        layout.addWidget(self.checkbox_correo_compra, 5, 1)
+
+        # Firma
         firma_label = QLabel("Firma del cliente:")
         self.capturador_firma = CapturadorFirma()
         self.capturador_firma.setToolTip(
             "Captura la firma del cliente en este espacio.")
         self.capturador_firma.activar_firma(False)
-        layout.addWidget(firma_label, 5, 0)
-        layout.addWidget(self.capturador_firma, 5, 1, 1, 5)
+        layout.addWidget(firma_label, 6, 0)
+        layout.addWidget(self.capturador_firma, 6, 1, 1, 5)
 
-        # 🔧 Primero crear los botones
+        # Botones
         self.boton_activar_firma = QToolButton()
         self.boton_activar_firma.setObjectName("boton_compraventa")
         self.boton_activar_firma.setText("Activar\nfirma")
@@ -337,7 +368,8 @@ class VentanaCompraventa(QWidget):
         self.boton_activar_firma.setIconSize(QSize(48, 48))
         self.boton_activar_firma.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.boton_activar_firma.setFixedSize(110, 110)
-        self.boton_activar_firma.clicked.connect(self.activar_modo_firma)
+        self.boton_activar_firma.clicked.connect(
+            lambda: self.toggle_firma(self.capturador_firma, self.boton_activar_firma))
 
         self.boton_limpiar_firma = QToolButton()
         self.boton_limpiar_firma.setObjectName("boton_compraventa")
@@ -369,22 +401,37 @@ class VentanaCompraventa(QWidget):
             Qt.ToolButtonTextUnderIcon)
         self.boton_aceptar_contrato.setFixedSize(110, 110)
 
-        self.boton_activar_firma.setToolTip(
-            "Activar o desactivar la captura de firma")
-        self.boton_limpiar_firma.setToolTip("Borrar la firma actual")
-        self.boton_simular_contrato.setToolTip(
-            "Generar una vista previa del contrato")
-        self.boton_aceptar_contrato.setToolTip(
-            "Aceptar y registrar el contrato final")
-
-        # ✅ Luego añádelos a la cuadrícula
         cuadricula_botones = QGridLayout()
         cuadricula_botones.addWidget(self.boton_activar_firma, 0, 0)
         cuadricula_botones.addWidget(self.boton_limpiar_firma, 0, 1)
         cuadricula_botones.addWidget(self.boton_simular_contrato, 1, 0)
         cuadricula_botones.addWidget(self.boton_aceptar_contrato, 1, 1)
+        layout.addLayout(cuadricula_botones, 6, 6, 1, 2)
 
-        layout.addLayout(cuadricula_botones, 5, 6, 1, 2)
+        # 📁 Ruta de guardado
+        self.checkbox_ruta_predeterminada_compra = QCheckBox(
+            "Guardar en la ruta predeterminada")
+        self.checkbox_ruta_predeterminada_compra.setChecked(True)
+
+        self.input_ruta_guardado_compra = QLineEdit()
+        self.input_ruta_guardado_compra.setDisabled(True)
+
+        self.boton_buscar_ruta_compra = QPushButton("Seleccionar carpeta")
+        self.boton_buscar_ruta_compra.setDisabled(True)
+
+        layout.addWidget(self.checkbox_ruta_predeterminada_compra, 7, 0, 1, 3)
+        layout.addWidget(self.input_ruta_guardado_compra, 8, 0, 1, 4)
+        layout.addWidget(self.boton_buscar_ruta_compra, 8, 4, 1, 2)
+
+        # ✅ Conexión para activar/desactivar y cargar ruta según check
+        self.checkbox_ruta_predeterminada_compra.toggled.connect(
+            lambda estado: self.controlador.toggle_ruta_guardado(
+                estado,
+                self.input_ruta_guardado_compra,
+                self.boton_buscar_ruta_compra,
+                "compra"
+            )
+        )
 
         return grupo
 
@@ -393,11 +440,7 @@ class VentanaCompraventa(QWidget):
         layout = QVBoxLayout()
         grupo['contenido'].setLayout(layout)
 
-        # 🔴 1. Obtener todos los vehículos
-        self.vehiculos_disponibles = obtener_vehiculos_disponibles()
-        self.vehiculos_filtrados = self.vehiculos_disponibles.copy()
-
-        # 🔴 2. Crear tabla (antes que los filtros)
+        # 🔴 1. Crear tabla (antes que los filtros)
         self.tabla_vehiculos = QTableWidget()
         self.tabla_vehiculos.setColumnCount(18)
         self.tabla_vehiculos.setHorizontalHeaderLabels([
@@ -406,16 +449,13 @@ class VentanaCompraventa(QWidget):
         ])
         self.tabla_vehiculos.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tabla_vehiculos.setSelectionBehavior(QTableWidget.SelectRows)
-
-        # 🔧 Mínimo 6 filas visibles
         self.tabla_vehiculos.setMinimumHeight(
             self.tabla_vehiculos.verticalHeader().defaultSectionSize() * 6 +
             self.tabla_vehiculos.horizontalHeader().height()
         )
-
         layout.addWidget(self.tabla_vehiculos)
 
-        # 🔴 3. Crear los filtros (en 4 columnas)
+        # 🔴 2. Crear filtros (interfaz)
         filtros_layout = QGridLayout()
         filtros_layout.setHorizontalSpacing(10)
         filtros_layout.setVerticalSpacing(6)
@@ -431,7 +471,6 @@ class VentanaCompraventa(QWidget):
         self.filtro_plazas = QComboBox()
         self.filtro_precio = QComboBox()
 
-        # ✅ Diccionario de filtros
         self.filtros = {
             "marca": self.filtro_marca,
             "anio": self.filtro_anio,
@@ -462,17 +501,24 @@ class VentanaCompraventa(QWidget):
             fila, columna = divmod(i, 4)
             filtros_layout.addWidget(QLabel(label), fila * 2, columna)
             filtros_layout.addWidget(combo, fila * 2 + 1, columna)
-            combo.currentTextChanged.connect(self.actualizar_tabla_vehiculos)
+            combo.currentTextChanged.connect(
+                self.controlador.actualizar_tabla_vehiculos)
 
         layout.addLayout(filtros_layout)
 
-        # 🔴 4. Llenar combos y tabla
-        self.llenar_valores_filtros()
-        self.actualizar_tabla_vehiculos()
-
-        # 🔴 5. Sección de firma y acciones
+        # 🔴 3. Firma y acciones
         contenedor_firma = QGroupBox("Firma del cliente")
-        layout_firma = QHBoxLayout(contenedor_firma)
+        layout_firma = QVBoxLayout(contenedor_firma)
+
+        checkboxes_envio_layout = QHBoxLayout()
+        self.checkbox_imprimir_venta = QCheckBox("Imprimir documento")
+        self.checkbox_correo_venta = QCheckBox("Enviar por correo")
+        checkboxes_envio_layout.addWidget(self.checkbox_imprimir_venta)
+        checkboxes_envio_layout.addWidget(self.checkbox_correo_venta)
+        checkboxes_envio_layout.addStretch()
+        layout_firma.addLayout(checkboxes_envio_layout)
+
+        firma_botones_layout = QHBoxLayout()
 
         self.capturador_firma_venta = CapturadorFirma()
         self.capturador_firma_venta.setToolTip(
@@ -481,8 +527,6 @@ class VentanaCompraventa(QWidget):
         self.capturador_firma_venta.activar_firma(False)
 
         botones_firma = QHBoxLayout()
-
-        # Tamaño común
         tam_boton = QSize(90, 90)
         tam_icono = QSize(40, 40)
 
@@ -495,7 +539,8 @@ class VentanaCompraventa(QWidget):
         self.boton_activar_firma_venta.setToolButtonStyle(
             Qt.ToolButtonTextUnderIcon)
         self.boton_activar_firma_venta.setFixedSize(tam_boton)
-        self.boton_activar_firma_venta.clicked.connect(self.toggle_firma_venta)
+        self.boton_activar_firma_venta.clicked.connect(
+            lambda: self.toggle_firma(self.capturador_firma_venta, self.boton_activar_firma_venta))
 
         self.boton_limpiar_firma_venta = QToolButton()
         self.boton_limpiar_firma_venta.setObjectName("boton_compraventa_venta")
@@ -518,7 +563,8 @@ class VentanaCompraventa(QWidget):
         self.boton_recargar_vehiculos.setToolButtonStyle(
             Qt.ToolButtonTextUnderIcon)
         self.boton_recargar_vehiculos.setFixedSize(tam_boton)
-        self.boton_recargar_vehiculos.clicked.connect(self.recargar_vehiculos)
+        self.boton_recargar_vehiculos.clicked.connect(
+            self.controlador.recargar_vehiculos)
 
         self.boton_simular_contrato_venta = QToolButton()
         self.boton_simular_contrato_venta.setObjectName(
@@ -551,8 +597,42 @@ class VentanaCompraventa(QWidget):
         ]:
             botones_firma.addWidget(boton)
 
-        layout_firma.addWidget(self.capturador_firma_venta)
-        layout_firma.addLayout(botones_firma)
+        firma_botones_layout.addWidget(self.capturador_firma_venta)
+        firma_botones_layout.addLayout(botones_firma)
+        layout_firma.addLayout(firma_botones_layout)
+
+        # 📁 Ruta de guardado debajo de la firma
+        self.checkbox_ruta_predeterminada_venta = QCheckBox(
+            "Guardar en la ruta predeterminada")
+        self.checkbox_ruta_predeterminada_venta.setChecked(True)
+
+        self.input_ruta_guardado_venta = QLineEdit()
+        self.input_ruta_guardado_venta.setDisabled(True)
+
+        self.boton_buscar_ruta_venta = QPushButton("Seleccionar carpeta")
+        self.boton_buscar_ruta_venta.setDisabled(True)
+
+        self.checkbox_ruta_predeterminada_venta.toggled.connect(
+            lambda estado: self.controlador.toggle_ruta_guardado(
+                self.checkbox_ruta_predeterminada_venta.isChecked(),
+                self.input_ruta_guardado_venta,
+                self.boton_buscar_ruta_venta,
+                "venta"
+            )
+        )
+
+        self.controlador.toggle_ruta_guardado(
+            self.checkbox_ruta_predeterminada_venta.isChecked(),
+            self.input_ruta_guardado_venta,
+            self.boton_buscar_ruta_venta,
+            "venta"
+        )
+
+        layout_firma.addWidget(self.checkbox_ruta_predeterminada_venta)
+        ruta_guardado_layout = QHBoxLayout()
+        ruta_guardado_layout.addWidget(self.input_ruta_guardado_venta)
+        ruta_guardado_layout.addWidget(self.boton_buscar_ruta_venta)
+        layout_firma.addLayout(ruta_guardado_layout)
 
         layout.addWidget(contenedor_firma)
 
@@ -563,116 +643,10 @@ class VentanaCompraventa(QWidget):
             self.ventana_anterior.show()
         self.close()
 
-    def activar_modo_firma(self):
-        """Activa o desactiva el modo firma en el capturador."""
-        if self.capturador_firma.activa:
-            self.capturador_firma.activar_firma(False)
-            self.boton_activar_firma.setText("Activar\nfirma")
+    def toggle_firma(self, capturador, boton):
+        if capturador.activa:
+            capturador.activar_firma(False)
+            boton.setText("Activar\nfirma")
         else:
-            self.capturador_firma.activar_firma(True)
-            self.boton_activar_firma.setText("Desactivar\nfirma")
-
-    def cargar_tabla_filtrada(self):
-        self.tabla_vehiculos.setRowCount(len(self.vehiculos_filtrados))
-
-        for fila, vehiculo in enumerate(self.vehiculos_filtrados):
-            for columna, clave in enumerate(vehiculo):
-                item = QTableWidgetItem(str(vehiculo[clave]))
-                item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
-                item.setTextAlignment(Qt.AlignCenter)  # 🔧 Centrado opcional
-                self.tabla_vehiculos.setItem(fila, columna, item)
-
-        # 🔧 Mejoras visuales:
-        self.tabla_vehiculos.verticalHeader().setVisible(
-            False)           # Ocultar número de fila
-        # Evita que se parta el texto
-        self.tabla_vehiculos.setWordWrap(False)
-        # Ajusta alto de fila
-        self.tabla_vehiculos.resizeRowsToContents()
-        # Ajusta ancho al contenido
-        self.tabla_vehiculos.resizeColumnsToContents()
-        self.tabla_vehiculos.setAlternatingRowColors(
-            True)                # Colores alternos en filas
-
-    def llenar_valores_filtros(self):
-        # Recopilar valores únicos
-        valores = {campo: set() for campo in self.filtros}
-        for veh in self.vehiculos_disponibles:
-            for campo in valores:
-                valores[campo].add(str(veh.get(campo, "")))
-
-        # Campos con rangos personalizados
-        rangos = {
-            "kilometros": ["0-25k", "25k-50k", "50k-100k", "100k-150k", "150k+"],
-            "potencia_cv": ["0-75", "75-100", "100-150", "150-200", "200+"],
-            "precio_venta": ["0-5k", "5k-10k", "10k-15k", "15k-20k", "20k+"],
-        }
-
-        for campo, combo in self.filtros.items():
-            combo.blockSignals(True)
-            combo.clear()
-            combo.addItem("Cualquiera")
-
-            if campo in rangos:
-                for rango in rangos[campo]:
-                    combo.addItem(rango)
-            else:
-                for val in sorted(valores[campo]):
-                    combo.addItem(val)
-
-            combo.blockSignals(False)
-
-    def aplicar_filtros(self):
-        def coincide_rango(valor, texto_rango):
-            try:
-                val = float(valor)
-                if texto_rango.endswith("+"):
-                    return val >= float(texto_rango[:-1].replace("k", "000"))
-                minimo, maximo = texto_rango.replace("k", "000").split("-")
-                return float(minimo) <= val < float(maximo)
-            except:
-                return False
-
-        self.vehiculos_filtrados = []
-
-        for veh in self.vehiculos_disponibles:
-            if veh.get("estado") not in ("DISPONIBLE", "RESERVADO"):
-                continue
-
-            incluir = True
-            for campo, combo in self.filtros.items():
-                filtro = combo.currentText()
-                if filtro == "Cualquiera":
-                    continue
-                valor = str(veh.get(campo, ""))
-
-                if campo in ("kilometros", "potencia_cv", "precio_venta"):
-                    if not coincide_rango(valor, filtro):
-                        incluir = False
-                        break
-                else:
-                    if filtro != valor:
-                        incluir = False
-                        break
-
-            if incluir:
-                self.vehiculos_filtrados.append(veh)
-
-        self.cargar_tabla_filtrada()
-
-    def actualizar_tabla_vehiculos(self):
-        self.aplicar_filtros()
-
-    def toggle_firma_venta(self):
-        if self.capturador_firma_venta.activa:
-            self.capturador_firma_venta.activar_firma(False)
-            self.boton_activar_firma_venta.setText("Activar\nfirma")
-        else:
-            self.capturador_firma_venta.activar_firma(True)
-            self.boton_activar_firma_venta.setText("Desactivar\nfirma")
-
-    def recargar_vehiculos(self):
-        self.vehiculos_disponibles = obtener_vehiculos_disponibles()
-        self.vehiculos_filtrados = self.vehiculos_disponibles.copy()
-        self.llenar_valores_filtros()
-        self.actualizar_tabla_vehiculos()
+            capturador.activar_firma(True)
+            boton.setText("Desactivar\nfirma")
