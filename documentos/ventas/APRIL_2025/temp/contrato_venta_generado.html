@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="contrato_venta.css">
 <!DOCTYPE html>
 <html lang="es">
 
@@ -13,7 +14,7 @@
         <h1>CONTRATO DE COMPRAVENTA DE VEHÍCULO</h1>
     </div>
 
-    <p>En Guadalajara, a {{fecha_actual}}</p>
+    <p>En Guadalajara, a 21/04/2025</p>
 
     <div class="seccion">
         <h3>REUNIDOS</h3>
@@ -22,8 +23,8 @@
             y número de teléfono 912 345 678, en adelante <strong>EL VENDEDOR</strong>.
         </p>
         <p>
-            Y de otra, <strong>{{nombre_completo}}</strong>, con DNI número {{dni}}, domicilio en {{direccion}},
-            {{localidad}}, {{provincia}}, y teléfono {{telefono}}, en adelante <strong>EL COMPRADOR</strong>.
+            Y de otra, <strong>SERGIO CABRERA PEÑA</strong>, con DNI número 99001122T, domicilio en Calle Alta 22,
+            Badajoz, Extremadura, y teléfono 437913693, en adelante <strong>EL COMPRADOR</strong>.
         </p>
         <p>Ambas partes se reconocen mutuamente la capacidad legal necesaria para celebrar este contrato y a tal efecto:
         </p>
@@ -33,13 +34,13 @@
         <h3>EXPONEN</h3>
         <p>Que EL VENDEDOR es propietario del siguiente vehículo:</p>
         <ul>
-            <li><strong>Matrícula:</strong> {{matricula}}</li>
-            <li><strong>Marca / Modelo:</strong> {{marca}} {{modelo}}</li>
-            <li><strong>Versión:</strong> {{version}}</li>
-            <li><strong>Nº Bastidor (VIN):</strong> {{bastidor}}</li>
-            <li><strong>Año:</strong> {{anio}}</li>
-            <li><strong>Kilómetros:</strong> {{km}}</li>
-            <li><strong>Color:</strong> {{color}}</li>
+            <li><strong>Matrícula:</strong> 2772PXF</li>
+            <li><strong>Marca / Modelo:</strong> Citroën C3</li>
+            <li><strong>Versión:</strong> Plus</li>
+            <li><strong>Nº Bastidor (VIN):</strong> DQX4PAX96M6J17XXH</li>
+            <li><strong>Año:</strong> 2023</li>
+            <li><strong>Kilómetros:</strong> 65270</li>
+            <li><strong>Color:</strong> Azul</li>
         </ul>
         <p>
             Que EL COMPRADOR está interesado en adquirir dicho vehículo y ambas partes acuerdan la operación bajo las
@@ -50,7 +51,7 @@
     <div class="seccion">
         <h3>CLÁUSULAS</h3>
         <p>1ª) El vendedor vende al comprador el vehículo de su propiedad anteriormente especificado por la cantidad de
-            <strong>{{precio_final}} euros</strong>, sin incluir los impuestos correspondientes, que serán a cargo del
+            <strong>11446.06 euros</strong>, sin incluir los impuestos correspondientes, que serán a cargo del
             comprador.
         </p>
 
@@ -67,7 +68,7 @@
             comprador la posesión del vehículo, haciéndose el comprador cargo de cuantas responsabilidades puedan
             contraerse por la propiedad del vehículo y su tenencia y uso a partir de dicho momento de la entrega.</p>
 
-        <p>5ª) El vehículo dispone de seguro en vigor hasta fecha de <strong>{{fecha_seguro}}</strong> y se encuentra al
+        <p>5ª) El vehículo dispone de seguro en vigor hasta fecha de <strong>31/12/2025</strong> y se encuentra al
             corriente respecto a las obligaciones derivadas de la ITV (Inspección Técnica de Vehículos).</p>
 
         <p>6ª) El comprador declara conocer el estado actual del vehículo, por lo que exime al vendedor de garantía por
@@ -83,7 +84,7 @@
     <div class="firma">
         <div class="bloque-firma">
             <p>Firmado por EL COMPRADOR</p>
-            <img src="{{firma_cliente}}" alt="Firma del cliente" class="firma-imagen">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAB4CAIAAABTvTPAAAAEIklEQVR4nO3d246bMBQF0E7V///lVG2qlBKgEC4+G6/1OBoRjwbvHBvbfD0ej28ACb63bgDAWgILiCGwgBgCC4ghsIAYAguIIbCAGAILiCGwgBgCC4ghsIAYAguIIbCAGAILiCGwgBgCC4ghsIAYAguIIbCAGAILiCGwgBgCC4ghsIAYAguIIbCAGAILiCGwgBgCC4ghsIAYAguIIbC4yNdvrVtBNoEFxBBYQAyBBcQQWEAMgQXEEFhADIEFxBBYQIwfrRsAE4ZLTB+PR9O2UIgKC4ghsCjHDh7mCCyKbvQzEuSdwKKWarlJKQKLimmlvGKSp4SUsyetRgWa4LsZgcWfTt68b+8cDBpL9sCQkFrec3NNEo3Wbb0uIsVuRmBRwmSyrCn6hs83h1HVvGDkDIaErHJUqbJ8nY9TRjx14st/miLjpslbcfm5YZHZNy6jwrphzz/D/lB4hcsoZZZD5/X78Cuw3A08XVOnHHK/2RrdLRXWWbI60nPq+vo2rx/TvZrnK7Znt/3fX9D3juo5pzb18O79cWsnl3SuDKz3vyLr+4CjmHQ/ywWFwPIsdX3v81lzrF/nSWC1VyFiPs6Ow5tx3sW5AYEV7OKk23mrDBcobG25u5Qnk+4dLQrfes2F3zlwhefwJ3PNmPu5IOuNwEpy3tzzmlVRw08/aWHB3KU2BZkUuzGBFaDIM7K5UuiCVVGbgswM/Y2ZwyqtSd/but9l5XhteNnzMu6/Y1s3fDSBVVer4zf3bNBbOUa7bKn6Qn658xMJrKLaHha8f1PxcnK12ltTZHDNxwRWRc2PNj82UE46UmYnGxITCayKipyacnhuFnyoJ7ayCKxyiqTVqf252oM8sZXCEcks6eR89NGfeeO/NJ3AKqpUt+mkM69Zc09bAqu0OgHRYalFQeaw6qr5DP6omfjmT0JTphEZElgBCm793RM39We4BVZZ9hIGmDsauMLQrEIb6IcKK1hoWBS/5ZRXlamwgtXpVAVXhHb1HdAPFRYHq7YodBPlVXECi1PE1Vz1HwUgsCgxyKqznbB5Y1gmsCg9Q3Te/VlzmRvLBBa9T3XrAkEEFp1mmTs/kcACYtj8DAQGVp2DAQAmqbCAGAILiA0so0IgILA8LgSKMyQEMgNr7qA4gLoVliUOQEBgeWsIEDmHpc4CAgJLnQVEPiVUZAEBgdXDm36BG67DkllA9cAaTmbJLCCgwhpmltgCqg8JlVpA2F5CpRaQtPl5uD5LZgHVT2swPATCjpeRWUDSeVimtIC89xKO0so+RKDuiaOjzdKqLSDjzc/DtFJqAaXPdFdqATEV1t9Lm9gCUt6aY2ILiKmw/vkYE1tASmDNVVjCC6j4ItXJc+KNE4GKFdb4g03JAymBtVBeCS+g8ZDwnZeJATEVFkBMhQXwbYufoFgrymoqg2UAAAAASUVORK5CYII=" alt="Firma del cliente" class="firma-imagen">
         </div>
         <div class="bloque-firma">
             <p>Firmado por EL VENDEDOR</p>

@@ -270,3 +270,23 @@ QPushButton[ruta_guardado="true"] {
 QPushButton[ruta_guardado="true"]:hover {
     background-color: #555;
 }
+
+
+QMessageBox {
+    background-color: #3A3A3A;
+    color: #000000;
+    font-family: Montserrat;
+    font-size: 14px;
+}
+
+QMessageBox QPushButton {
+    background-color: #E30613;
+    color: white;
+    border-radius: 8px;
+    padding: 5px 15px;
+    font-weight: bold;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #b6040f;
+}

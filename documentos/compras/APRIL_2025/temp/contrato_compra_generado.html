@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="contrato_compra.css">
 <!DOCTYPE html>
 <html lang="es">
 
@@ -13,13 +14,13 @@
         <h1>CONTRATO DE COMPRAVENTA DE VEHÍCULO</h1>
     </div>
 
-    <p>En Guadalajara, a {{fecha_actual}}</p>
+    <p>En Guadalajara, a 21/04/2025</p>
 
     <div class="seccion">
         <h3>REUNIDOS</h3>
         <p>
-            De una parte, <strong>{{nombre_completo}}</strong>, con DNI número {{dni}}, domicilio en {{direccion}},
-            {{localidad}}, {{provincia}}, y teléfono {{telefono}}, en adelante <strong>EL VENDEDOR</strong>.
+            De una parte, <strong>SERGIO CABRERA PEÑA</strong>, con DNI número 99001122T, domicilio en Calle Alta 22,
+            Badajoz, Extremadura, y teléfono 437913693, en adelante <strong>EL VENDEDOR</strong>.
         </p>
         <p>
             Y de otra, <strong>REYBOXES S.L.</strong>, con CIF B12345678, domicilio en Calle del Taller 42, Madrid,
@@ -33,13 +34,13 @@
         <h3>EXPONEN</h3>
         <p>Que EL VENDEDOR es propietario del siguiente vehículo:</p>
         <ul>
-            <li><strong>Matrícula:</strong> {{matricula}}</li>
-            <li><strong>Marca / Modelo:</strong> {{marca}} {{modelo}}</li>
-            <li><strong>Versión:</strong> {{version}}</li>
-            <li><strong>Nº Bastidor (VIN):</strong> {{bastidor}}</li>
-            <li><strong>Año:</strong> {{anio}}</li>
-            <li><strong>Kilómetros:</strong> {{km}}</li>
-            <li><strong>Color:</strong> {{color}}</li>
+            <li><strong>Matrícula:</strong> 1234ABC</li>
+            <li><strong>Marca / Modelo:</strong> SEAT Ibiza</li>
+            <li><strong>Versión:</strong> Style</li>
+            <li><strong>Nº Bastidor (VIN):</strong> VSSZZZ6JZMR012345</li>
+            <li><strong>Año:</strong> 2021</li>
+            <li><strong>Kilómetros:</strong> 43000</li>
+            <li><strong>Color:</strong> Rojo</li>
         </ul>
         <p>
             Que EL COMPRADOR está interesado en adquirir dicho vehículo y ambas partes acuerdan la operación bajo las
@@ -50,7 +51,7 @@
     <div class="seccion">
         <h3>CLÁUSULAS</h3>
         <p>1ª) El vendedor vende al comprador el vehículo de su propiedad anteriormente especificado por la cantidad de
-            <strong>{{precio_final}} euros</strong>, sin incluir los impuestos correspondientes, que serán a cargo del
+            <strong>8500 euros</strong>, sin incluir los impuestos correspondientes, que serán a cargo del
             comprador.
         </p>
 
@@ -67,7 +68,7 @@
             comprador la posesión del vehículo, haciéndose el comprador cargo de cuantas responsabilidades puedan
             contraerse por la propiedad del vehículo y su tenencia y uso a partir de dicho momento de la entrega.</p>
 
-        <p>5ª) El vehículo dispone de seguro en vigor hasta fecha de <strong>{{fecha_seguro}}</strong> y se encuentra al
+        <p>5ª) El vehículo dispone de seguro en vigor hasta fecha de <strong>31/12/2025</strong> y se encuentra al
             corriente respecto a las obligaciones derivadas de la ITV (Inspección Técnica de Vehículos).</p>
 
         <p>6ª) El comprador declara conocer el estado actual del vehículo, por lo que exime al vendedor de garantía por
@@ -83,7 +84,7 @@
     <div class="firma">
         <div class="bloque-firma">
             <p>Firmado por EL VENDEDOR</p>
-            <img src="{{firma_cliente}}" alt="Firma del cliente" class="firma-imagen">
+            <img src="data:image/png;base64,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" alt="Firma del cliente" class="firma-imagen">
         </div>
         <div class="bloque-firma">
             <p>Firmado por EL COMPRADOR</p>

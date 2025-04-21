@@ -44,3 +44,33 @@ def mostrar_mensaje_personalizado(vista, titulo, texto, icono=QMessageBox.Questi
         }
     """)
     return box.exec()
+
+    from PySide6.QtWidgets import QMessageBox
+
+
+def mostrar_error(vista, titulo, mensaje):
+    msg = QMessageBox(vista)
+    msg.setIcon(QMessageBox.Critical)
+    msg.setWindowTitle(titulo)
+    msg.setText(f"<p style='color: black;'>{mensaje}</p>")
+    msg.setStyleSheet("""
+        QMessageBox {
+            background-color: white;
+        }
+        QLabel {
+            color: black;
+            font-size: 14px;
+        }
+        QPushButton {
+            min-width: 80px;
+            padding: 6px;
+            background-color: #E30613;
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        QPushButton:hover {
+            background-color: #ff2f2f;
+        }
+    """)
+    msg.exec()

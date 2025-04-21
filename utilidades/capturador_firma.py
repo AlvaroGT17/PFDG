@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QPainter, QPen, QColor, QMouseEvent, QPixmap
 from PySide6.QtCore import Qt, QPoint
+import base64
 
 
 class CapturadorFirma(QWidget):
@@ -66,3 +67,24 @@ class CapturadorFirma(QWidget):
         self.render(painter, QPoint(0, 0))
         painter.end()
         return pixmap
+
+    def obtener_firma_como_bytes(self):
+        """Devuelve la firma como imagen PNG en bytes, o None si está vacía."""
+        pixmap = self.obtener_firma()
+        if pixmap.isNull():
+            return None
+
+        from io import BytesIO
+        from PIL import ImageQt, Image
+
+        image = Image.fromqpixmap(pixmap)
+        buffer = BytesIO()
+        image.save(buffer, format="PNG")
+        return buffer.getvalue()
+
+    def obtener_imagen_base64(self):
+        """Devuelve la firma actual como string base64 (PNG) para incrustar en HTML."""
+        firma_bytes = self.obtener_firma_como_bytes()
+        if firma_bytes is None:
+            return ""
+        return base64.b64encode(firma_bytes).decode("utf-8")

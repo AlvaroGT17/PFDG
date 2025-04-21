@@ -3,7 +3,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox,
     QScrollArea, QToolButton, QSizePolicy, QGridLayout,
     QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
-    QCheckBox, QSizePolicy
+    QCheckBox, QSizePolicy, QMessageBox
 )
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QIcon
@@ -106,15 +106,7 @@ class VentanaCompraventa(QWidget):
         # ✅ Crear el controlador (ya puede usar atributos como cliente_nombre, etc.)
         self.controlador = CompraventaControlador(self)
 
-        # Forzar ruta de guardado de compra si el checkbox está activo
-        self.controlador.toggle_ruta_guardado(
-            self.checkbox_ruta_predeterminada_compra.isChecked(),
-            self.input_ruta_guardado_compra,
-            self.boton_buscar_ruta_compra,
-            "compra"
-        )
-
-        # ✅ Ahora sí podemos crear la sección que usa controlador directamente
+        # ✅ Crear ahora la sección que SÍ depende del controlador
         self.seccion_operacion = self.crear_seccion_datos_operacion()
 
         # Añadir secciones al layout
@@ -145,6 +137,20 @@ class VentanaCompraventa(QWidget):
             self.controlador.seleccionar_ruta_guardado_compra)
         self.boton_buscar_ruta_venta.clicked.connect(
             self.controlador.seleccionar_ruta_guardado_venta)
+
+        # Inicializar rutas predeterminadas
+        self.controlador.toggle_ruta_guardado(
+            self.checkbox_ruta_predeterminada_compra.isChecked(),
+            self.input_ruta_guardado_compra,
+            self.boton_buscar_ruta_compra,
+            "compra"
+        )
+        self.controlador.toggle_ruta_guardado(
+            self.checkbox_ruta_predeterminada_venta.isChecked(),
+            self.input_ruta_guardado_venta,
+            self.boton_buscar_ruta_venta,
+            "venta"
+        )
 
         # Inicializar tabla de vehículos al arrancar
         self.controlador.inicializar_datos_vehiculos()
@@ -433,6 +439,14 @@ class VentanaCompraventa(QWidget):
             )
         )
 
+        # 🔗 Conectar botones de COMPRA
+        self.boton_simular_contrato.clicked.connect(
+            lambda: self.controlador.simular_contrato("compra")
+        )
+        self.boton_aceptar_contrato.clicked.connect(
+            lambda: self.controlador.aceptar_contrato("compra")
+        )
+
         return grupo
 
     def crear_seccion_datos_operacion(self):
@@ -443,6 +457,7 @@ class VentanaCompraventa(QWidget):
         # 🔴 1. Crear tabla (antes que los filtros)
         self.tabla_vehiculos = QTableWidget()
         self.tabla_vehiculos.setColumnCount(18)
+        self.tabla_vehiculos.setEditTriggers(QTableWidget.NoEditTriggers)
         self.tabla_vehiculos.setHorizontalHeaderLabels([
             "ID", "Matrícula", "Marca", "Modelo", "Versión", "Año", "Bastidor", "Color", "Combustible",
             "Kilómetros", "Potencia", "Cambio", "Puertas", "Plazas", "P. Compra", "P. Venta", "Descuento", "Estado"
@@ -635,6 +650,14 @@ class VentanaCompraventa(QWidget):
         layout_firma.addLayout(ruta_guardado_layout)
 
         layout.addWidget(contenedor_firma)
+
+        # 🔗 Conectar botones de VENTA
+        self.boton_simular_contrato_venta.clicked.connect(
+            lambda: self.controlador.simular_contrato("venta")
+        )
+        self.boton_aceptar_contrato_venta.clicked.connect(
+            lambda: self.controlador.aceptar_contrato("venta")
+        )
 
         return grupo
 
