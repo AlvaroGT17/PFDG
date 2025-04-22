@@ -45,3 +45,6 @@ if __name__ == "__main__":
     cargar_datos_prueba(ventana_dummy)
     ventana_dummy.show()
     sys.exit(app.exec())
+
+# para ejecutar el test, usar el siguiente comando en la terminal:
+# python -m pruebas.compraventa_test

@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
     QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
     QCheckBox, QSizePolicy, QMessageBox
 )
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, QEvent
 from PySide6.QtGui import QIcon
 from utilidades.rutas import obtener_ruta_absoluta, obtener_ruta_predeterminada_compras, obtener_ruta_predeterminada_ventas
 from utilidades.capturador_firma import CapturadorFirma
@@ -106,6 +106,14 @@ class VentanaCompraventa(QWidget):
         # ✅ Crear el controlador (ya puede usar atributos como cliente_nombre, etc.)
         self.controlador = CompraventaControlador(self)
 
+        # Inicializar ruta de guardado de compra
+        self.controlador.toggle_ruta_guardado(
+            self.checkbox_ruta_predeterminada_compra.isChecked(),
+            self.input_ruta_guardado_compra,
+            self.boton_buscar_ruta_compra,
+            "compra"
+        )
+
         # ✅ Crear ahora la sección que SÍ depende del controlador
         self.seccion_operacion = self.crear_seccion_datos_operacion()
 
@@ -154,6 +162,22 @@ class VentanaCompraventa(QWidget):
 
         # Inicializar tabla de vehículos al arrancar
         self.controlador.inicializar_datos_vehiculos()
+
+        # 👉 Estados de firma
+        self.firma_activa_compra = False
+        self.firma_activa_venta = False
+
+        # 👉 Mensajes visuales de activación
+        self.mensaje_firma_compra.setStyleSheet(
+            "color: yellow; font-weight: bold;")
+        self.mensaje_firma_compra.setVisible(False)
+
+        self.mensaje_firma_venta.setStyleSheet(
+            "color: yellow; font-weight: bold;")
+        self.mensaje_firma_venta.setVisible(False)
+
+        # 👉 Captura de eventos de teclado
+        self.installEventFilter(self)
 
     def crear_seccion_plegable(self, titulo):
         grupo = QGroupBox()
@@ -356,24 +380,34 @@ class VentanaCompraventa(QWidget):
         layout.addWidget(self.checkbox_imprimir_compra, 5, 0)
         layout.addWidget(self.checkbox_correo_compra, 5, 1)
 
-        # Firma
-        firma_label = QLabel("Firma del cliente:")
-        self.capturador_firma = CapturadorFirma()
-        self.capturador_firma.setToolTip(
-            "Captura la firma del cliente en este espacio.")
-        self.capturador_firma.activar_firma(False)
-        layout.addWidget(firma_label, 6, 0)
-        layout.addWidget(self.capturador_firma, 6, 1, 1, 5)
+        # Contenedor firma y botones
+        contenedor_firma_compra = QGroupBox("Firma del cliente")
+        layout_firma = QVBoxLayout(contenedor_firma_compra)
 
-        # Botones
+        self.capturador_firma = CapturadorFirma()
+        self.capturador_firma.setToolTip("Captura la firma del cliente.")
+        self.capturador_firma.setFixedSize(400, 120)
+        self.capturador_firma.activar_firma(False)
+
+        self.mensaje_firma_compra = QLabel(
+            "🖊️ Firma activada – pulse ENTER para finalizar")
+        self.mensaje_firma_compra.setStyleSheet(
+            "color: yellow; font-weight: bold;")
+        self.mensaje_firma_compra.setAlignment(Qt.AlignCenter)
+        self.mensaje_firma_compra.setVisible(False)
+
+        botones_firma = QHBoxLayout()
+        tam_boton = QSize(90, 90)
+        tam_icono = QSize(40, 40)
+
         self.boton_activar_firma = QToolButton()
         self.boton_activar_firma.setObjectName("boton_compraventa")
         self.boton_activar_firma.setText("Activar\nfirma")
         self.boton_activar_firma.setIcon(
             QIcon(obtener_ruta_absoluta("img/firma.png")))
-        self.boton_activar_firma.setIconSize(QSize(48, 48))
+        self.boton_activar_firma.setIconSize(tam_icono)
         self.boton_activar_firma.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        self.boton_activar_firma.setFixedSize(110, 110)
+        self.boton_activar_firma.setFixedSize(tam_boton)
         self.boton_activar_firma.clicked.connect(
             lambda: self.toggle_firma(self.capturador_firma, self.boton_activar_firma))
 
@@ -382,9 +416,9 @@ class VentanaCompraventa(QWidget):
         self.boton_limpiar_firma.setText("Limpiar\nfirma")
         self.boton_limpiar_firma.setIcon(
             QIcon(obtener_ruta_absoluta("img/limpiar_firma.png")))
-        self.boton_limpiar_firma.setIconSize(QSize(48, 48))
+        self.boton_limpiar_firma.setIconSize(tam_icono)
         self.boton_limpiar_firma.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        self.boton_limpiar_firma.setFixedSize(110, 110)
+        self.boton_limpiar_firma.setFixedSize(tam_boton)
         self.boton_limpiar_firma.clicked.connect(self.capturador_firma.limpiar)
 
         self.boton_simular_contrato = QToolButton()
@@ -392,29 +426,26 @@ class VentanaCompraventa(QWidget):
         self.boton_simular_contrato.setText("Simular\ncontrato")
         self.boton_simular_contrato.setIcon(
             QIcon(obtener_ruta_absoluta("img/simular.png")))
-        self.boton_simular_contrato.setIconSize(QSize(48, 48))
+        self.boton_simular_contrato.setIconSize(tam_icono)
         self.boton_simular_contrato.setToolButtonStyle(
             Qt.ToolButtonTextUnderIcon)
-        self.boton_simular_contrato.setFixedSize(110, 110)
+        self.boton_simular_contrato.setFixedSize(tam_boton)
 
         self.boton_aceptar_contrato = QToolButton()
         self.boton_aceptar_contrato.setObjectName("boton_compraventa")
         self.boton_aceptar_contrato.setText("Aceptar\ncontrato")
         self.boton_aceptar_contrato.setIcon(
             QIcon(obtener_ruta_absoluta("img/aceptar.png")))
-        self.boton_aceptar_contrato.setIconSize(QSize(48, 48))
+        self.boton_aceptar_contrato.setIconSize(tam_icono)
         self.boton_aceptar_contrato.setToolButtonStyle(
             Qt.ToolButtonTextUnderIcon)
-        self.boton_aceptar_contrato.setFixedSize(110, 110)
+        self.boton_aceptar_contrato.setFixedSize(tam_boton)
 
-        cuadricula_botones = QGridLayout()
-        cuadricula_botones.addWidget(self.boton_activar_firma, 0, 0)
-        cuadricula_botones.addWidget(self.boton_limpiar_firma, 0, 1)
-        cuadricula_botones.addWidget(self.boton_simular_contrato, 1, 0)
-        cuadricula_botones.addWidget(self.boton_aceptar_contrato, 1, 1)
-        layout.addLayout(cuadricula_botones, 6, 6, 1, 2)
+        for boton in [self.boton_activar_firma, self.boton_limpiar_firma,
+                      self.boton_simular_contrato, self.boton_aceptar_contrato]:
+            botones_firma.addWidget(boton)
 
-        # 📁 Ruta de guardado
+        # Ruta de guardado
         self.checkbox_ruta_predeterminada_compra = QCheckBox(
             "Guardar en la ruta predeterminada")
         self.checkbox_ruta_predeterminada_compra.setChecked(True)
@@ -425,11 +456,6 @@ class VentanaCompraventa(QWidget):
         self.boton_buscar_ruta_compra = QPushButton("Seleccionar carpeta")
         self.boton_buscar_ruta_compra.setDisabled(True)
 
-        layout.addWidget(self.checkbox_ruta_predeterminada_compra, 7, 0, 1, 3)
-        layout.addWidget(self.input_ruta_guardado_compra, 8, 0, 1, 4)
-        layout.addWidget(self.boton_buscar_ruta_compra, 8, 4, 1, 2)
-
-        # ✅ Conexión para activar/desactivar y cargar ruta según check
         self.checkbox_ruta_predeterminada_compra.toggled.connect(
             lambda estado: self.controlador.toggle_ruta_guardado(
                 estado,
@@ -439,13 +465,31 @@ class VentanaCompraventa(QWidget):
             )
         )
 
-        # 🔗 Conectar botones de COMPRA
+        ruta_guardado_layout = QHBoxLayout()
+        ruta_guardado_layout.addWidget(self.input_ruta_guardado_compra)
+        ruta_guardado_layout.addWidget(self.boton_buscar_ruta_compra)
+
+        # Layout horizontal con firma + botones
+        firma_y_botones_vertical = QVBoxLayout()
+        firma_y_botones_vertical.addWidget(self.capturador_firma)
+        firma_y_botones_vertical.addWidget(self.mensaje_firma_compra)
+
+        firma_y_botones = QHBoxLayout()
+        firma_y_botones.addLayout(firma_y_botones_vertical)
+        firma_y_botones.addLayout(botones_firma)
+
+        layout_firma.addLayout(firma_y_botones)
+
+        layout_firma.addWidget(self.checkbox_ruta_predeterminada_compra)
+        layout_firma.addLayout(ruta_guardado_layout)
+
+        layout.addWidget(contenedor_firma_compra, 6, 0, 1, 8)
+
+        # Conectar botones de COMPRA
         self.boton_simular_contrato.clicked.connect(
-            lambda: self.controlador.simular_contrato("compra")
-        )
+            lambda: self.controlador.simular_contrato("compra"))
         self.boton_aceptar_contrato.clicked.connect(
-            lambda: self.controlador.aceptar_contrato("compra")
-        )
+            lambda: self.controlador.aceptar_contrato("compra"))
 
         return grupo
 
@@ -525,22 +569,27 @@ class VentanaCompraventa(QWidget):
         contenedor_firma = QGroupBox("Firma del cliente")
         layout_firma = QVBoxLayout(contenedor_firma)
 
-        checkboxes_envio_layout = QHBoxLayout()
-        self.checkbox_imprimir_venta = QCheckBox("Imprimir documento")
-        self.checkbox_correo_venta = QCheckBox("Enviar por correo")
-        checkboxes_envio_layout.addWidget(self.checkbox_imprimir_venta)
-        checkboxes_envio_layout.addWidget(self.checkbox_correo_venta)
-        checkboxes_envio_layout.addStretch()
-        layout_firma.addLayout(checkboxes_envio_layout)
+        # 🔁 Mensaje informativo sobre la firma (VENTA)
+        self.mensaje_firma_venta = QLabel(
+            "🖊️ Firma activada – pulse ENTER para finalizar")
+        self.mensaje_firma_venta.setStyleSheet(
+            "color: yellow; font-weight: bold;")
+        self.mensaje_firma_venta.setAlignment(Qt.AlignCenter)
+        self.mensaje_firma_venta.setVisible(False)
 
-        firma_botones_layout = QHBoxLayout()
-
+        # 🔁 Capturador de firma
         self.capturador_firma_venta = CapturadorFirma()
         self.capturador_firma_venta.setToolTip(
             "Firma del cliente que realiza la compra.")
         self.capturador_firma_venta.setFixedSize(400, 120)
         self.capturador_firma_venta.activar_firma(False)
 
+        # 🧱 Layout vertical para mensaje + firma
+        contenedor_firma_venta = QVBoxLayout()
+        contenedor_firma_venta.addWidget(self.mensaje_firma_venta)
+        contenedor_firma_venta.addWidget(self.capturador_firma_venta)
+
+        # ▶️ Botones
         botones_firma = QHBoxLayout()
         tam_boton = QSize(90, 90)
         tam_icono = QSize(40, 40)
@@ -555,7 +604,9 @@ class VentanaCompraventa(QWidget):
             Qt.ToolButtonTextUnderIcon)
         self.boton_activar_firma_venta.setFixedSize(tam_boton)
         self.boton_activar_firma_venta.clicked.connect(
-            lambda: self.toggle_firma(self.capturador_firma_venta, self.boton_activar_firma_venta))
+            lambda: self.toggle_firma(
+                self.capturador_firma_venta, self.boton_activar_firma_venta)
+        )
 
         self.boton_limpiar_firma_venta = QToolButton()
         self.boton_limpiar_firma_venta.setObjectName("boton_compraventa_venta")
@@ -603,6 +654,7 @@ class VentanaCompraventa(QWidget):
             Qt.ToolButtonTextUnderIcon)
         self.boton_aceptar_contrato_venta.setFixedSize(tam_boton)
 
+        # Añadir botones al layout
         for boton in [
             self.boton_activar_firma_venta,
             self.boton_limpiar_firma_venta,
@@ -612,9 +664,11 @@ class VentanaCompraventa(QWidget):
         ]:
             botones_firma.addWidget(boton)
 
-        firma_botones_layout.addWidget(self.capturador_firma_venta)
-        firma_botones_layout.addLayout(botones_firma)
-        layout_firma.addLayout(firma_botones_layout)
+        # ⬇️ Añadir todo al layout principal de la sección
+        firma_y_botones = QHBoxLayout()
+        firma_y_botones.addLayout(contenedor_firma_venta)
+        firma_y_botones.addLayout(botones_firma)
+        layout_firma.addLayout(firma_y_botones)
 
         # 📁 Ruta de guardado debajo de la firma
         self.checkbox_ruta_predeterminada_venta = QCheckBox(
@@ -649,6 +703,7 @@ class VentanaCompraventa(QWidget):
         ruta_guardado_layout.addWidget(self.boton_buscar_ruta_venta)
         layout_firma.addLayout(ruta_guardado_layout)
 
+        # 📌 Agregar al layout principal
         layout.addWidget(contenedor_firma)
 
         # 🔗 Conectar botones de VENTA
@@ -667,9 +722,40 @@ class VentanaCompraventa(QWidget):
         self.close()
 
     def toggle_firma(self, capturador, boton):
-        if capturador.activa:
-            capturador.activar_firma(False)
-            boton.setText("Activar\nfirma")
-        else:
-            capturador.activar_firma(True)
-            boton.setText("Desactivar\nfirma")
+        if capturador == self.capturador_firma:  # COMPRA
+            if not self.firma_activa_compra:
+                self.firma_activa_compra = True
+                capturador.activar_firma(True)
+                boton.setText("Firmando...")
+                self.mensaje_firma_compra.setVisible(True)
+                capturador.setFocus()
+            else:
+                self.firma_activa_compra = False
+                capturador.activar_firma(False)
+                boton.setText("Activar\nfirma")
+                self.mensaje_firma_compra.setVisible(False)
+
+        elif capturador == self.capturador_firma_venta:  # VENTA
+            if not self.firma_activa_venta:
+                self.firma_activa_venta = True
+                capturador.activar_firma(True)
+                boton.setText("Firmando...")
+                self.mensaje_firma_venta.setVisible(True)
+                capturador.setFocus()
+            else:
+                self.firma_activa_venta = False
+                capturador.activar_firma(False)
+                boton.setText("Activar\nfirma")
+                self.mensaje_firma_venta.setVisible(False)
+
+    def eventFilter(self, source, event):
+        if event.type() == QEvent.KeyPress and event.key() in (Qt.Key_Enter, Qt.Key_Return):
+            if self.firma_activa_compra:
+                self.toggle_firma(self.capturador_firma,
+                                  self.boton_activar_firma)
+                return True
+            elif self.firma_activa_venta:
+                self.toggle_firma(self.capturador_firma_venta,
+                                  self.boton_activar_firma_venta)
+                return True
+        return super().eventFilter(source, event)
