@@ -13,9 +13,10 @@ from PySide6.QtCore import Qt
 from vistas.ventana_nuevoCliente_compraventas import VentanaNuevoClienteCompraventas
 from modelos.conexion_bd import obtener_conexion
 from utilidades.mensajes import mostrar_mensaje_personalizado
-from modelos.compraventa_consulta import insertar_nuevo_vehiculo, obtener_id_cliente
+from modelos.compraventa_consulta import insertar_nuevo_vehiculo, obtener_id_cliente, registrar_venta
 from vistas.ventana_correo_confirmacion import VentanaCorreoConfirmacion
 from utilidades.correo_contratos import enviar_correo_contrato
+from utilidades.imprimir import imprimir_pdf
 from modelos.nuevoCliente_compraventa_consulta import (
     obtener_datos_cliente_por_nombre,
     obtener_cliente_por_id,
@@ -420,14 +421,8 @@ class CompraventaControlador:
             return None
         return self.vista.vehiculos_filtrados[fila]
 
-    def aceptar_contrato(self, tipo):
-        if tipo != "compra":
-            return  # Solo gestionamos aquí contratos de COMPRA
-
+    def aceptar_contrato_compra(self):
         try:
-            from weasyprint import HTML
-            from utilidades.rutas import obtener_ruta_absoluta
-
             # Obtener datos del formulario
             datos = {
                 "marca": self.vista.vehiculo_marca.text().strip(),
@@ -521,15 +516,16 @@ class CompraventaControlador:
 
                 # 5. Imprimir el contrato si está marcada la opción
                 if self.vista.checkbox_imprimir_compra.isChecked():
-                    try:
-                        import subprocess
-                        subprocess.run(
-                            ['start', '/min', '/wait', ruta_destino], shell=True)
-                        subprocess.run(
-                            ['cmd', '/c', f'start /min /wait "" "{ruta_destino}" /p'], shell=True)
-                    except Exception as e:
-                        QMessageBox.warning(self.vista, "Error al imprimir",
-                                            f"⚠️ No se pudo enviar el contrato a la impresora:\n{str(e)}")
+                    if ruta_destino and os.path.isfile(ruta_destino):
+                        try:
+                            if self.vista.checkbox_imprimir_compra.isChecked():
+                                imprimir_pdf(ruta_destino, self.vista)
+                        except Exception as e:
+                            QMessageBox.warning(self.vista, "Error al imprimir",
+                                                f"⚠️ No se pudo enviar el contrato a la impresora:\n{str(e)}")
+                    else:
+                        QMessageBox.warning(self.vista, "Archivo no encontrado",
+                                            "❌ El archivo PDF no existe o la ruta no es válida.\nNo se pudo imprimir el contrato.")
 
             except Exception as e:
                 QMessageBox.warning(self.vista, "Advertencia",
@@ -617,3 +613,150 @@ class CompraventaControlador:
         except Exception as e:
             print(f"❌ Error al generar HTML contrato compra: {e}")
             return None
+
+    def aceptar_contrato_venta(self):
+        try:
+            from weasyprint import HTML
+
+            vehiculo = self.obtener_vehiculo_seleccionado()
+            if not vehiculo:
+                QMessageBox.warning(self.vista, "Vehículo no seleccionado",
+                                    "Debes seleccionar un vehículo de la tabla.")
+                return
+
+            firma_cliente_base64 = self.vista.capturador_firma_venta.obtener_imagen_base64()
+
+            datos_cliente = {
+                "nombre_completo": self.vista.cliente_nombre.text(),
+                "dni": self.vista.cliente_dni.text(),
+                "direccion": self.vista.cliente_direccion.text(),
+                "localidad": self.vista.cliente_localidad.text(),
+                "provincia": self.vista.cliente_provincia.text(),
+                "telefono": self.vista.cliente_telefono.text(),
+                "precio_final": vehiculo["precio_venta"],
+                "fecha_seguro": "31/12/2025",
+                "firma_cliente": f"data:image/png;base64,{firma_cliente_base64}",
+                "firma_taller": "img/firmataller.png",
+                **vehiculo
+            }
+
+            # Renderizar HTML desde plantilla
+            with open("plantillas/contrato_venta_concesionario.html", "r", encoding="utf-8") as f:
+                plantilla = Template(f.read())
+
+            html_renderizado = plantilla.render(**datos_cliente)
+
+            # Crear carpeta temporal
+            ruta_temp = os.path.join("documentos", "ventas", "temp")
+            os.makedirs(ruta_temp, exist_ok=True)
+
+            html_path = os.path.join(ruta_temp, "contrato_venta_generado.html")
+            pdf_temp = os.path.join(ruta_temp, "contrato_venta_temp.pdf")
+
+            # Guardar HTML y recursos
+            with open(html_path, "w", encoding="utf-8") as f:
+                f.write(
+                    f'<link rel="stylesheet" href="contrato_venta.css">\n{html_renderizado}')
+            shutil.copy("plantillas/contrato_compraventa.css",
+                        os.path.join(ruta_temp, "contrato_venta.css"))
+            shutil.copy("img/logo.jpg", os.path.join(ruta_temp, "logo.jpg"))
+            shutil.copy("img/firmataller.png",
+                        os.path.join(ruta_temp, "firmataller.png"))
+
+            # Generar PDF
+            HTML(html_path).write_pdf(pdf_temp)
+
+            # Guardar en ruta personalizada
+            ruta_usuario = self.vista.input_ruta_guardado_venta.text().strip()
+            if not ruta_usuario:
+                QMessageBox.warning(self.vista, "Ruta no válida",
+                                    "Debes especificar una ruta para guardar el contrato.")
+                return
+
+            os.makedirs(ruta_usuario, exist_ok=True)
+
+            # 🔧 AQUÍ definimos correctamente ruta_destino
+            ruta_destino = os.path.join(
+                ruta_usuario, f"CONTRATO_VENTA_{vehiculo['matricula']}.pdf")
+
+            shutil.copy2(pdf_temp, ruta_destino)
+
+            # Guardar en carpeta mensual
+            nombre_mes = datetime.now().strftime("%B").upper()
+            anio = datetime.now().year
+            carpeta_mensual = os.path.join(
+                "documentos", "ventas", f"{nombre_mes}_{anio}")
+            os.makedirs(carpeta_mensual, exist_ok=True)
+
+            ruta_pdf_mensual = os.path.join(
+                carpeta_mensual, f"CONTRATO_VENTA_{vehiculo['matricula']}.pdf")
+            shutil.copy2(pdf_temp, ruta_pdf_mensual)
+
+            # Registrar venta
+            cliente_id = obtener_id_cliente(
+                self.vista.cliente_dni.text().strip())
+            vehiculo_id = vehiculo["id"]
+            precio_final = vehiculo["precio_venta"]
+            registrar_venta(cliente_id, vehiculo_id, precio_final,
+                            ruta_destino, ruta_usuario)
+
+            # Imprimir si está marcado
+            import subprocess
+
+            if self.vista.checkbox_imprimir_venta.isChecked():
+                if ruta_destino and os.path.isfile(ruta_destino):
+                    try:
+                        print(f"🖨 Enviando a imprimir: {ruta_destino}")
+                        # Ejecuta impresión silenciosa con Adobe Reader si está instalado
+                        subprocess.run([
+                            'cmd', '/c',
+                            f'start /min "" /wait acrord32.exe /t "{ruta_destino}"'
+                        ], check=True)
+                    except Exception as e:
+                        QMessageBox.warning(
+                            self.vista, "Error al imprimir",
+                            f"⚠️ No se pudo enviar el contrato a la impresora:\n\n{str(e)}"
+                        )
+                else:
+                    QMessageBox.warning(
+                        self.vista, "Archivo no encontrado",
+                        "❌ El archivo PDF no existe o la ruta no es válida.\nNo se pudo imprimir el contrato.")
+
+            # Enviar por correo si está marcado
+            if self.vista.checkbox_correo_venta.isChecked():
+                ventana_correo = VentanaCorreoConfirmacion(
+                    self.vista.cliente_email.text(), self.vista)
+                if ventana_correo.exec():
+                    correo_destino = ventana_correo.correo_seleccionado
+                    if correo_destino == "DEFECTO":
+                        correo_destino = self.vista.cliente_email.text().strip()
+
+                    datos_mail = {
+                        "Nombre": self.vista.cliente_nombre.text().strip()
+                    }
+                    exito, error = enviar_correo_contrato(
+                        destinatario=correo_destino,
+                        ruta_pdf=ruta_destino,
+                        datos=datos_mail,
+                        tipo="venta"
+                    )
+
+                    if exito:
+                        QMessageBox.information(self.vista, "Correo enviado",
+                                                "📩 El contrato ha sido enviado correctamente.")
+                    else:
+                        QMessageBox.warning(self.vista, "Error al enviar correo",
+                                            f"❌ No se pudo enviar el correo:\n{error}")
+
+            # Eliminar temporales
+            if os.path.exists(html_path):
+                os.remove(html_path)
+            if os.path.exists(pdf_temp):
+                os.remove(pdf_temp)
+
+            QMessageBox.information(self.vista, "Contrato registrado",
+                                    "✅ El contrato de venta ha sido registrado correctamente.")
+
+        except Exception as e:
+            QMessageBox.critical(
+                self.vista, "Error", f"❌ Error al aceptar contrato de venta:\n{str(e)}")

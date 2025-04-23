@@ -71,3 +71,32 @@ def obtener_id_cliente(dni):
     cursor.close()
     conexion.close()
     return resultado[0] if resultado else None
+
+
+def registrar_venta(cliente_id, vehiculo_id, precio_final, ruta_pdf, dir_contrato):
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+
+    try:
+        # 1. Insertar la venta
+        cursor.execute("""
+            INSERT INTO ventas (cliente_id, vehiculo_id, precio_final, ruta_pdf, dir_contrato)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (cliente_id, vehiculo_id, precio_final, ruta_pdf, dir_contrato))
+
+        # 2. Actualizar el estado del vehículo a 'VENDIDO'
+        cursor.execute("""
+            UPDATE coches_venta
+            SET estado = 'VENDIDO'
+            WHERE id = %s
+        """, (vehiculo_id,))
+
+        conexion.commit()
+
+    except Exception as e:
+        conexion.rollback()
+        raise e
+
+    finally:
+        cursor.close()
+        conexion.close()

@@ -99,12 +99,14 @@ class VentanaCompraventa(QWidget):
         self.scroll_layout.setContentsMargins(0, 0, 0, 0)
         scroll_area.setWidget(self.scroll_widget)
 
-        # ✅ Crear primero las secciones que no dependen del controlador
+        # ✅ Primero crea la vista básica
         self.seccion_cliente = self.crear_seccion_datos_cliente()
-        self.seccion_vehiculo = self.crear_seccion_datos_vehiculo()
 
-        # ✅ Crear el controlador (ya puede usar atributos como cliente_nombre, etc.)
+        # ✅ Crea el controlador (para poder usarlo luego)
         self.controlador = CompraventaControlador(self)
+
+        # ✅ Ahora ya puedes crear el resto sin errores
+        self.seccion_vehiculo = self.crear_seccion_datos_vehiculo()
 
         # Inicializar ruta de guardado de compra
         self.controlador.toggle_ruta_guardado(
@@ -489,7 +491,7 @@ class VentanaCompraventa(QWidget):
         self.boton_simular_contrato.clicked.connect(
             lambda: self.controlador.simular_contrato("compra"))
         self.boton_aceptar_contrato.clicked.connect(
-            lambda: self.controlador.aceptar_contrato("compra"))
+            self.controlador.aceptar_contrato_compra)
 
         return grupo
 
@@ -670,6 +672,19 @@ class VentanaCompraventa(QWidget):
         firma_y_botones.addLayout(botones_firma)
         layout_firma.addLayout(firma_y_botones)
 
+        # ✅ Checkboxes para imprimir y enviar por correo (VENTA)
+        checkboxes_layout = QHBoxLayout()
+        checkboxes_layout.setSpacing(15)  # reduce el espacio entre ellos
+
+        self.checkbox_imprimir_venta = QCheckBox("Imprimir documento")
+        self.checkbox_correo_venta = QCheckBox("Enviar por correo")
+
+        checkboxes_layout.addWidget(self.checkbox_imprimir_venta)
+        checkboxes_layout.addWidget(self.checkbox_correo_venta)
+        checkboxes_layout.addStretch()  # empuja a la izquierda
+
+        layout_firma.addLayout(checkboxes_layout)
+
         # 📁 Ruta de guardado debajo de la firma
         self.checkbox_ruta_predeterminada_venta = QCheckBox(
             "Guardar en la ruta predeterminada")
@@ -711,8 +726,7 @@ class VentanaCompraventa(QWidget):
             lambda: self.controlador.simular_contrato("venta")
         )
         self.boton_aceptar_contrato_venta.clicked.connect(
-            lambda: self.controlador.aceptar_contrato("venta")
-        )
+            self.controlador.aceptar_contrato_venta)
 
         return grupo
 
