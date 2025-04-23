@@ -1,7 +1,10 @@
 import os
+import shutil
 import tempfile
 import webbrowser
 import base64
+import pdfkit
+from weasyprint import HTML
 from datetime import datetime
 from jinja2 import Template
 from utilidades.rutas import obtener_ruta_absoluta
@@ -10,6 +13,9 @@ from PySide6.QtCore import Qt
 from vistas.ventana_nuevoCliente_compraventas import VentanaNuevoClienteCompraventas
 from modelos.conexion_bd import obtener_conexion
 from utilidades.mensajes import mostrar_mensaje_personalizado
+from modelos.compraventa_consulta import insertar_nuevo_vehiculo, obtener_id_cliente
+from vistas.ventana_correo_confirmacion import VentanaCorreoConfirmacion
+from utilidades.correo_contratos import enviar_correo_contrato
 from modelos.nuevoCliente_compraventa_consulta import (
     obtener_datos_cliente_por_nombre,
     obtener_cliente_por_id,
@@ -287,19 +293,9 @@ class CompraventaControlador:
 
     def simular_contrato_compra(self):
         try:
-            import shutil
-            from jinja2 import Template
-
-            # 1. Obtener la plantilla HTML
-            with open("plantillas/contrato_compra_concesionario.html", "r", encoding="utf-8") as f:
-                plantilla = Template(f.read())
-
-            # 2. Obtener la firma en base64 desde el capturador
             firma_cliente_base64 = self.vista.capturador_firma.obtener_imagen_base64()
 
-            # 3. Construir los datos a renderizar
-            datos = {
-                "fecha_actual": datetime.now().strftime("%d/%m/%Y"),
+            datos_cliente = {
                 "nombre_completo": self.vista.cliente_nombre.text(),
                 "dni": self.vista.cliente_dni.text(),
                 "direccion": self.vista.cliente_direccion.text(),
@@ -307,9 +303,10 @@ class CompraventaControlador:
                 "provincia": self.vista.cliente_provincia.text(),
                 "telefono": self.vista.cliente_telefono.text(),
                 "precio_final": self.vista.vehiculo_precio_compra.text(),
-                "fecha_seguro": "31/12/2025",
-                "firma_cliente": f"data:image/png;base64,{firma_cliente_base64}",
-                "firma_taller": "img/firmataller.png",
+                "fecha_seguro": "31/12/2025"
+            }
+
+            datos_vehiculo = {
                 "matricula": self.vista.vehiculo_matricula.text(),
                 "marca": self.vista.vehiculo_marca.text(),
                 "modelo": self.vista.vehiculo_modelo.text(),
@@ -320,49 +317,19 @@ class CompraventaControlador:
                 "color": self.vista.vehiculo_color.text()
             }
 
-            # 4. Renderizar HTML
-            html_renderizado = plantilla.render(**datos)
-
-            # 5. Obtener la ruta base (de la carpeta de guardado seleccionada por el usuario)
-            ruta_base = self.vista.input_ruta_guardado_compra.text()
-            if not ruta_base:
-                QMessageBox.warning(
-                    self.vista, "Ruta no especificada", "Debes seleccionar una ruta de guardado.")
-                return
-
-            # 6. Crear subcarpeta 'temp' dentro de la ruta
-            ruta_temp = os.path.join(ruta_base, "temp")
-            os.makedirs(ruta_temp, exist_ok=True)
-
-            # 7. Copiar el CSS a la carpeta temporal
-            css_origen = os.path.abspath("plantillas/contrato_compraventa.css")
-            css_destino = os.path.join(ruta_temp, "contrato_compra.css")
-            shutil.copy(css_origen, css_destino)
-
-            # 7.1. Copiar imágenes necesarias a la carpeta temporal
-            shutil.copy("img/logo.jpg", os.path.join(ruta_temp, "logo.jpg"))
-            shutil.copy("img/firmataller.png",
-                        os.path.join(ruta_temp, "firmataller.png"))
-
-            # 8. Añadir el enlace al CSS al HTML generado
-            ruta_relativa_css = "contrato_compra.css"
-            html_con_css = f'<link rel="stylesheet" href="{ruta_relativa_css}">\n{html_renderizado}'
-
-            # 9. Guardar HTML en la carpeta temp
-            ruta_final = os.path.join(
-                ruta_temp, "contrato_compra_generado.html")
-            with open(ruta_final, "w", encoding="utf-8") as f:
-                f.write(html_con_css)
-
-            # 10. Abrir en navegador
-            webbrowser.open(f"file:///{ruta_final}")
-
-            # 11. Mostrar confirmación
-            QMessageBox.information(self.vista, "Simulación generada",
-                                    "El contrato de compra ha sido generado correctamente.")
+            ruta_html = self.generar_contrato_compra_html(
+                datos_cliente, datos_vehiculo, firma_cliente_base64)
+            if ruta_html:
+                webbrowser.open(f"file:///{os.path.abspath(ruta_html)}")
+                QMessageBox.information(self.vista, "Simulación generada",
+                                        "✅ El contrato de compra ha sido generado correctamente.")
+            else:
+                QMessageBox.critical(self.vista, "Error",
+                                     "❌ No se pudo generar el contrato HTML.")
 
         except Exception as e:
-            print(f"❌ Error al simular contrato de compra: {e}")
+            QMessageBox.critical(
+                self.vista, "Error", f"❌ Error al simular contrato de compra:\n{str(e)}")
 
     def simular_contrato_venta(self):
         try:
@@ -452,3 +419,201 @@ class CompraventaControlador:
         if fila == -1:
             return None
         return self.vista.vehiculos_filtrados[fila]
+
+    def aceptar_contrato(self, tipo):
+        if tipo != "compra":
+            return  # Solo gestionamos aquí contratos de COMPRA
+
+        try:
+            from weasyprint import HTML
+            from utilidades.rutas import obtener_ruta_absoluta
+
+            # Obtener datos del formulario
+            datos = {
+                "marca": self.vista.vehiculo_marca.text().strip(),
+                "modelo": self.vista.vehiculo_modelo.text().strip(),
+                "version": self.vista.vehiculo_version.text().strip(),
+                "anio": int(self.vista.vehiculo_anio.text()),
+                "matricula": self.vista.vehiculo_matricula.text().strip(),
+                "bastidor": self.vista.vehiculo_bastidor.text().strip(),
+                "color": self.vista.vehiculo_color.text().strip(),
+                "combustible": self.vista.vehiculo_combustible.text().strip(),
+                "kilometros": int(self.vista.vehiculo_km.text()) if self.vista.vehiculo_km.text() else None,
+                "potencia_cv": int(self.vista.vehiculo_cv.text()) if self.vista.vehiculo_cv.text() else None,
+                "cambio": self.vista.vehiculo_cambio.text().strip(),
+                "puertas": int(self.vista.vehiculo_puertas.text()) if self.vista.vehiculo_puertas.text() else None,
+                "plazas": int(self.vista.vehiculo_plazas.text()) if self.vista.vehiculo_plazas.text() else None,
+                "precio_compra": float(self.vista.vehiculo_precio_compra.text()),
+                "precio_venta": float(self.vista.vehiculo_precio_venta.text()) if self.vista.vehiculo_precio_venta.text() else None,
+                "descuento_maximo": float(self.vista.vehiculo_descuento.text()) if self.vista.vehiculo_descuento.text() else 0.00,
+                "estado": "DISPONIBLE",
+                "cliente_id": obtener_id_cliente(self.vista.cliente_dni.text().strip()),
+                "origen_compra": "CLIENTE" if self.vista.cliente_nombre.text().strip() or self.vista.cliente_dni.text().strip() else "SUBASTA",
+                "observaciones": self.vista.cliente_observaciones.toPlainText().strip(),
+                "descuento_max": float(self.vista.vehiculo_descuento.text()) if self.vista.vehiculo_descuento.text() else 0.00,
+                "dir_contrato": self.vista.input_ruta_guardado_compra.text().strip()
+            }
+
+            # Validar ruta personalizada
+            if not datos["dir_contrato"]:
+                QMessageBox.warning(self.vista, "Ruta no válida",
+                                    "❌ No se ha especificado ninguna ruta de guardado del contrato.")
+                return
+
+            try:
+                os.makedirs(datos["dir_contrato"], exist_ok=True)
+            except Exception as e:
+                QMessageBox.warning(self.vista, "Error al crear carpeta",
+                                    f"❌ No se pudo crear la carpeta de guardado:\n{str(e)}")
+                return
+
+            # Insertar vehículo en base de datos
+            insertar_nuevo_vehiculo(datos)
+
+            # Definir rutas
+            ruta_temp_dir = obtener_ruta_absoluta(
+                os.path.join("documentos", "compras", "temp"))
+            os.makedirs(ruta_temp_dir, exist_ok=True)
+
+            html_generado = os.path.join(
+                ruta_temp_dir, "contrato_compra_generado.html")
+            contrato_temp = os.path.join(
+                ruta_temp_dir, "contrato_compra_temp.pdf")
+            ruta_destino = os.path.join(
+                datos["dir_contrato"], f"CONTRATO_COMPRA_{datos['matricula']}.pdf")
+
+            # 1. Eliminar PDF temporal anterior si existía
+            if os.path.exists(contrato_temp):
+                try:
+                    os.remove(contrato_temp)
+                except Exception as e:
+                    QMessageBox.warning(self.vista, "Error al eliminar PDF anterior",
+                                        f"No se pudo eliminar el archivo temporal previo:\n{str(e)}")
+                    return
+
+            # 2. Generar el PDF con WeasyPrint
+            try:
+                HTML(html_generado).write_pdf(contrato_temp)
+            except Exception as e:
+                QMessageBox.critical(self.vista, "Error al generar PDF",
+                                     f"No se pudo generar el PDF con WeasyPrint:\n{str(e)}")
+                return
+
+            # 3. Copiar el PDF a la carpeta personalizada del usuario
+            try:
+                shutil.copy2(contrato_temp, ruta_destino)
+            except Exception as e:
+                QMessageBox.critical(self.vista, "Error al copiar PDF a carpeta destino",
+                                     f"No se pudo copiar el PDF a la ruta seleccionada:\n{str(e)}")
+                return
+
+            # 4. Copiar también a la carpeta mensual (ej: documentos/compras/ABRIL_2025)
+            nombre_mes = datetime.now().strftime("%B").upper()
+            anio = datetime.now().year
+            carpeta_mensual = os.path.join(
+                "documentos", "compras", f"{nombre_mes}_{anio}")
+            os.makedirs(carpeta_mensual, exist_ok=True)
+
+            ruta_pdf_mensual = os.path.join(
+                carpeta_mensual, f"CONTRATO_COMPRA_{datos['matricula']}.pdf")
+            try:
+                shutil.copy2(contrato_temp, ruta_pdf_mensual)
+
+                # 5. Imprimir el contrato si está marcada la opción
+                if self.vista.checkbox_imprimir_compra.isChecked():
+                    try:
+                        import subprocess
+                        subprocess.run(
+                            ['start', '/min', '/wait', ruta_destino], shell=True)
+                        subprocess.run(
+                            ['cmd', '/c', f'start /min /wait "" "{ruta_destino}" /p'], shell=True)
+                    except Exception as e:
+                        QMessageBox.warning(self.vista, "Error al imprimir",
+                                            f"⚠️ No se pudo enviar el contrato a la impresora:\n{str(e)}")
+
+            except Exception as e:
+                QMessageBox.warning(self.vista, "Advertencia",
+                                    f"No se pudo copiar el PDF a la carpeta mensual:\n{str(e)}")
+
+            # 5. Eliminar HTML temporal
+            if os.path.exists(html_generado):
+                os.remove(html_generado)
+            if os.path.exists(contrato_temp):
+                os.remove(contrato_temp)
+
+            QMessageBox.information(self.vista, "Contrato registrado",
+                                    "✅ El contrato de compra ha sido registrado correctamente.")
+
+            # Enviar por correo si está marcado
+            if self.vista.checkbox_correo_compra.isChecked():
+                ventana_correo = VentanaCorreoConfirmacion(
+                    self.vista.cliente_email.text(), self.vista)
+                if ventana_correo.exec():
+                    correo_destino = ventana_correo.correo_seleccionado
+                    if correo_destino == "DEFECTO":
+                        correo_destino = self.vista.cliente_email.text().strip()
+
+                    datos_cliente = {
+                        "Nombre": self.vista.cliente_nombre.text().strip()
+                    }
+
+                    exito, error = enviar_correo_contrato(
+                        destinatario=correo_destino,
+                        ruta_pdf=ruta_destino,
+                        datos=datos_cliente,
+                        tipo="compra"
+                    )
+
+                    if exito:
+                        QMessageBox.information(self.vista, "Correo enviado",
+                                                "📩 El contrato ha sido enviado correctamente por correo.")
+                    else:
+                        QMessageBox.warning(self.vista, "Error al enviar correo",
+                                            f"❌ No se pudo enviar el correo:\n{error}")
+
+        except Exception as e:
+            QMessageBox.critical(
+                self.vista, "Error", f"❌ No se pudo registrar el contrato:\n{str(e)}")
+
+    def generar_contrato_compra_html(self, datos_cliente, datos_vehiculo, firma_base64):
+        from jinja2 import Template
+
+        try:
+            # 1. Plantilla
+            with open("plantillas/contrato_compra_concesionario.html", "r", encoding="utf-8") as f:
+                plantilla = Template(f.read())
+
+            # 2. Renderizado
+            datos = {
+                "fecha_actual": datetime.now().strftime("%d/%m/%Y"),
+                "firma_cliente": f"data:image/png;base64,{firma_base64}",
+                "firma_taller": "img/firmataller.png",
+                **datos_cliente,
+                **datos_vehiculo
+            }
+            html_renderizado = plantilla.render(**datos)
+
+            # 3. Rutas
+            ruta_temp_dir = os.path.join("documentos", "compras", "temp")
+            os.makedirs(ruta_temp_dir, exist_ok=True)
+            ruta_css = os.path.join(ruta_temp_dir, "contrato_compra.css")
+            ruta_html = os.path.join(
+                ruta_temp_dir, "contrato_compra_generado.html")
+
+            # 4. Copiar recursos
+            shutil.copy("plantillas/contrato_compraventa.css", ruta_css)
+            shutil.copy("img/logo.jpg",
+                        os.path.join(ruta_temp_dir, "logo.jpg"))
+            shutil.copy("img/firmataller.png",
+                        os.path.join(ruta_temp_dir, "firmataller.png"))
+
+            # 5. Insertar CSS en HTML
+            html_con_css = f'<link rel="stylesheet" href="contrato_compra.css">\n{html_renderizado}'
+            with open(ruta_html, "w", encoding="utf-8") as f:
+                f.write(html_con_css)
+
+            return ruta_html
+
+        except Exception as e:
+            print(f"❌ Error al generar HTML contrato compra: {e}")
+            return None
