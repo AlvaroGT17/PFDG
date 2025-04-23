@@ -126,15 +126,32 @@ class VentanaCompraventa(QWidget):
 
         # Botones inferiores
         botones = QHBoxLayout()
-        self.boton_confirmar = QPushButton("Confirmar")
-        self.boton_borrar = QPushButton("Borrar todo")
-        self.boton_cancelar = QPushButton("Cancelar")
-        self.boton_cancelar.clicked.connect(self.volver)
+
+        self.boton_borrar = QToolButton()
+        self.boton_borrar.setObjectName("boton_compraventa")
+        self.boton_borrar.setText("Borrar\ntodo")
+        self.boton_borrar.setIcon(
+            QIcon(obtener_ruta_absoluta("img/escoba.png")))
+        self.boton_borrar.setIconSize(QSize(40, 40))
+        self.boton_borrar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.boton_borrar.setFixedSize(90, 90)
+        self.boton_borrar.setToolTip("Limpia todos los campos del formulario.")
+        self.boton_borrar.clicked.connect(self.borrar_todo)
+
+        self.boton_volver = QToolButton()
+        self.boton_volver.setObjectName("boton_compraventa")
+        self.boton_volver.setText("Volver")
+        self.boton_volver.setIcon(
+            QIcon(obtener_ruta_absoluta("img/volver.png")))
+        self.boton_volver.setIconSize(QSize(40, 40))
+        self.boton_volver.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.boton_volver.setFixedSize(90, 90)
+        self.boton_volver.setToolTip("Volver a la ventana anterior.")
+        self.boton_volver.clicked.connect(self.volver)
 
         botones.addStretch()
-        botones.addWidget(self.boton_confirmar)
         botones.addWidget(self.boton_borrar)
-        botones.addWidget(self.boton_cancelar)
+        botones.addWidget(self.boton_volver)
         layout_general.addLayout(botones)
 
         # Conectar combo de operación
@@ -773,3 +790,65 @@ class VentanaCompraventa(QWidget):
                                   self.boton_activar_firma_venta)
                 return True
         return super().eventFilter(source, event)
+
+    def borrar_todo(self):
+        # Limpiar campos del cliente
+        self.cliente_nombre.clear()
+        self.cliente_dni.clear()
+        self.cliente_direccion.clear()
+        self.cliente_localidad.clear()
+        self.cliente_provincia.clear()
+        self.cliente_telefono.clear()
+        self.cliente_email.clear()
+        self.cliente_observaciones.clear()
+
+        # Limpiar campos del vehículo
+        self.vehiculo_marca.clear()
+        self.vehiculo_modelo.clear()
+        self.vehiculo_version.clear()
+        self.vehiculo_anio.clear()
+        self.vehiculo_matricula.clear()
+        self.vehiculo_bastidor.clear()
+        self.vehiculo_color.clear()
+        self.vehiculo_combustible.clear()
+        self.vehiculo_km.clear()
+        self.vehiculo_cv.clear()
+        self.vehiculo_cambio.clear()
+        self.vehiculo_puertas.clear()
+        self.vehiculo_plazas.clear()
+        self.vehiculo_precio_compra.clear()
+        self.vehiculo_precio_venta.clear()
+        self.vehiculo_descuento.clear()
+
+        # Limpiar firmas
+        self.capturador_firma.limpiar()
+        self.capturador_firma_venta.limpiar()
+
+        # Limpiar rutas
+        self.input_ruta_guardado_compra.clear()
+        self.input_ruta_guardado_venta.clear()
+
+        # Desmarcar checkbox
+        self.checkbox_correo_compra.setChecked(False)
+        self.checkbox_imprimir_compra.setChecked(False)
+        self.checkbox_correo_venta.setChecked(False)
+        self.checkbox_imprimir_venta.setChecked(False)
+
+        # Volver a ruta predeterminada en compra y venta
+        self.checkbox_ruta_predeterminada_compra.setChecked(True)
+        self.checkbox_ruta_predeterminada_venta.setChecked(True)
+
+        # Resetear selección de operación
+        self.combo_operacion.setCurrentIndex(0)
+
+        # Ocultar mensajes de firma
+        self.mensaje_firma_compra.setVisible(False)
+        self.mensaje_firma_venta.setVisible(False)
+
+        # Resetear estado de firma
+        self.firma_activa_compra = False
+        self.firma_activa_venta = False
+
+        # Resetear botones de firma
+        self.boton_activar_firma.setText("Activar\nfirma")
+        self.boton_activar_firma_venta.setText("Activar\nfirma")

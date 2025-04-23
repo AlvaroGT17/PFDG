@@ -1,0 +1,130 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 40px;
+    background-color: #ffffff;
+    color: #222;
+    line-height: 1.6;
+}
+
+.encabezado {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo {
+    width: 120px;
+    margin-bottom: 10px;
+    border: 2px solid #E30613;
+    border-radius: 8px;
+    padding: 4px;
+    background-color: #fff;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Título principal */
+h1 {
+    color: #E30613;
+    font-size: 24px;
+}
+
+/* Secciones con borde y sombra */
+.seccion {
+    margin-top: 30px;
+    padding: 20px;
+    border: 2px solid #E30613;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(227, 6, 19, 0.15);
+}
+
+/* Títulos de sección */
+.seccion h3 {
+    color: #E30613;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 15px;
+    border-bottom: none; /* Quitamos la línea gris previa */
+}
+
+/* Texto general */
+p, li {
+    font-size: 14px;
+    margin: 6px 0;
+}
+
+ul {
+    list-style-type: square;
+    margin-left: 20px;
+}
+
+/* Firma con estilo igual al resto */
+.firma {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.bloque-firma {
+    width: 48%;
+    text-align: center;
+    border: 2px solid #E30613;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #fff;
+}
+
+.firma-imagen {
+    margin-top: 10px;
+    max-width: 100%;
+    height: 120px;
+    object-fit: contain;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    padding: 4px;
+}
+
+QMessageBox {
+    background-color: #ffffff;
+    color: #000000;
+    font-family: Montserrat;
+    font-size: 14px;
+}
+
+QMessageBox QPushButton {
+    background-color: #E30613;
+    color: white;
+    border-radius: 8px;
+    padding: 5px 15px;
+    font-weight: bold;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #b6040f;
+}
+
+
+
+/* ----------------- PIE DE PÁGINA AUTOMÁTICO ----------------- */
+
+@page {
+    size: A4;
+    margin: 2.5cm 2cm 3cm 2cm;
+
+    @bottom-center {
+        content: "📄 Página " counter(page) " de " counter(pages) "\A"
+                 "© 2025 Rey Boxes · Todos los derechos reservados\A"
+                 "🛡 Documento confidencial — Solo para el destinatario\A";
+        white-space: pre-line;
+        font-size: 9px;
+        font-family: 'Segoe UI', sans-serif;
+        color: #999;
+        border-top: 1px solid #E30613;
+        padding-top: 6px;
+        margin-top: 5px;
+        text-align: center;
+    }
+}

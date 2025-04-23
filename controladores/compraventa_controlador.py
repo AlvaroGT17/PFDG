@@ -423,6 +423,9 @@ class CompraventaControlador:
 
     def aceptar_contrato_compra(self):
         try:
+            from weasyprint import HTML
+            from jinja2 import Template
+
             # Obtener datos del formulario
             datos = {
                 "marca": self.vista.vehiculo_marca.text().strip(),
@@ -486,6 +489,27 @@ class CompraventaControlador:
                                         f"No se pudo eliminar el archivo temporal previo:\n{str(e)}")
                     return
 
+            # 🧩 NUEVO: Renderizar HTML desde plantilla y guardarlo
+            try:
+                with open("plantillas/contrato_compra_concesionario.html", "r", encoding="utf-8") as f:
+                    plantilla = Template(f.read())
+                html_renderizado = plantilla.render(**datos)
+
+                with open(html_generado, "w", encoding="utf-8") as f:
+                    f.write(
+                        f'<link rel="stylesheet" href="contrato_compra.css">\n{html_renderizado}')
+
+                shutil.copy("plantillas/contrato_compraventa.css",
+                            os.path.join(ruta_temp_dir, "contrato_compra.css"))
+                shutil.copy("img/logo.jpg",
+                            os.path.join(ruta_temp_dir, "logo.jpg"))
+                shutil.copy("img/firmataller.png",
+                            os.path.join(ruta_temp_dir, "firmataller.png"))
+            except Exception as e:
+                QMessageBox.critical(self.vista, "Error al preparar HTML",
+                                     f"❌ No se pudo preparar el HTML para generar el contrato:\n{str(e)}")
+                return
+
             # 2. Generar el PDF con WeasyPrint
             try:
                 HTML(html_generado).write_pdf(contrato_temp)
@@ -513,20 +537,6 @@ class CompraventaControlador:
                 carpeta_mensual, f"CONTRATO_COMPRA_{datos['matricula']}.pdf")
             try:
                 shutil.copy2(contrato_temp, ruta_pdf_mensual)
-
-                # 5. Imprimir el contrato si está marcada la opción
-                if self.vista.checkbox_imprimir_compra.isChecked():
-                    if ruta_destino and os.path.isfile(ruta_destino):
-                        try:
-                            if self.vista.checkbox_imprimir_compra.isChecked():
-                                imprimir_pdf(ruta_destino, self.vista)
-                        except Exception as e:
-                            QMessageBox.warning(self.vista, "Error al imprimir",
-                                                f"⚠️ No se pudo enviar el contrato a la impresora:\n{str(e)}")
-                    else:
-                        QMessageBox.warning(self.vista, "Archivo no encontrado",
-                                            "❌ El archivo PDF no existe o la ruta no es válida.\nNo se pudo imprimir el contrato.")
-
             except Exception as e:
                 QMessageBox.warning(self.vista, "Advertencia",
                                     f"No se pudo copiar el PDF a la carpeta mensual:\n{str(e)}")
@@ -539,6 +549,8 @@ class CompraventaControlador:
 
             QMessageBox.information(self.vista, "Contrato registrado",
                                     "✅ El contrato de compra ha sido registrado correctamente.")
+
+            self.vista.borrar_todo()
 
             # Enviar por correo si está marcado
             if self.vista.checkbox_correo_compra.isChecked():
@@ -566,6 +578,19 @@ class CompraventaControlador:
                     else:
                         QMessageBox.warning(self.vista, "Error al enviar correo",
                                             f"❌ No se pudo enviar el correo:\n{error}")
+
+            # ✅ Imprimir directamente (al estilo del módulo de ventas)
+            if self.vista.checkbox_imprimir_compra.isChecked():
+                try:
+                    if os.path.isfile(ruta_destino):
+                        print(f"🖨 Enviando a imprimir: {ruta_destino}")
+                        os.startfile(ruta_destino, "print")
+                    else:
+                        QMessageBox.warning(self.vista, "Archivo no encontrado",
+                                            "❌ El archivo PDF no existe o la ruta no es válida.\nNo se pudo imprimir el contrato.")
+                except Exception as e:
+                    QMessageBox.critical(self.vista, "Error al imprimir",
+                                         f"❌ No se pudo enviar el contrato a la impresora predeterminada.\n\nDetalle del error:\n{str(e)}")
 
         except Exception as e:
             QMessageBox.critical(
@@ -703,25 +728,6 @@ class CompraventaControlador:
             # Imprimir si está marcado
             import subprocess
 
-            if self.vista.checkbox_imprimir_venta.isChecked():
-                if ruta_destino and os.path.isfile(ruta_destino):
-                    try:
-                        print(f"🖨 Enviando a imprimir: {ruta_destino}")
-                        # Ejecuta impresión silenciosa con Adobe Reader si está instalado
-                        subprocess.run([
-                            'cmd', '/c',
-                            f'start /min "" /wait acrord32.exe /t "{ruta_destino}"'
-                        ], check=True)
-                    except Exception as e:
-                        QMessageBox.warning(
-                            self.vista, "Error al imprimir",
-                            f"⚠️ No se pudo enviar el contrato a la impresora:\n\n{str(e)}"
-                        )
-                else:
-                    QMessageBox.warning(
-                        self.vista, "Archivo no encontrado",
-                        "❌ El archivo PDF no existe o la ruta no es válida.\nNo se pudo imprimir el contrato.")
-
             # Enviar por correo si está marcado
             if self.vista.checkbox_correo_venta.isChecked():
                 ventana_correo = VentanaCorreoConfirmacion(
@@ -754,8 +760,24 @@ class CompraventaControlador:
             if os.path.exists(pdf_temp):
                 os.remove(pdf_temp)
 
+            # Imprimir el contrato si está marcada la opción
+            # ✅ Imprimir directamente (estilo RECOMENDADO)
+            if self.vista.checkbox_imprimir_venta.isChecked():  # O el nombre que uses en la venta
+                try:
+                    if os.path.isfile(ruta_destino):
+                        print(f"🖨 Enviando a imprimir: {ruta_destino}")
+                        os.startfile(ruta_destino, "print")
+                    else:
+                        QMessageBox.warning(self.vista, "Archivo no encontrado",
+                                            "❌ El archivo PDF no existe o la ruta no es válida.\nNo se pudo imprimir el contrato.")
+                except Exception as e:
+                    QMessageBox.critical(self.vista, "Error al imprimir",
+                                         f"❌ No se pudo enviar el contrato a la impresora predeterminada.\n\nDetalle del error:\n{str(e)}")
+
             QMessageBox.information(self.vista, "Contrato registrado",
                                     "✅ El contrato de venta ha sido registrado correctamente.")
+
+            self.vista.borrar_todo()
 
         except Exception as e:
             QMessageBox.critical(
