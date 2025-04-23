@@ -1,0 +1,52 @@
+QDialog {
+    background-color: #f2f2f2;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+}
+
+QLabel {
+    color: #333;
+    font-weight: bold;
+}
+
+QLineEdit, QTextEdit, QDoubleSpinBox, QComboBox {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 4px 6px;
+}
+
+QTextEdit {
+    min-height: 80px;
+}
+
+QPushButton {
+    background-color: #e30613;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #b00410;
+}
+
+QPushButton:disabled {
+    background-color: #ccc;
+    color: #666;
+}
+
+QDoubleSpinBox {
+    padding-right: 10px;
+}
+
+QComboBox {
+    padding: 4px;
+}
+
+QLabel#etiqueta_autorizado {
+    color: green;
+    font-size: 14px;
+    font-weight: bold;
+}

@@ -1,5 +1,6 @@
 from PySide6.QtCore import QObject, Signal, QTimer
 from vistas.ventana_inicio import VentanaInicio
+from vistas.ventana_presupuesto import VentanaPresupuesto
 from controladores.fichar_controlador import FicharControlador
 from controladores.historial_controlador import HistorialControlador
 from controladores.usuarios_controlador import UsuariosControlador
@@ -62,6 +63,11 @@ class InicioControlador(QObject):
         if "recepcionamiento" in self.ventana.botones:
             self.ventana.botones["recepcionamiento"].clicked.connect(
                 self.abrir_recepcionamiento)
+
+        if self.rol.upper() in ["ADMINISTRADOR", "ADMINISTRATIVO", "MECANICO"]:
+            if "presupuestos" in self.ventana.botones:
+                self.ventana.botones["presupuestos"].clicked.connect(
+                    self.abrir_presupuestos)
 
         if self.rol.upper() in ["ADMINISTRADOR", "COMPRA/VENTA"]:
             if "compraventa" in self.ventana.botones:
@@ -137,3 +143,7 @@ class InicioControlador(QObject):
         self.ventana.hide()
         self.controlador_compraventa = VentanaCompraventa(self.ventana)
         self.controlador_compraventa.show()
+
+    def abrir_presupuestos(self):
+        self.dialogo_presupuesto = VentanaPresupuesto()
+        self.dialogo_presupuesto.exec()
