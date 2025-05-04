@@ -5,12 +5,16 @@ from vistas.ventana_presentacion import VentanaPresentacion
 from controladores.login_controlador import LoginControlador
 from controladores.recuperar_controlador import RecuperarControlador
 from controladores.inicio_controlador import InicioControlador
+from utilidades.rutas import obtener_ruta_absoluta
+from PySide6.QtGui import QIcon
 
 
 class Aplicacion:
     def __init__(self):
         os.environ["G_MESSAGES_DEBUG"] = "none"
         self.app = QApplication(sys.argv)
+
+        self.app.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
 
         # Ventana de presentación
         self.ventana_presentacion = VentanaPresentacion()

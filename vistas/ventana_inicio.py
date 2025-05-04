@@ -52,25 +52,26 @@ class VentanaInicio(QWidget):
 
         botones_definidos = [
             ("Fichar", "fichar.png"),
-            ("Historial", "historial.png"),
+            ("Historial\nfichaje", "historial.png"),
             ("Crear usuarios", "crear.png"),
             ("Clientes", "clientes.png"),
             ("Vehículos", "vehiculos.png"),
             ("Recepcionamiento", "recepcionamiento.png"),
             ("Compraventa", "compraventa.png"),
             ("Presupuestos", "presupuesto.png"),
-            ("Reparaciones", "reparacion.png"),
-            ("Facturación", "facturacion.png"),
-            ("Reportes", "reportes.png"),
-            ("Usuarios", "usuarios.png"),
+            ("Reimpresion\nrecepcionamientos",
+             "reimprimir_recepcionamiento.png"),
+            ("Reimpresion\npresupuestos", "reimprimir_presupuestos.png"),
+            ("Reimpresion\ncompras", "reimprimir_compra.png"),
+            ("Reimpresion\nventas", "reimprimir_venta.png"),
             ("Cerrar sesión", "salir.png"),
         ]
 
         accesos_por_rol = {
-            "ADMINISTRADOR": ["fichar", "historial", "crear usuarios", "clientes", "vehículos", "recepcionamiento", "Presupuestos", "compraventa", "reparaciones", "facturación", "reportes", "usuarios", "cerrar sesión"],
-            "MECANICO": ["fichar", "historial", "vehículos", "recepcionamiento", "Presupuestos", "reparaciones", "cerrar sesión"],
-            "COMPRA/VENTA": ["fichar", "historial", "vehículos", "recepcionamiento", "compraventa", "reportes", "cerrar sesión"],
-            "ADMINISTRATIVO": ["fichar", "historial", "clientes", "vehículos", "recepcionamiento", "Presupuestos", "facturación", "cerrar sesión"]
+            "ADMINISTRADOR": ["fichar", "Historial\nfichaje", "crear usuarios", "clientes", "vehículos", "recepcionamiento", "Presupuestos", "compraventa", "Reimpresion\nrecepcionamientos", "Reimpresion\npresupuestos", "Reimpresion\ncompras", "Reimpresion\nventas", "cerrar sesión"],
+            "MECANICO": ["fichar", "Historial\nfichaje", "vehículos", "recepcionamiento", "Presupuestos", "reparaciones", "cerrar sesión"],
+            "COMPRA/VENTA": ["fichar", "Historial\nfichaje", "vehículos", "recepcionamiento", "compraventa", "reportes", "cerrar sesión"],
+            "ADMINISTRATIVO": ["fichar", "Historial\nfichaje", "clientes", "vehículos", "recepcionamiento", "Presupuestos", "Reimpresion\nrecepcionamientos", "Reimpresion\npresupuestos", "Reimpresion\ncompras", "Reimpresion\nventas", "cerrar sesión"]
         }
 
         rol_normalizado = self.rol.upper().strip()

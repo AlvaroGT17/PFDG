@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Presupuesto - ReyBoxes</title>
+    <link rel="stylesheet" href="plantilla_presupuesto.css">
+</head>
+
+<body>
+
+    <div class="encabezado">
+        <img src="img/logo.jpg" alt="Logo ReyBoxes" class="logo">
+        <h1>PRESUPUESTO DE REPARACIÓN</h1>
+        <p class="fecha">Fecha: {{fecha_actual}}</p>
+    </div>
+
+    <div class="seccion">
+        <h3>Datos del cliente y vehículo</h3>
+        <p><strong>Cliente:</strong> {{cliente}}</p>
+        <p><strong>Matrícula:</strong> {{matricula}}</p>
+        <p><strong>Fecha de recepción:</strong> {{fecha_recepcion}}</p>
+        <p><strong>Precio máximo autorizado:</strong> {{precio_max}} €</p>
+        <p><strong>Respuesta del cliente:</strong> {{respuesta_cliente}}</p>
+    </div>
+
+    <div class="seccion">
+        <h3>Tareas presupuestadas</h3>
+        <table class="tabla-tareas">
+            <thead>
+                <tr>
+                    <th>Tarea</th>
+                    <th>Horas</th>
+                    <th>Precio/Hora</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{filas_tareas}}
+            </tbody>
+        </table>
+        <p class="total"><strong>Total estimado:</strong> {{total_estimado}} €</p>
+    </div>
+
+    <div class="seccion">
+        <h3>Observaciones</h3>
+        <p>{{observaciones}}</p>
+    </div>
+
+</body>
+
+</html>

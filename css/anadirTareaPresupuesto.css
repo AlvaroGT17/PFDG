@@ -1,0 +1,72 @@
+#ventana_dialogo_tarea {
+    background-color: white;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+QLineEdit {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+QLineEdit:focus {
+    border: 2px solid #e30613;
+}
+
+QPushButton {
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    background-color: #e30613;
+    color: white;
+}
+
+QPushButton:hover {
+    background-color: #b00510;
+}
+
+QPushButton:focus {
+    outline: none;
+    border: 2px solid white;
+}
+
+#etiqueta_error {
+    color: red;
+    font-size: 11px;
+    padding-left: 4px;
+}
+
+QPushButton:disabled {
+    background-color: #cccccc;
+    color: #888888;
+    border: 1px solid #999999;
+    font-style: italic;
+}
+
+QTableWidget {
+    border: 1px solid #d3d3d3;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 14px;
+}
+
+QHeaderView::section {
+    background-color: #e30613;
+    color: white;
+    padding: 4px;
+    font-weight: bold;
+    border: none;
+}
+
+QTableWidget::item {
+    padding: 6px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+QTableWidget QTableCornerButton::section {
+    background-color: #e30613;
+    border: none;
+}
