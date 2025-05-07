@@ -49,8 +49,8 @@ class InicioControlador(QObject):
         if "fichar" in self.ventana.botones:
             self.ventana.botones["fichar"].clicked.connect(self.abrir_fichaje)
 
-        if "historial" in self.ventana.botones:
-            self.ventana.botones["historial"].clicked.connect(
+        if "historial\nfichaje" in self.ventana.botones:
+            self.ventana.botones["historial\nfichaje"].clicked.connect(
                 self.abrir_historial)
 
         if self.rol.upper() == "ADMINISTRADOR":
