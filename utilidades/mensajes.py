@@ -1,20 +1,29 @@
+"""
+Módulo de utilidades para mostrar cuadros de diálogo personalizados con PySide6.
+
+Contiene funciones reutilizables para mostrar mensajes de confirmación y errores
+con estilos visuales adaptados a la estética de la aplicación.
+"""
+
 from PySide6.QtWidgets import QMessageBox
 
 
 def mostrar_mensaje_personalizado(vista, titulo, texto, icono=QMessageBox.Question,
                                   botones=QMessageBox.Yes | QMessageBox.No) -> int:
     """
-    Muestra un QMessageBox con estilo personalizado.
+    Muestra un cuadro de diálogo (QMessageBox) personalizado con opciones configurables.
+
+    Se utiliza para confirmar acciones o mostrar mensajes interactivos, con un estilo visual adaptado.
 
     Args:
-        vista: ventana padre.
-        titulo: título del cuadro de diálogo.
-        texto: cuerpo del mensaje.
-        icono: tipo de icono (Question, Warning, Information, etc.).
-        botones: botones a mostrar (Yes/No, Ok/Cancel, etc.).
+        vista: Ventana padre que invoca el cuadro de diálogo.
+        titulo (str): Título de la ventana emergente.
+        texto (str): Mensaje a mostrar al usuario.
+        icono (QMessageBox.Icon, opcional): Icono del mensaje (por defecto: Question).
+        botones (QMessageBox.StandardButtons, opcional): Botones a mostrar (por defecto: Yes y No).
 
     Returns:
-        int: botón pulsado (por ejemplo QMessageBox.Yes).
+        int: Código del botón pulsado por el usuario (por ejemplo: QMessageBox.Yes).
     """
     box = QMessageBox(vista)
     box.setWindowTitle(titulo)
@@ -22,6 +31,7 @@ def mostrar_mensaje_personalizado(vista, titulo, texto, icono=QMessageBox.Questi
     box.setIcon(icono)
     box.setStandardButtons(botones)
 
+    # Aplicar estilos visuales personalizados
     box.setStyleSheet("""
         QMessageBox {
             background-color: #f3f3f3;
@@ -45,10 +55,18 @@ def mostrar_mensaje_personalizado(vista, titulo, texto, icono=QMessageBox.Questi
     """)
     return box.exec()
 
-    from PySide6.QtWidgets import QMessageBox
-
 
 def mostrar_error(vista, titulo, mensaje):
+    """
+    Muestra un cuadro de diálogo de error con diseño personalizado.
+
+    Esta función se utiliza para notificar errores críticos al usuario con un mensaje claro y visualmente destacado.
+
+    Args:
+        vista: Ventana padre que invoca el cuadro de error.
+        titulo (str): Título de la ventana de error.
+        mensaje (str): Mensaje de error que se mostrará al usuario.
+    """
     msg = QMessageBox(vista)
     msg.setIcon(QMessageBox.Critical)
     msg.setWindowTitle(titulo)

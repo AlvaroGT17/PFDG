@@ -1,25 +1,44 @@
+"""
+Módulo de utilidades para el envío de correos electrónicos con códigos de recuperación de cuenta.
+
+Utiliza el protocolo SMTP con SSL para enviar un mensaje personalizado al usuario con
+su código de verificación. La plantilla HTML está diseñada con los estilos visuales de ReyBoxes.
+"""
+
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
 from dotenv import load_dotenv
 
+# Cargar variables de entorno desde .env
 load_dotenv()
 
 
 def enviar_correo(destinatario, nombre_usuario, codigo):
     """
-    Envía un correo electrónico con el código de recuperación.
+    Envía un correo electrónico con un código de recuperación de cuenta a un destinatario específico.
+
+    El mensaje incluye una plantilla HTML personalizada con el estilo corporativo de ReyBoxes.
+    Utiliza credenciales definidas en variables de entorno (.env) para autenticar el envío.
+
+    Args:
+        destinatario (str): Dirección de correo del destinatario.
+        nombre_usuario (str): Nombre del usuario que recibirá el código (se normaliza).
+        codigo (str): Código de recuperación temporal que se enviará por correo.
+
+    Raises:
+        Exception: Propaga cualquier error relacionado con la conexión o envío del correo.
     """
-    # Normalizar nombre con solo la primera letra mayúscula
+    # Normalizar nombre para mostrar con la primera letra mayúscula
     nombre_normalizado = nombre_usuario.strip().capitalize()
 
-    # Configuración
+    # Configuración del remitente (desde .env)
     remitente = os.getenv("EMAIL_USER")
     contraseña = os.getenv("EMAIL_PASS")
     asunto = "🔐 Recuperación de cuenta - 🚗 ReyBoxes"
 
-    # HTML del correo
+    # Cuerpo HTML del mensaje
     html = f"""
         <div style="font-family: Arial, sans-serif; max-width: 600px; color: black; margin: auto; background: #f1f1f1; border-radius: 12px; padding: 20px; border: 1px solid #ccc;">
             <div style="text-align: center;">
@@ -61,14 +80,14 @@ def enviar_correo(destinatario, nombre_usuario, codigo):
         </div>
     """
 
-    # Configurar mensaje
+    # Configurar el mensaje MIME
     mensaje = MIMEMultipart("alternative")
     mensaje["From"] = remitente
     mensaje["To"] = destinatario
     mensaje["Subject"] = asunto
     mensaje.attach(MIMEText(html, "html"))
 
-    # Enviar mensaje
+    # Enviar el correo por SMTP con SSL
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as servidor:
             servidor.login(remitente, contraseña)

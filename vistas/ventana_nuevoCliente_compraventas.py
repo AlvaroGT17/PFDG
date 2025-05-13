@@ -1,15 +1,27 @@
-from PySide6.QtWidgets import (
-    QWidget, QLabel, QLineEdit, QTextEdit, QPushButton,
-    QVBoxLayout, QHBoxLayout, QFormLayout, QMessageBox
-)
-from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
-from utilidades.rutas import obtener_ruta_absoluta
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QTextEdit, QPushButton, QVBoxLayout, QHBoxLayout, QFormLayout, QMessageBox
 from modelos.nuevoCliente_compraventa_consulta import crear_cliente_y_devolver_id, dni_ya_existe
+from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaNuevoClienteCompraventas(QWidget):
+    """
+    Ventana para registrar un nuevo cliente en el contexto de compraventas.
+
+    Esta ventana permite al usuario introducir los datos personales y de contacto de un nuevo cliente,
+    validar campos obligatorios, comprobar duplicidad de DNI, y guardar la información en la base de datos.
+    Dispone de dos botones principales: "Crear cliente" y "Cancelar".
+    """
+
     def __init__(self, callback_guardar=None):
+        """
+        Inicializa la interfaz gráfica de la ventana para crear un nuevo cliente.
+
+        Parámetros:
+            callback_guardar (función, opcional): Función de retorno que se ejecuta al guardar el cliente,
+            recibiendo como argumento el ID del cliente creado.
+        """
         super().__init__()
         self.setWindowTitle("Nuevo Cliente - ReyBoxes")
         self.setFixedSize(500, 600)
@@ -71,6 +83,16 @@ class VentanaNuevoClienteCompraventas(QWidget):
         layout.addLayout(botones)
 
     def crear_cliente(self):
+        """
+        Procesa los datos introducidos por el usuario para crear un nuevo cliente.
+
+        Realiza las siguientes validaciones y acciones:
+        - Verifica que los campos obligatorios (nombre, primer apellido, DNI y teléfono) estén completos.
+        - Comprueba si el DNI ya existe en la base de datos.
+        - Si todo es correcto, registra al nuevo cliente usando la función `crear_cliente_y_devolver_id()`.
+        - Si se pasa un callback, lo ejecuta con el ID del nuevo cliente.
+        - Muestra mensajes de información o error mediante cuadros de diálogo.
+        """
         nombre = self.nombre.text().strip().upper()
         apellido1 = self.primer_apellido.text().strip().upper()
         dni = self.dni.text().strip().upper()

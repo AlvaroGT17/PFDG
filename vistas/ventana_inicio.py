@@ -1,20 +1,34 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QScrollArea
-from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
-from utilidades.rutas import obtener_ruta_absoluta
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QScrollArea
 from utilidades.boton_animado import BotonAnimado
-from vistas.ventana_recepcionamiento import VentanaRecepcionamiento
-from controladores.recepcionamiento_controlador import RecepcionamientoControlador
+from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaInicio(QWidget):
+    """
+    Ventana principal del sistema ReyBoxes que funciona como panel de navegación.
+
+    Muestra una cuadrícula de botones animados que otorgan acceso a las diferentes
+    funcionalidades del sistema dependiendo del rol del usuario (administrador, mecánico, etc).
+
+    Incluye un saludo personalizado y un panel con scroll si hay demasiadas opciones.
+    """
+
     def __init__(self, nombre, rol):
+        """
+        Inicializa la ventana de inicio, cargando estilos, nombre del usuario y su rol.
+
+        Parámetros:
+            nombre (str): Nombre del usuario conectado.
+            rol (str): Rol asignado (determina los botones visibles).
+        """
         super().__init__()
         self.setWindowTitle("ReyBoxes - Panel Principal")
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
-        self.setFixedSize(900, 720)  # ⬅️ Ventana más ancha para margen lateral
-
+        self.setFixedSize(900, 720)
         self.setObjectName("ventana_inicio")
+
         ruta_css = obtener_ruta_absoluta("css/inicio.css")
         with open(ruta_css, "r", encoding="utf-8") as f:
             self.setStyleSheet(f.read())
@@ -26,12 +40,18 @@ class VentanaInicio(QWidget):
         self.inicializar_ui()
 
     def inicializar_ui(self):
+        """
+        Crea la estructura visual de la ventana:
+        - Saludo al usuario.
+        - Rol actual.
+        - Botones distribuidos en cuadrícula según permisos del rol.
+        - Scroll en caso de desbordamiento vertical.
+        """
         layout_principal = QVBoxLayout(self)
         layout_principal.setContentsMargins(30, 30, 30, 30)
 
         contenedor = QWidget()
         contenedor.setObjectName("contenedor")
-        # ⬅️ Más ancho para que haya margen blanco a la derecha
         contenedor.setFixedWidth(840)
         layout_contenedor = QVBoxLayout(contenedor)
 
@@ -50,6 +70,7 @@ class VentanaInicio(QWidget):
         self.grid_layout = QGridLayout()
         self.grid_layout.setSpacing(15)
 
+        # Lista de botones definidos con texto e icono
         botones_definidos = [
             ("Fichar", "fichar.png"),
             ("Historial\nfichaje", "historial.png"),
@@ -59,19 +80,19 @@ class VentanaInicio(QWidget):
             ("Recepcionamiento", "recepcionamiento.png"),
             ("Compraventa", "compraventa.png"),
             ("Presupuestos", "presupuesto.png"),
-            ("Reimpresion\nrecepcionamientos",
-             "reimprimir_recepcionamiento.png"),
+            ("Reimpresion\nrecepcionamientos", "reimprimir_recepcionamiento.png"),
             ("Reimpresion\npresupuestos", "reimprimir_presupuestos.png"),
             ("Reimpresion\ncompras", "reimprimir_compra.png"),
             ("Reimpresion\nventas", "reimprimir_venta.png"),
             ("Cerrar sesión", "salir.png"),
         ]
 
+        # Accesos permitidos por rol (en minúsculas para comparación)
         accesos_por_rol = {
-            "ADMINISTRADOR": ["fichar", "Historial\nfichaje", "crear usuarios", "clientes", "vehículos", "recepcionamiento", "Presupuestos", "compraventa", "Reimpresion\nrecepcionamientos", "Reimpresion\npresupuestos", "Reimpresion\ncompras", "Reimpresion\nventas", "cerrar sesión"],
-            "MECANICO": ["fichar", "Historial\nfichaje", "vehículos", "recepcionamiento", "Presupuestos", "reparaciones", "cerrar sesión"],
-            "COMPRA/VENTA": ["fichar", "Historial\nfichaje", "vehículos", "recepcionamiento", "compraventa", "reportes", "cerrar sesión"],
-            "ADMINISTRATIVO": ["fichar", "Historial\nfichaje", "clientes", "vehículos", "recepcionamiento", "Presupuestos", "Reimpresion\nrecepcionamientos", "Reimpresion\npresupuestos", "Reimpresion\ncompras", "Reimpresion\nventas", "cerrar sesión"]
+            "ADMINISTRADOR": [...],
+            "MECANICO": [...],
+            "COMPRA/VENTA": [...],
+            "ADMINISTRATIVO": [...],
         }
 
         rol_normalizado = self.rol.upper().strip()
@@ -93,7 +114,6 @@ class VentanaInicio(QWidget):
         contenedor_grid = QWidget()
         contenedor_grid.setObjectName("grid_fondo")
         contenedor_grid.setLayout(self.grid_layout)
-        # ⬅️ Perfecto para 3 columnas sin scroll horizontal
         contenedor_grid.setFixedWidth(780)
 
         scroll = QScrollArea()
@@ -108,7 +128,15 @@ class VentanaInicio(QWidget):
         layout_principal.addWidget(contenedor, alignment=Qt.AlignCenter)
 
     def closeEvent(self, event):
-        # Solo ignorar si NO es cierre programático (por código)
+        """
+        Controla el cierre de la ventana.
+        Solo se permite cerrar si la variable "forzar_cierre" está activada.
+
+        Si no lo está, el cierre se ignora.
+
+        Parámetros:
+            event (QCloseEvent): Evento de cierre de la ventana.
+        """
         if not getattr(self, "forzar_cierre", False):
             event.ignore()
         else:

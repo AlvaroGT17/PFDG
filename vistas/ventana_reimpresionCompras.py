@@ -1,18 +1,37 @@
-from PySide6.QtWidgets import (
-    QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
-    QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView,
-    QMessageBox, QToolButton
-)
-from PySide6.QtCore import Qt, QSize
-from PySide6.QtGui import QIcon
-from datetime import datetime
+"""
+Módulo para la ventana de reimpresión de contratos de compra.
+
+Permite al usuario visualizar, reenviar o imprimir contratos PDF
+almacenados previamente, clasificados por carpetas mensuales.
+"""
+
 import os
 import webbrowser
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtWidgets import (
+    QWidget, QLabel, QVBoxLayout, QHBoxLayout, QTableWidget,
+    QTableWidgetItem, QHeaderView, QAbstractItemView,
+    QMessageBox, QToolButton
+)
 from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaReimpresionCompras(QWidget):
+    """
+    Ventana gráfica que permite consultar y gestionar documentos
+    de compra generados previamente en el sistema.
+    """
+
     def __init__(self, nombre_usuario, rol_usuario, volver_callback, parent=None):
+        """
+        Inicializa la ventana de reimpresión de compras.
+
+        :param nombre_usuario: Nombre del usuario actual.
+        :param rol_usuario: Rol del usuario actual.
+        :param volver_callback: Función a ejecutar al pulsar "Volver".
+        :param parent: Widget padre opcional.
+        """
         super().__init__(parent)
         self.nombre_usuario = nombre_usuario
         self.rol_usuario = rol_usuario
@@ -30,15 +49,16 @@ class VentanaReimpresionCompras(QWidget):
             self.setStyleSheet(f.read())
 
     def init_ui(self):
+        """
+        Construye y organiza los elementos gráficos de la interfaz.
+        """
         layout_principal = QVBoxLayout()
 
-        # Título
         titulo = QLabel("Reimpresión de compras")
         titulo.setObjectName("titulo-reimpresion")
         titulo.setAlignment(Qt.AlignCenter)
         layout_principal.addWidget(titulo)
 
-        # Tabla
         self.tabla = QTableWidget()
         self.tabla.setColumnCount(3)
         self.tabla.setHorizontalHeaderLabels(
@@ -52,7 +72,6 @@ class VentanaReimpresionCompras(QWidget):
 
         self.tabla.cellDoubleClicked.connect(self.abrir_documento_seleccionado)
 
-        # Botones
         layout_botones = QHBoxLayout()
         ruta_iconos = obtener_ruta_absoluta("img")
 
@@ -86,6 +105,10 @@ class VentanaReimpresionCompras(QWidget):
         self.btn_volver.clicked.connect(self.volver_callback)
 
     def cargar_documentos(self):
+        """
+        Escanea la carpeta de documentos de compras y carga en la tabla
+        todos los archivos PDF detectados, organizados por mes.
+        """
         print("🔄 Cargando documentos de compras...")
         ruta_base = obtener_ruta_absoluta("documentos/compras")
         if not os.path.exists(ruta_base):
@@ -110,6 +133,12 @@ class VentanaReimpresionCompras(QWidget):
             self.tabla.setItem(fila_idx, 2, QTableWidgetItem(ruta))
 
     def abrir_documento_seleccionado(self, fila, columna):
+        """
+        Abre el documento PDF correspondiente a la fila seleccionada en el visor por defecto.
+
+        :param fila: Índice de la fila seleccionada.
+        :param columna: Índice de la columna seleccionada (no se usa).
+        """
         ruta_item = self.tabla.item(fila, 2)
         if ruta_item:
             ruta = ruta_item.text()

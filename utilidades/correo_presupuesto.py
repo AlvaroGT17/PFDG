@@ -1,30 +1,47 @@
+"""
+Módulo para el envío de presupuestos de reparación por correo electrónico en formato PDF.
+
+El mensaje se compone de un cuerpo HTML con el diseño corporativo de ReyBoxes y el archivo PDF adjunto.
+La autenticación se realiza con credenciales cargadas desde un archivo `.env`, utilizando SMTP con SSL.
+"""
+
 import os
 import smtplib
-from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 from dotenv import load_dotenv
 
+# Cargar variables de entorno (EMAIL_USER, EMAIL_PASS)
 load_dotenv()
 
 
 def enviar_correo_presupuesto(destinatario, ruta_pdf, datos):
     """
-    Envía por correo el PDF del presupuesto al cliente.
+    Envía un correo electrónico con un presupuesto de reparación en PDF adjunto.
 
-    Parámetros:
-    - destinatario: correo electrónico del cliente
-    - ruta_pdf: ruta al PDF generado
-    - datos: diccionario con al menos las claves:
-        - 'cliente': nombre del cliente
+    El mensaje se genera en formato HTML, incluye el nombre del cliente en el saludo
+    y adjunta el archivo PDF del presupuesto. Utiliza SMTP seguro (SSL) y credenciales
+    definidas en el archivo `.env`.
+
+    Args:
+        destinatario (str): Dirección de correo electrónico del cliente.
+        ruta_pdf (str): Ruta absoluta del archivo PDF del presupuesto.
+        datos (dict): Diccionario con los datos del presupuesto. Debe contener al menos:
+                      - 'cliente': nombre del cliente.
+
+    Returns:
+        tuple:
+            - bool: `True` si el correo se envió correctamente, `False` en caso de error.
+            - str or None: Mensaje de error en caso de fallo, o `None` si fue exitoso.
     """
-
     remitente = os.getenv("EMAIL_USER")
     contraseña = os.getenv("EMAIL_PASS")
     nombre_cliente = datos.get("cliente", "").strip().capitalize()
 
     asunto = "📄 Presupuesto de reparación - ReyBoxes"
 
+    # HTML del correo
     html = f"""
         <div style="font-family: Arial, sans-serif; max-width: 600px; color: black; margin: auto; background: #f1f1f1; border-radius: 12px; padding: 20px; border: 1px solid #ccc;">
             <div style="text-align: center;">
@@ -58,19 +75,21 @@ def enviar_correo_presupuesto(destinatario, ruta_pdf, datos):
         </div>
     """
 
+    # Crear mensaje multipart (solo HTML)
     mensaje = MIMEMultipart("alternative")
     mensaje["From"] = remitente
     mensaje["To"] = destinatario
     mensaje["Subject"] = asunto
     mensaje.attach(MIMEText(html, "html"))
 
-    # Adjuntar el PDF
+    # Adjuntar el archivo PDF
     with open(ruta_pdf, "rb") as f:
         pdf_adjunto = MIMEApplication(f.read(), _subtype="pdf")
         pdf_adjunto.add_header(
             'Content-Disposition', 'attachment', filename=os.path.basename(ruta_pdf))
         mensaje.attach(pdf_adjunto)
 
+    # Enviar el correo usando SMTP-SSL
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as servidor:
             servidor.login(remitente, contraseña)

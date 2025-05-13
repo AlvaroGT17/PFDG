@@ -1,24 +1,22 @@
 #!/usr/bin/env python
 #
-# Hi There!
+# ¡Hola!
 #
-# You may be wondering what this giant blob of binary data here is, you might
-# even be worried that we're up to something nefarious (good for you for being
-# paranoid!). This is a base85 encoding of a zip file, this zip file contains
-# an entire copy of pip (version 25.0.1).
+# Puede que te preguntes qué es este enorme bloque de datos binarios. Incluso podrías preocuparte
+# pensando que estamos haciendo algo sospechoso (¡bien por ti por ser precavido!).
 #
-# Pip is a thing that installs packages, pip itself is a package that someone
-# might want to install, especially if they're looking to run this get-pip.py
-# script. Pip has a lot of code to deal with the security of installing
-# packages, various edge cases on various platforms, and other such sort of
-# "tribal knowledge" that has been encoded in its code base. Because of this
-# we basically include an entire copy of pip inside this blob. We do this
-# because the alternatives are attempt to implement a "minipip" that probably
-# doesn't do things correctly and has weird edge cases, or compress pip itself
-# down into a single file.
+# Esto es una codificación base85 de un archivo ZIP que contiene una copia completa de `pip`
+# (versión 25.0.1).
 #
-# If you're wondering how this is created, it is generated using
-# `scripts/generate.py` in https://github.com/pypa/get-pip.
+# Pip es una herramienta para instalar paquetes. Pero pip en sí mismo es un paquete que alguien
+# podría querer instalar, especialmente si está ejecutando este script `get-pip.py`.
+#
+# Pip contiene mucho código relacionado con seguridad, compatibilidad entre plataformas y casos
+# borde que ya están bien gestionados. Por esa razón, incluimos una copia completa de pip dentro
+# de este blob. Las alternativas (como hacer un “mini pip”) serían más inseguras e incompletas.
+#
+# Si quieres saber cómo se crea este archivo, puedes usar el script:
+# `scripts/generate.py` del repositorio https://github.com/pypa/get-pip
 
 from base64 import b85decode
 import importlib
@@ -29,13 +27,14 @@ import pkgutil
 import os.path
 import sys
 
+# Versión mínima soportada de Python
 this_python = sys.version_info[:2]
 min_version = (3, 8)
 if this_python < min_version:
     message_parts = [
-        "This script does not work on Python {}.{}.".format(*this_python),
-        "The minimum supported Python version is {}.{}.".format(*min_version),
-        "Please use https://bootstrap.pypa.io/pip/{}.{}/get-pip.py instead.".format(
+        "Este script no funciona con Python {}.{}.".format(*this_python),
+        "La versión mínima soportada es Python {}.{}.".format(*min_version),
+        "Por favor usa: https://bootstrap.pypa.io/pip/{}.{}/get-pip.py".format(
             *this_python),
     ]
     print("ERROR: " + " ".join(message_parts))
@@ -44,7 +43,10 @@ if this_python < min_version:
 
 def include_setuptools(args):
     """
-    Install setuptools only if absent, not excluded and when using Python <3.12.
+    Instala `setuptools` solo si:
+    - No está excluido por argumentos del usuario.
+    - No está presente en el entorno.
+    - Python es menor que 3.12.
     """
     cli = not args.no_setuptools
     env = not os.environ.get("PIP_NO_SETUPTOOLS")
@@ -55,7 +57,10 @@ def include_setuptools(args):
 
 def include_wheel(args):
     """
-    Install wheel only if absent, not excluded and when using Python <3.12.
+    Instala `wheel` solo si:
+    - No está excluido por argumentos del usuario.
+    - No está presente en el entorno.
+    - Python es menor que 3.12.
     """
     cli = not args.no_wheel
     env = not os.environ.get("PIP_NO_WHEEL")
@@ -65,6 +70,13 @@ def include_wheel(args):
 
 
 def determine_pip_install_arguments():
+    """
+    Determina qué paquetes se deben instalar con pip al ejecutar este script.
+    Siempre incluye `pip`, y puede incluir `setuptools` y `wheel` si es necesario.
+
+    Returns:
+        list: Lista de argumentos que se pasan al comando `pip install`.
+    """
     pre_parser = argparse.ArgumentParser()
     pre_parser.add_argument("--no-setuptools", action="store_true")
     pre_parser.add_argument("--no-wheel", action="store_true")
@@ -82,17 +94,14 @@ def determine_pip_install_arguments():
 
 
 def monkeypatch_for_cert(tmpdir):
-    """Patches `pip install` to provide default certificate with the lowest priority.
+    """
+    Parchea internamente `pip install` para usar un certificado interno por defecto.
 
-    This ensures that the bundled certificates are used unless the user specifies a
-    custom cert via any of pip's option passing mechanisms (config, env-var, CLI).
-
-    A monkeypatch is the easiest way to achieve this, without messing too much with
-    the rest of pip's internals.
+    Esto asegura que se usen certificados incluidos en pip (certifi), a menos que
+    el usuario especifique uno manualmente por config, variable de entorno o CLI.
     """
     from pip._internal.commands.install import InstallCommand
 
-    # We want to be using the internal certificates.
     cert_path = os.path.join(tmpdir, "cacert.pem")
     with open(cert_path, "wb") as cert:
         cert.write(pkgutil.get_data("pip._vendor.certifi", "cacert.pem"))
@@ -101,41 +110,50 @@ def monkeypatch_for_cert(tmpdir):
 
     def cert_parse_args(self, args):
         if not self.parser.get_default_values().cert:
-            # There are no user provided cert -- force use of bundled cert
-            self.parser.defaults["cert"] = cert_path  # calculated above
+            self.parser.defaults["cert"] = cert_path
         return install_parse_args(self, args)
 
     InstallCommand.parse_args = cert_parse_args
 
 
 def bootstrap(tmpdir):
+    """
+    Ejecuta el pip incluido en el ZIP y lanza el proceso de instalación.
+
+    Args:
+        tmpdir (str): Directorio temporal donde se ha extraído el contenido de pip.zip.
+    """
     monkeypatch_for_cert(tmpdir)
 
-    # Execute the included pip and use it to install the latest pip and
-    # any user-requested packages from PyPI.
+    # Ejecuta pip y lanza la instalación de pip, setuptools y wheel
     from pip._internal.cli.main import main as pip_entry_point
     args = determine_pip_install_arguments()
     sys.exit(pip_entry_point(args))
 
 
 def main():
+    """
+    Función principal del script.
+
+    Extrae pip.zip, lo monta en sys.path y lanza el proceso de instalación.
+    """
     tmpdir = None
     try:
-        # Create a temporary working directory
+        # Crear un directorio temporal de trabajo
         tmpdir = tempfile.mkdtemp()
 
-        # Unpack the zipfile into the temporary directory
+        # Extraer el ZIP codificado en base85
         pip_zip = os.path.join(tmpdir, "pip.zip")
         with open(pip_zip, "wb") as fp:
             fp.write(b85decode(DATA.replace(b"\n", b"")))
 
-        # Add the zipfile to sys.path so that we can import it
+        # Añadir pip.zip al sys.path
         sys.path.insert(0, pip_zip)
 
-        # Run the bootstrap
+        # Lanzar bootstrap
         bootstrap(tmpdir=tmpdir)
     finally:
-        # Clean up our temporary working directory
+        # Eliminar el directorio temporal
         if tmpdir:
             shutil.rmtree(tmpdir, ignore_errors=True)
 

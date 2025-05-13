@@ -1,16 +1,31 @@
-from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout
-from PySide6.QtGui import QPixmap, QCursor, QIcon
+"""
+Módulo para la ventana de recuperación de cuenta de usuario.
+
+Permite al usuario introducir su correo electrónico para
+recibir un código de verificación y proceder al restablecimiento de contraseña.
+"""
+
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap, QCursor, QIcon
+from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout
 from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaRecuperar(QWidget):
+    """
+    Ventana gráfica para el proceso de recuperación de cuenta mediante correo electrónico.
+    """
+
     def __init__(self):
+        """
+        Inicializa la ventana de recuperación.
+        """
         super().__init__()
         self.setWindowTitle("ReyBoxes - Recuperar cuenta")
         self.setFixedSize(500, 300)
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
 
+        # Aplicar estilo desde archivo CSS
         ruta_estilo = obtener_ruta_absoluta("css/recuperar.css")
         with open(ruta_estilo, "r", encoding="utf-8") as f:
             self.setStyleSheet(f.read())
@@ -22,10 +37,14 @@ class VentanaRecuperar(QWidget):
         self.inicializar_ui()
 
     def inicializar_ui(self):
+        """
+        Configura y organiza los elementos visuales de la ventana.
+        """
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(10)
 
+        # Título principal
         titulo = QLabel(
             '<span style="color:#333;">Recuperar </span><span style="color:#d90429;">cuenta</span>')
         titulo.setObjectName("titulo_recuperar")
@@ -33,6 +52,7 @@ class VentanaRecuperar(QWidget):
         titulo.setContentsMargins(0, 0, 0, 4)
         layout.addWidget(titulo)
 
+        # Texto de instrucción
         instruccion = QLabel(
             "Introduce el correo electrónico asociado a tu cuenta:")
         instruccion.setObjectName("texto_instruccion")
@@ -40,6 +60,7 @@ class VentanaRecuperar(QWidget):
         instruccion.setContentsMargins(0, 0, 0, 4)
         layout.addWidget(instruccion)
 
+        # Campo de entrada con icono
         campo_layout = QHBoxLayout()
         campo_layout.setSpacing(8)
 
@@ -62,6 +83,7 @@ class VentanaRecuperar(QWidget):
 
         layout.addSpacing(10)
 
+        # Botones: Enviar código y Volver
         botones_layout = QHBoxLayout()
         botones_layout.setSpacing(15)
 

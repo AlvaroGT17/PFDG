@@ -1,12 +1,27 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QPushButton, QHBoxLayout
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
-
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QPushButton, QHBoxLayout
 from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaContrato(QWidget):
+    """
+    Ventana para mostrar un contrato de compra o venta en formato HTML.
+
+    Permite al usuario visualizar el contenido del contrato generado, aceptar su contenido
+    o cancelar la operación. Al aceptar, se puede ejecutar una acción personalizada
+    mediante una función de callback.
+    """
+
     def __init__(self, html_path, tipo_operacion, callback_aceptar=None):
+        """
+        Inicializa la ventana de contrato.
+
+        Parámetros:
+            html_path (str): Ruta al archivo HTML que contiene el contrato.
+            tipo_operacion (str): Indica si es un contrato de "compra" o "venta".
+            callback_aceptar (func, opcional): Función que se ejecutará si se acepta el contrato.
+        """
         super().__init__()
         self.setWindowTitle(
             f"Contrato de {'COMPRA' if tipo_operacion == 'compra' else 'VENTA'} - ReyBoxes")
@@ -14,10 +29,11 @@ class VentanaContrato(QWidget):
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
         self.setObjectName("ventana_contrato")
         self.callback_aceptar = callback_aceptar
-        self.tipo_operacion = tipo_operacion  # 👈 ¡Guarda el tipo!
+        self.tipo_operacion = tipo_operacion
 
         layout = QVBoxLayout(self)
 
+        # Visor del contrato
         self.vista_previa = QTextBrowser()
         self.vista_previa.setOpenExternalLinks(True)
         self.vista_previa.setStyleSheet(
@@ -27,6 +43,7 @@ class VentanaContrato(QWidget):
             self.vista_previa.setHtml(f.read())
         layout.addWidget(self.vista_previa)
 
+        # Botones de acción
         botones = QHBoxLayout()
         self.boton_volver = QPushButton("Volver")
         self.boton_volver.setToolTip("Volver sin aceptar el contrato")
@@ -44,6 +61,11 @@ class VentanaContrato(QWidget):
         layout.addLayout(botones)
 
     def aceptar_contrato(self):
+        """
+        Ejecuta la función callback si fue proporcionada y cierra la ventana.
+
+        Pasa el tipo de operación ("compra" o "venta") como argumento al callback.
+        """
         if self.callback_aceptar:
-            self.callback_aceptar(self.tipo_operacion)  # ✅ Pasa el tipo
+            self.callback_aceptar(self.tipo_operacion)
         self.close()

@@ -1,13 +1,20 @@
-from PySide6.QtWidgets import (
-    QWidget, QLabel, QLineEdit, QTextEdit, QToolButton, QVBoxLayout,
-    QHBoxLayout, QScrollArea
-)
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt, QSize
+from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QTextEdit, QToolButton, QVBoxLayout, QHBoxLayout, QScrollArea
 from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaClientes(QWidget):
+    """
+    Ventana principal para registrar y gestionar los datos de los clientes en el sistema ReyBoxes.
+
+    Permite:
+    - Buscar clientes por nombre, DNI o teléfono.
+    - Visualizar y editar información detallada del cliente.
+    - Registrar nuevos clientes, modificar registros existentes, limpiar el formulario o eliminar datos.
+    - Utiliza un diseño limpio y scrollable para mejorar la experiencia de usuario.
+    """
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("ReyBoxes - Registrar cliente")
@@ -19,11 +26,19 @@ class VentanaClientes(QWidget):
         self.aplicar_estilos()
 
     def setup_ui(self):
+        """
+        Inicializa y organiza todos los elementos gráficos de la interfaz:
+        - Campos de búsqueda (nombre, DNI, teléfono).
+        - Campos de entrada para los datos del cliente.
+        - Botones de acción (registrar, modificar, limpiar, eliminar, volver).
+        - Scroll para facilitar la navegación en pantallas pequeñas.
+        - Conexión para actualizar dinámicamente el título.
+        """
         layout_principal = QVBoxLayout(self)
         layout_principal.setContentsMargins(20, 20, 20, 20)
         layout_principal.setSpacing(15)
 
-        # 🔎 Buscadores por nombre, DNI y teléfono
+        # Buscadores por nombre, DNI y teléfono
         layout_busqueda = QHBoxLayout()
         layout_busqueda.setSpacing(10)
 
@@ -54,14 +69,14 @@ class VentanaClientes(QWidget):
 
         layout_principal.addLayout(layout_busqueda)
 
-        # 🧾 Título
+        # Título
         self.titulo = QLabel()
         self.titulo.setObjectName("titulo_cliente")
         self.titulo.setAlignment(Qt.AlignCenter)
         self.actualizar_titulo("")
         layout_principal.addWidget(self.titulo)
 
-        # 📜 Scroll con los campos
+        # Scroll con los campos
         contenedor = QWidget()
         contenedor.setObjectName("contenedor")
         layout_contenedor = QVBoxLayout(contenedor)
@@ -119,7 +134,7 @@ class VentanaClientes(QWidget):
         scroll.setWidget(contenedor)
         layout_principal.addWidget(scroll)
 
-        # 🔘 Botones
+        # Botones
         layout_botones = QHBoxLayout()
         layout_botones.setSpacing(30)
         layout_botones.setAlignment(Qt.AlignCenter)
@@ -167,15 +182,24 @@ class VentanaClientes(QWidget):
 
         layout_principal.addLayout(layout_botones)
 
-        # 🔄 Título dinámico
+        # Título dinámico
         self.input_nombre.textChanged.connect(self.actualizar_titulo)
 
     def aplicar_estilos(self):
+        """
+        Aplica los estilos personalizados definidos en el archivo CSS correspondiente a la ventana de clientes.
+        """
         ruta_css = obtener_ruta_absoluta("css/clientes.css")
         with open(ruta_css, "r", encoding="utf-8") as f:
             self.setStyleSheet(f.read())
 
     def actualizar_titulo(self, texto):
+        """
+        Actualiza dinámicamente el título principal de la ventana con el nombre ingresado en el campo.
+
+        Parámetros:
+            texto (str): Texto actual del campo de nombre.
+        """
         nombre = texto.strip().upper()
         if nombre:
             self.titulo.setText(
@@ -187,4 +211,10 @@ class VentanaClientes(QWidget):
                 "<span style='color: #FFFFFF;'>Registrar cliente</span>")
 
     def closeEvent(self, event):
+        """
+        Anula el evento de cierre de la ventana para evitar el cierre accidental.
+
+        Parámetros:
+            event (QCloseEvent): Evento de cierre capturado por Qt.
+        """
         event.ignore()

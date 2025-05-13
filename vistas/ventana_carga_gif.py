@@ -1,10 +1,17 @@
-from PySide6.QtWidgets import QDialog, QLabel, QVBoxLayout, QApplication
-from PySide6.QtGui import QMovie
+from PySide6.QtGui import QIcon, QMovie
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QDialog, QLabel, QVBoxLayout, QApplication
 from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaCargaGif(QDialog):
+    """
+    Ventana modal que muestra un GIF animado de carga centrado en pantalla.
+
+    Se utiliza para indicar visualmente procesos en ejecución como carga de datos,
+    generación de informes, o procesamiento prolongado.
+    """
+
     def __init__(self):
         super().__init__()
         self.setWindowFlags(
@@ -28,6 +35,12 @@ class VentanaCargaGif(QDialog):
         layout.addWidget(self.label_gif)
 
     def mostrar(self, ventana_padre=None):
+        """
+        Muestra la ventana de carga centrada en pantalla o sobre una ventana padre.
+
+        Parámetros:
+            ventana_padre (QWidget): Ventana sobre la que se centrará el diálogo (opcional).
+        """
         self.movie.start()
         self.adjustSize()
         if ventana_padre:
@@ -38,5 +51,8 @@ class VentanaCargaGif(QDialog):
         self.show()
 
     def cerrar(self):
+        """
+        Detiene la animación y cierra la ventana.
+        """
         self.movie.stop()
         self.close()

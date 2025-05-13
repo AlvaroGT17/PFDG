@@ -1,18 +1,44 @@
-from PySide6.QtWidgets import (
-    QDialog, QLabel, QLineEdit, QPushButton, QTextEdit, QVBoxLayout,
-    QHBoxLayout, QFormLayout, QComboBox, QTableWidget, QTableWidgetItem,
-    QHeaderView, QScrollArea, QWidget, QCheckBox
-)
-from PySide6.QtGui import QFontDatabase, QIcon
+from datetime import datetime
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QFontDatabase, QIcon
+from PySide6.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, QTextEdit, QVBoxLayout, QHBoxLayout, QFormLayout, QComboBox, QTableWidget, QTableWidgetItem, QHeaderView, QScrollArea, QWidget, QCheckBox
 from vistas.ventana_anadirTareaPresupuesto import DialogoTarea
 from utilidades.rutas import obtener_ruta_absoluta
-from datetime import datetime
 
 
 class VentanaPresupuesto(QDialog):
+    """
+    Ventana principal para la gestión de presupuestos en el sistema ReyBoxes.
+
+    Esta interfaz permite al usuario:
+    - Seleccionar una recepción previa de un vehículo.
+    - Visualizar los datos asociados al cliente, vehículo y observaciones.
+    - Añadir tareas con horas, precio por hora y cálculo automático del total.
+    - Calcular el coste total estimado del presupuesto.
+    - Indicar si el presupuesto será impreso y/o enviado por email.
+    - Guardar el presupuesto una vez completado.
+
+    Hereda de QDialog para integrarse como una ventana modal dentro de la aplicación.
+    """
+
     def __init__(self, ventana_padre=None):
+        """
+        Inicializa la ventana de presupuesto.
+
+        Parámetros:
+            ventana_padre (QWidget, opcional): Widget padre desde el cual se abre esta ventana.
+        """
         super().__init__(ventana_padre)
+        """
+        Construye y organiza toda la interfaz de usuario de la ventana.
+
+        Incluye:
+        - Selección de recepción.
+        - Visualización de datos del cliente, vehículo y observaciones.
+        - Tabla para gestionar tareas del presupuesto.
+        - Cálculo del coste total.
+        - Controles para imprimir, enviar por email y guardar.
+        """
         self.ventana_padre = ventana_padre
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
         self.forzar_cierre = False
@@ -185,6 +211,12 @@ class VentanaPresupuesto(QDialog):
         self.setLayout(layout_principal)
 
     def recepcion_seleccionada(self, index):
+        """
+        Actualiza los campos visibles según la recepción seleccionada en el combo box.
+
+        Parámetros:
+            index (int): Índice del combo box que indica qué recepción fue seleccionada.
+        """
         if index <= 0 or not hasattr(self, "controlador"):
             self.campo_cliente.clear()
             self.campo_vehiculo.clear()
@@ -210,6 +242,10 @@ class VentanaPresupuesto(QDialog):
         self._actualizar_estado_guardar()
 
     def abrir_dialogo_tarea(self):
+        """
+        Abre un diálogo para añadir una nueva tarea al presupuesto.
+        Si el usuario confirma, la tarea se añade a la tabla con su coste calculado.
+        """
         dialogo = DialogoTarea()
         if dialogo.exec():
             datos = dialogo.obtener_datos()
@@ -228,6 +264,10 @@ class VentanaPresupuesto(QDialog):
                 self._actualizar_estado_guardar()
 
     def eliminar_tarea_seleccionada(self):
+        """
+        Elimina la fila actualmente seleccionada en la tabla de tareas.
+        Tras eliminar, actualiza el coste total y el estado del botón de guardar.
+        """
         fila = self.tabla_tareas.currentRow()
         if fila != -1:
             self.tabla_tareas.removeRow(fila)
@@ -235,6 +275,11 @@ class VentanaPresupuesto(QDialog):
             self._actualizar_estado_guardar()
 
     def actualizar_coste_total(self):
+        """
+        Suma los valores de la columna "Total" de la tabla y actualiza el campo de coste total.
+
+        También compara el total con el límite autorizado y actualiza la respuesta sugerida del cliente.
+        """
         total = 0
         for fila in range(self.tabla_tareas.rowCount()):
             item = self.tabla_tareas.item(fila, 3)
@@ -256,18 +301,31 @@ class VentanaPresupuesto(QDialog):
             self.combo_respuesta.setCurrentText("")
 
     def subir_fila(self):
+        """
+        Mueve hacia arriba la tarea actualmente seleccionada en la tabla, si no está en la primera fila.
+        """
         fila = self.tabla_tareas.currentRow()
         if fila > 0:
             self._intercambiar_filas(fila, fila - 1)
             self.tabla_tareas.selectRow(fila - 1)
 
     def bajar_fila(self):
+        """
+        Mueve hacia abajo la tarea actualmente seleccionada en la tabla, si no está en la última fila.
+        """
         fila = self.tabla_tareas.currentRow()
         if fila != -1 and fila < self.tabla_tareas.rowCount() - 1:
             self._intercambiar_filas(fila, fila + 1)
             self.tabla_tareas.selectRow(fila + 1)
 
     def _intercambiar_filas(self, fila1, fila2):
+        """
+        Intercambia los valores entre dos filas de la tabla de tareas.
+
+        Parámetros:
+            fila1 (int): Índice de la primera fila.
+            fila2 (int): Índice de la segunda fila.
+        """
         for col in range(self.tabla_tareas.columnCount()):
             texto1 = self.tabla_tareas.item(fila1, col).text()
             texto2 = self.tabla_tareas.item(fila2, col).text()
@@ -275,6 +333,10 @@ class VentanaPresupuesto(QDialog):
             self.tabla_tareas.setItem(fila2, col, QTableWidgetItem(texto1))
 
     def _actualizar_estado_guardar(self):
+        """
+        Activa o desactiva el botón de guardar presupuesto según si hay una recepción válida
+        y al menos una tarea cargada en la tabla.
+        """
         index = self.combo_recepciones.currentIndex()
         tiene_recepcion_valida = index > 0 and hasattr(self, "controlador")
         tiene_tareas = self.tabla_tareas.rowCount() > 0
@@ -282,6 +344,10 @@ class VentanaPresupuesto(QDialog):
         self.boton_anadir_tarea.setEnabled(tiene_recepcion_valida)
 
     def guardar_presupuesto(self):
+        """
+        Simula el guardado del presupuesto, mostrando en consola las opciones seleccionadas
+        (imprimir, enviar por email, coste total y respuesta del cliente).
+        """
         imprimir = self.checkbox_imprimir.isChecked()
         enviar = self.checkbox_email.isChecked()
         total = self.campo_coste_total.text()
@@ -293,6 +359,12 @@ class VentanaPresupuesto(QDialog):
         print(f"   - Respuesta cliente: {respuesta}")
 
     def cargar_presupuesto(self, datos_presupuesto):
+        """
+        Carga en la interfaz todos los datos de un presupuesto ya existente para su visualización o edición.
+
+        Parámetros:
+            datos_presupuesto (dict): Diccionario con los campos: cliente, vehículo, fecha, tareas, etc.
+        """
         self.combo_recepciones.setCurrentIndex(0)
         self.combo_recepciones.setEnabled(False)
         self.boton_anadir_tarea.setEnabled(False)
@@ -323,8 +395,20 @@ class VentanaPresupuesto(QDialog):
         self.actualizar_coste_total()
 
     def closeEvent(self, event):
+        """
+        Controla el evento de cierre de la ventana.
+
+        Si no está permitido cerrar (forzar_cierre == False), el cierre se ignora.
+
+        Parámetros:
+            event (QCloseEvent): Evento emitido al cerrar la ventana.
+        """
         event.accept() if self.forzar_cierre else event.ignore()
 
     def volver(self):
+        """
+        Marca la ventana como lista para cerrarse y ejecuta el cierre manualmente.
+        Utilizado cuando se pulsa el botón "Volver".
+        """
         self.forzar_cierre = True
         self.close()

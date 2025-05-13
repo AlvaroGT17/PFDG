@@ -1,18 +1,40 @@
+"""
+Módulo para la ventana de reimpresión de recepcionamientos en formato PDF.
+
+Esta interfaz permite visualizar una tabla con los documentos generados
+durante el proceso de recepcionamiento, y ofrece opciones para reenviarlos,
+imprimirlos o abrirlos desde el sistema de archivos.
+"""
+
+import os
+import webbrowser
+from datetime import datetime
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import (
     QWidget, QLabel, QToolButton, QVBoxLayout, QHBoxLayout,
     QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView,
     QMessageBox
 )
-from PySide6.QtCore import Qt, QSize
-import os
-import webbrowser
-from datetime import datetime
 from utilidades.rutas import obtener_ruta_absoluta
-from PySide6.QtGui import QIcon
 
 
 class VentanaReimpresionRecepcionamiento(QWidget):
+    """
+    Ventana de PySide6 que permite la gestión visual de documentos PDF
+    generados en recepcionamientos anteriores.
+
+    Aporta funcionalidades para abrir, reenviar e imprimir dichos documentos.
+    """
+
     def __init__(self, nombre_usuario, rol_usuario, volver_callback):
+        """
+        Inicializa la ventana con la información del usuario y función de retorno.
+
+        :param nombre_usuario: Nombre del usuario activo.
+        :param rol_usuario: Rol actual del usuario.
+        :param volver_callback: Función a ejecutar al pulsar "Volver".
+        """
         super().__init__()
         self.nombre_usuario = nombre_usuario
         self.rol_usuario = rol_usuario
@@ -29,15 +51,16 @@ class VentanaReimpresionRecepcionamiento(QWidget):
             self.setStyleSheet(f.read())
 
     def init_ui(self):
+        """
+        Construye y organiza los componentes visuales de la interfaz.
+        """
         layout_principal = QVBoxLayout()
 
-        # Título
         titulo = QLabel("Reimpresión de recepcionamientos")
         titulo.setObjectName("titulo-reimpresion")
         titulo.setAlignment(Qt.AlignCenter)
         layout_principal.addWidget(titulo)
 
-        # Tabla
         self.tabla = QTableWidget()
         self.tabla.setColumnCount(3)
         self.tabla.setHorizontalHeaderLabels(
@@ -49,10 +72,8 @@ class VentanaReimpresionRecepcionamiento(QWidget):
         self.tabla.setAlternatingRowColors(True)
         layout_principal.addWidget(self.tabla)
 
-        # Doble clic sobre la fila para abrir el PDF
         self.tabla.cellDoubleClicked.connect(self.abrir_documento_seleccionado)
 
-        # Botones
         layout_botones = QHBoxLayout()
 
         self.btn_enviar = QToolButton()
@@ -64,26 +85,15 @@ class VentanaReimpresionRecepcionamiento(QWidget):
         self.btn_volver.setText("Volver")
 
         ruta_iconos = obtener_ruta_absoluta("img")
-
-        self.btn_enviar.setIcon(
-            QIcon(os.path.join(ruta_iconos, "enviar.png")))
+        self.btn_enviar.setIcon(QIcon(os.path.join(ruta_iconos, "enviar.png")))
         self.btn_imprimir.setIcon(
             QIcon(os.path.join(ruta_iconos, "imprimir.png")))
-        self.btn_volver.setIcon(
-            QIcon(os.path.join(ruta_iconos, "volver.png")))
+        self.btn_volver.setIcon(QIcon(os.path.join(ruta_iconos, "volver.png")))
 
-        self.btn_enviar.setIconSize(QSize(48, 48))
-        self.btn_imprimir.setIconSize(QSize(48, 48))
-        self.btn_volver.setIconSize(QSize(48, 48))
-
-        self.btn_enviar.setStyleSheet("text-align: center;")
-        self.btn_enviar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-
-        self.btn_imprimir.setStyleSheet("text-align: center;")
-        self.btn_imprimir.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-
-        self.btn_volver.setStyleSheet("text-align: center;")
-        self.btn_volver.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        for btn in [self.btn_enviar, self.btn_imprimir, self.btn_volver]:
+            btn.setIconSize(QSize(48, 48))
+            btn.setStyleSheet("text-align: center;")
+            btn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         self.btn_enviar.setObjectName("btn-enviar")
         self.btn_imprimir.setObjectName("btn-imprimir")
@@ -96,10 +106,13 @@ class VentanaReimpresionRecepcionamiento(QWidget):
         layout_principal.addLayout(layout_botones)
         self.setLayout(layout_principal)
 
-        # Conexión del botón volver
         self.btn_volver.clicked.connect(self.volver_callback)
 
     def cargar_documentos(self):
+        """
+        Escanea la carpeta `documentos/recepcionamientos` en busca de archivos PDF,
+        organizándolos por carpeta (normalmente con nombre de mes).
+        """
         print("🔄 Cargando documentos de recepcionamiento...")
         ruta_base = obtener_ruta_absoluta("documentos/recepcionamientos")
         if not os.path.exists(ruta_base):
@@ -107,7 +120,6 @@ class VentanaReimpresionRecepcionamiento(QWidget):
             return
 
         filas = []
-
         for raiz, _, archivos in os.walk(ruta_base):
             for archivo in archivos:
                 if archivo.lower().endswith(".pdf"):
@@ -116,7 +128,6 @@ class VentanaReimpresionRecepcionamiento(QWidget):
 
                     nombre_carpeta = os.path.basename(
                         os.path.dirname(ruta_completa))
-
                     try:
                         fecha = datetime.strptime(nombre_carpeta, "%Y-%m")
                         mes_legible = fecha.strftime("%B %Y").capitalize()
@@ -132,6 +143,12 @@ class VentanaReimpresionRecepcionamiento(QWidget):
             self.tabla.setItem(fila_idx, 2, QTableWidgetItem(ruta))
 
     def abrir_documento_seleccionado(self, fila, columna):
+        """
+        Abre el documento PDF asociado a la fila seleccionada de la tabla.
+
+        :param fila: Índice de la fila seleccionada.
+        :param columna: Índice de la columna seleccionada (no se utiliza).
+        """
         ruta_item = self.tabla.item(fila, 2)
         if ruta_item:
             ruta = ruta_item.text()

@@ -1,18 +1,34 @@
-from PySide6.QtWidgets import (
-    QDialog, QLabel, QLineEdit, QTextEdit, QComboBox, QCheckBox,
-    QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox, QDateEdit,
-    QWidget, QScrollArea, QToolButton, QSizePolicy, QMessageBox, QGridLayout, QScrollArea, QPushButton, QFileDialog
-)
-from PySide6.QtCore import Qt, QSize, QDate, QEvent
+"""
+Módulo: ventana_recepcionamiento.py
+
+Este módulo define la clase VentanaRecepcionamiento, encargada de gestionar la interfaz de
+recepción de vehículos en el sistema ReyBoxes. Incluye secciones para datos del cliente,
+del vehículo, motivo del recepcionamiento y opciones de impresión/envío de documentos.
+
+Autor: Cresnik Rasiel
+Proyecto: ReyBoxes - Sistema de Gestión de Taller Mecánico
+"""
+
 from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt, QSize, QDate, QEvent
+from PySide6.QtWidgets import QDialog, QLabel, QLineEdit, QTextEdit, QComboBox, QCheckBox, QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox, QDateEdit, QWidget, QScrollArea, QToolButton, QSizePolicy, QMessageBox, QGridLayout, QScrollArea, QPushButton, QFileDialog
 from utilidades.capturador_firma import CapturadorFirma
-from modelos.recepcionamiento_consultas import obtener_motivos, obtener_urgencias
 from utilidades.rutas import obtener_ruta_absoluta
+from modelos.recepcionamiento_consultas import obtener_motivos, obtener_urgencias
 
 
 class VentanaRecepcionamiento(QDialog):
+    """
+    Ventana principal para el registro de recepcionamiento de vehículos.
+    Presenta formularios organizados en secciones desplegables y funcionalidades
+    como captura de firma, generación de documento y envío por correo.
+    """
 
     def confirmar_borrado(self):
+        """
+        Muestra un cuadro de diálogo para confirmar el borrado de todos los datos del formulario.
+        Si el usuario acepta, se llama al método `borrar_todo`.
+        """
         msgbox = QMessageBox(self)
         msgbox.setIcon(QMessageBox.Warning)
         msgbox.setWindowTitle("Confirmar borrado")
@@ -25,6 +41,10 @@ class VentanaRecepcionamiento(QDialog):
             self.borrar_todo()
 
     def borrar_todo(self):
+        """
+        Borra todo el contenido de los campos del formulario, reinicia los combos,
+        casillas y limpia la zona de firma. Esta versión reemplaza la anterior más corta.
+        """
         for campo in [self.input_nombre, self.input_dni, self.input_telefono, self.input_email, self.input_direccion,
                       self.input_matricula, self.input_marca, self.input_modelo, self.input_color,
                       self.input_anio, self.input_kilometros, self.combo_combustible, self.input_vin,
@@ -49,6 +69,10 @@ class VentanaRecepcionamiento(QDialog):
         self.stacked_motivo.setCurrentIndex(-1)
 
     def __init__(self):
+        """
+        Constructor de la clase. Inicializa la ventana de recepcionamiento,
+        configura los estilos, estructura la interfaz gráfica y carga los datos necesarios.
+        """
         super().__init__()
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
         self.setWindowTitle("ReyBoxes - Recepcionamiento de Vehículos")
@@ -128,6 +152,12 @@ class VentanaRecepcionamiento(QDialog):
             boton.setFixedSize(110, 90)  # O ajusta a tu gusto
 
     def crear_seccion_plegable(self, titulo):
+        """
+        Crea una sección plegable con encabezado e ícono de expansión/colapso.
+
+        :param titulo: Título de la sección.
+        :return: Diccionario con los elementos 'grupo', 'contenido' y 'toggle'.
+        """
         grupo = QGroupBox()
         layout = QVBoxLayout(grupo)
 
@@ -151,6 +181,12 @@ class VentanaRecepcionamiento(QDialog):
         contenido.setVisible(False)
 
         def toggle():
+            """
+            Alterna la visibilidad del contenido de la sección plegable.
+
+            Cambia el estado visible/invisible del contenido del grupo y ajusta el ícono
+            del botón de expansión dependiendo de si está desplegado o no.
+            """
             visible = boton_toggle.isChecked()
             contenido.setVisible(visible)
             boton_toggle.setIcon(icono_colapsar if visible else icono_expandir)
@@ -163,6 +199,11 @@ class VentanaRecepcionamiento(QDialog):
         return {"grupo": grupo, "contenido": contenido, "toggle": boton_toggle}
 
     def crear_seccion_datos_cliente(self):
+        """
+        Crea la sección del formulario con los datos del cliente.
+
+        :return: QGroupBox con los campos de entrada correspondientes.
+        """
         grupo = self.crear_seccion_plegable("Datos del Cliente")
         layout = QFormLayout()
         grupo['contenido'].setLayout(layout)
@@ -182,6 +223,11 @@ class VentanaRecepcionamiento(QDialog):
         return grupo['grupo']
 
     def crear_seccion_datos_vehiculo(self):
+        """
+        Crea la sección del formulario con los datos del vehículo.
+
+        :return: QGroupBox con los campos organizados en cuadrícula.
+        """
         grupo = self.crear_seccion_plegable("Datos del Vehículo")
         layout = QGridLayout()
         grupo['contenido'].setLayout(layout)
@@ -227,11 +273,16 @@ class VentanaRecepcionamiento(QDialog):
         return grupo['grupo']
 
     def crear_seccion_motivo_recepcionamiento(self):
+        """
+        Crea la sección donde se selecciona el motivo del recepcionamiento,
+        el grado de urgencia, y se introducen observaciones generales.
+
+        :return: QGroupBox con todos los campos y controles correspondientes.
+        """
         grupo = self.crear_seccion_plegable("Motivo del Recepcionamiento")
         layout = QVBoxLayout()
         grupo['contenido'].setLayout(layout)
 
-        # Fila 1: Motivo, urgencia y fecha
         fila1 = QHBoxLayout()
         label_motivo = QLabel("Motivo:")
         self.combo_motivo = QComboBox()
@@ -255,7 +306,6 @@ class VentanaRecepcionamiento(QDialog):
         fila1.addWidget(self.fecha_recepcion)
         layout.addLayout(fila1)
 
-        # Fila 2: Checkboxes
         fila2 = QHBoxLayout()
         self.check_arranca = QCheckBox("Arranca")
         self.check_grua = QCheckBox("Viene con grúa")
@@ -267,7 +317,6 @@ class VentanaRecepcionamiento(QDialog):
         fila2.addWidget(self.check_presupuesto_escrito)
         layout.addLayout(fila2)
 
-        # Fila 3: Tiene seguro y compañía
         fila3 = QHBoxLayout()
         self.check_seguro = QCheckBox("Tiene seguro")
         label_compania = QLabel("Compañía Seguro:")
@@ -279,7 +328,6 @@ class VentanaRecepcionamiento(QDialog):
         fila3.addWidget(self.input_compania)
         layout.addLayout(fila3)
 
-        # Fila 4: Última revisión, reparación hasta y valor estimado
         fila4 = QHBoxLayout()
         label_revision = QLabel("Última revisión:")
         self.input_ultima_revision = QLineEdit()
@@ -305,7 +353,6 @@ class VentanaRecepcionamiento(QDialog):
         fila4.addWidget(euro2)
         layout.addLayout(fila4)
 
-        # Fila 5-7: TextAreas
         layout.addWidget(QLabel("Estado exterior:"))
         self.input_estado_exterior = QTextEdit()
         layout.addWidget(self.input_estado_exterior)
@@ -321,11 +368,16 @@ class VentanaRecepcionamiento(QDialog):
         return grupo['grupo']
 
     def crear_seccion_entrega_documento(self):
+        """
+        Crea la sección para configurar la generación del documento de recepción,
+        incluyendo firma, opciones de guardado, impresión y envío por correo.
+
+        :return: QGroupBox con todos los controles de entrega de documento.
+        """
         grupo = self.crear_seccion_plegable("Entrega del documento")
         layout = QVBoxLayout()
         grupo['contenido'].setLayout(layout)
 
-        # Fila 1: Nº Recepcionamiento y checkboxes
         fila1 = QHBoxLayout()
         label_numero_recepcion = QLabel("Nº Recepcionamiento:")
         label_numero_recepcion.setAlignment(Qt.AlignVCenter)
@@ -345,22 +397,25 @@ class VentanaRecepcionamiento(QDialog):
         fila1.setAlignment(Qt.AlignLeft)
         layout.addLayout(fila1)
 
-        # Fila 2: Campo correo alineado a la izquierda
         fila2 = QHBoxLayout()
         label_correo = QLabel("Correo destino:")
         self.input_correo = QLineEdit()
         self.input_correo.setPlaceholderText("Correo electrónico destino")
 
-        # Conectar el cambio de estado del checkbox
         def actualizar_estado_correo(estado):
             self.input_correo.setEnabled(estado == Qt.Checked)
+        """
+        Habilita o deshabilita el campo de correo electrónico según
+        el estado del checkbox 'Enviar por correo'.
+
+        :param estado: Estado del QCheckBox (Qt.Checked o Qt.Unchecked).
+        """
 
         fila2.addWidget(label_correo)
         fila2.addWidget(self.input_correo)
         fila2.addStretch()
         layout.addLayout(fila2)
 
-        # Fila 3: Firma
         fila3 = QVBoxLayout()
         label_firma = QLabel("Firma del cliente:")
         fila3.addWidget(label_firma)
@@ -369,7 +424,6 @@ class VentanaRecepcionamiento(QDialog):
         self.zona_firma = CapturadorFirma()
         self.zona_firma.setObjectName("zona_firma")
 
-        # Botón Activar firma
         self.boton_activar_firma = QToolButton()
         self.boton_activar_firma.setObjectName("boton_recepcionamiento")
         self.boton_activar_firma.setText("Activar firma")
@@ -380,7 +434,6 @@ class VentanaRecepcionamiento(QDialog):
         self.boton_activar_firma.setFixedSize(110, 110)
         self.boton_activar_firma.clicked.connect(self.activar_modo_firma)
 
-        # Botón Limpiar firma
         self.boton_limpiar_firma = QToolButton()
         self.boton_limpiar_firma.setObjectName("boton_recepcionamiento")
         self.boton_limpiar_firma.setText("Limpiar firma")
@@ -391,13 +444,11 @@ class VentanaRecepcionamiento(QDialog):
         self.boton_limpiar_firma.setFixedSize(110, 110)
         self.boton_limpiar_firma.clicked.connect(self.zona_firma.limpiar)
 
-        # Añadir widgets al layout de firma
         fila_firma.addWidget(self.zona_firma)
         fila_firma.addWidget(self.boton_activar_firma)
         fila_firma.addWidget(self.boton_limpiar_firma)
         fila3.addLayout(fila_firma)
 
-        # Mensaje visual de firma activada
         self.mensaje_firma = QLabel(
             "✍️ Firma activada – pulse ENTER para finalizar")
         self.mensaje_firma.setStyleSheet("color: red; font-weight: bold;")
@@ -406,7 +457,6 @@ class VentanaRecepcionamiento(QDialog):
 
         layout.addLayout(fila3)
 
-        # Fila 4: Ruta de guardado
         fila4 = QHBoxLayout()
         self.checkbox_ruta_predeterminada = QCheckBox(
             "Guardar en la ruta por defecto")
@@ -424,16 +474,27 @@ class VentanaRecepcionamiento(QDialog):
         return grupo['grupo']
 
     def keyPressEvent(self, event):
+        """
+        Evento especial para ocultar el mensaje de firma cuando se presiona ENTER.
+
+        :param event: Evento de teclado.
+        """
         if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
             self.mensaje_firma.setVisible(False)
 
     def seleccionar_ruta_guardado(self):
+        """
+        Abre un diálogo para seleccionar una carpeta donde guardar el documento generado.
+        """
         ruta = QFileDialog.getExistingDirectory(
             self, "Seleccionar carpeta de guardado")
         if ruta:
             self.input_ruta_guardado.setText(ruta)
 
     def activar_modo_firma(self):
+        """
+        Activa el modo de captura de firma del cliente.
+        """
         self.modo_firma_activo = True
         self.mensaje_firma.setVisible(True)
         self.zona_firma.activar_firma(True)
@@ -441,11 +502,26 @@ class VentanaRecepcionamiento(QDialog):
         print("Modo firma activado")
 
         def liberar_firma():
+            """
+            Finaliza el modo de captura de firma.
+
+            - Habilita el botón de limpiar firma.
+            - Restaura el cursor por defecto.
+            - Elimina el filtro de eventos para que la zona de firma deje de interceptar entradas de teclado.
+            """
             self.boton_limpiar_firma.setEnabled(True)
             self.zona_firma.unsetCursor()
             self.zona_firma.removeEventFilter(self)
 
     def eventFilter(self, source, event):
+        """
+        Filtra eventos del sistema para gestionar correctamente el fin del modo firma
+        al presionar ENTER.
+
+        :param source: Objeto que emitió el evento.
+        :param event: Objeto del evento.
+        :return: True si se gestionó el evento, False en caso contrario.
+        """
         if self.modo_firma_activo and event.type() == QEvent.KeyPress:
             if event.key() in (Qt.Key_Return, Qt.Key_Enter):
                 self.modo_firma_activo = False
@@ -455,6 +531,10 @@ class VentanaRecepcionamiento(QDialog):
         return super().eventFilter(source, event)
 
     def cargar_motivos_y_urgencias(self):
+        """
+        Carga desde la base de datos los motivos y niveles de urgencia
+        y los asigna a los respectivos combo boxes del formulario.
+        """
         self.combo_motivo.clear()
         self.combo_urgencia.clear()
         self.motivos_dict = {}
@@ -469,7 +549,18 @@ class VentanaRecepcionamiento(QDialog):
             self.urgencias_dict[item["descripcion"]] = item["id"]
 
     def borrar_todo(self):
-        # Limpiar todos los QLineEdit y QTextEdit
+        """
+        Restablece completamente el formulario de recepcionamiento.
+
+        - Limpia todos los campos de texto (QLineEdit y QTextEdit).
+        - Reinicia los combo boxes a su estado inicial.
+        - Desmarca todos los checkboxes del formulario.
+        - Desactiva el modo firma y limpia la zona de captura de firma.
+        - Oculta el mensaje de firma y restablece el estado interno.
+
+        Este método es útil para reutilizar la ventana como si se hubiese abierto por primera vez.
+        """
+
         campos_texto = [
             self.input_nombre, self.input_dni, self.input_telefono, self.input_email, self.input_direccion,
             self.input_marca, self.input_modelo, self.input_color, self.input_anio,
@@ -484,7 +575,6 @@ class VentanaRecepcionamiento(QDialog):
             if isinstance(campo, (QLineEdit, QTextEdit)):
                 campo.clear()
 
-        # ComboBoxes
         self.input_matricula.setCurrentIndex(-1)
         self.combo_combustible.setCurrentIndex(-1)
         self.combo_tipo.setCurrentIndex(-1)
@@ -492,7 +582,6 @@ class VentanaRecepcionamiento(QDialog):
         self.combo_motivo.setCurrentIndex(-1)
         self.combo_urgencia.setCurrentIndex(0)
 
-        # Checkboxes
         self.check_arranca.setChecked(False)
         self.check_grua.setChecked(False)
         self.check_itv.setChecked(False)
@@ -502,10 +591,6 @@ class VentanaRecepcionamiento(QDialog):
         self.checkbox_enviar_correo.setChecked(False)
         self.checkbox_ruta_predeterminada.setChecked(False)
 
-        # Fecha recepción al día actual
-        # self.fecha_recepcion.setDate(QDate.currentDate())
-
-        # Limpiar firma y ocultar mensaje
         self.zona_firma.limpiar()
         self.zona_firma.activar_firma(False)
         self.mensaje_firma.setVisible(False)

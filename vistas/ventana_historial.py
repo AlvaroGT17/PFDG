@@ -1,14 +1,25 @@
-from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem,
-    QHeaderView, QHBoxLayout, QToolButton
-)
-from PySide6.QtGui import QIcon, QColor
 from PySide6.QtCore import Qt, QSize
+from PySide6.QtGui import QIcon, QColor
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QHeaderView, QHBoxLayout, QToolButton
 from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaHistorial(QWidget):
+    """
+    Ventana que muestra el historial de fichajes del sistema ReyBoxes.
+
+    Esta interfaz está diseñada tanto para usuarios comunes como para administradores.
+    Permite visualizar una tabla con registros de fichajes, así como exportarlos a CSV o PDF.
+    También incluye un botón para regresar al menú principal.
+    """
+
     def __init__(self, es_admin=False):
+        """
+        Inicializa la ventana de historial de fichajes.
+
+        Parámetros:
+            es_admin (bool): Indica si el usuario tiene rol de administrador (afecta el comportamiento futuro).
+        """
         super().__init__()
         self.es_admin = es_admin
         self.setWindowTitle("Historial de Fichajes")
@@ -23,6 +34,12 @@ class VentanaHistorial(QWidget):
         self.inicializar_ui()
 
     def inicializar_ui(self):
+        """
+        Configura y construye la interfaz gráfica:
+        - Título de la ventana.
+        - Tabla de fichajes con encabezados.
+        - Botones para exportar a CSV/PDF y volver al menú.
+        """
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(15)
@@ -38,21 +55,16 @@ class VentanaHistorial(QWidget):
             ["Fecha y hora", "Tipo", "Empleado"])
         self.tabla.setObjectName("tabla_fichajes")
         self.tabla.verticalHeader().setVisible(True)
-
-        # 🔐 Mejoras aplicadas
         self.tabla.setSelectionBehavior(QTableWidget.SelectRows)
         self.tabla.setEditTriggers(QTableWidget.NoEditTriggers)
-
-        # Ajustar tamaños de columnas
         self.tabla.setColumnWidth(0, 200)
         self.tabla.setColumnWidth(1, 150)
         self.tabla.setColumnWidth(2, 150)
         self.tabla.horizontalHeader().setStretchLastSection(True)
         self.tabla.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
-
         layout.addWidget(self.tabla)
 
-        # 📦 Botón CSV
+        # Botón Exportar CSV
         self.boton_csv = QToolButton()
         self.boton_csv.setText("Exportar CSV")
         self.boton_csv.setObjectName("boton_exportar_csv")
@@ -60,7 +72,7 @@ class VentanaHistorial(QWidget):
         self.boton_csv.setIconSize(QSize(48, 48))
         self.boton_csv.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
-        # 📄 Botón PDF
+        # Botón Exportar PDF
         self.boton_pdf = QToolButton()
         self.boton_pdf.setText("Exportar PDF")
         self.boton_pdf.setObjectName("boton_exportar_pdf")
@@ -68,7 +80,7 @@ class VentanaHistorial(QWidget):
         self.boton_pdf.setIconSize(QSize(48, 48))
         self.boton_pdf.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
-        # 🔙 Botón Volver
+        # Botón Volver
         self.boton_volver = QToolButton()
         self.boton_volver.setText("Volver")
         self.boton_volver.setObjectName("boton_volver")
@@ -88,6 +100,12 @@ class VentanaHistorial(QWidget):
         layout.addLayout(layout_botones)
 
     def cargar_datos(self, fichajes):
+        """
+        Carga los registros de fichajes en la tabla.
+
+        Parámetros:
+            fichajes (list): Lista de tuplas con (fecha_hora, tipo, empleado).
+        """
         self.tabla.setRowCount(len(fichajes))
         for fila, fichaje in enumerate(fichajes):
             fecha_hora = QTableWidgetItem(
@@ -99,7 +117,7 @@ class VentanaHistorial(QWidget):
             self.tabla.setItem(fila, 1, tipo)
             self.tabla.setItem(fila, 2, empleado)
 
-            # Colores suaves por tipo de fichaje
+            # Colores por tipo de fichaje
             if fichaje[1] == "ENTRADA":
                 color = QColor("#fff8cc")  # amarillo claro
             elif fichaje[1] == "SALIDA":

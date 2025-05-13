@@ -1,20 +1,38 @@
-# vistas/ventana_reimpresionPresupuestos.py
+"""
+Módulo para la ventana de reimpresión de presupuestos en formato PDF.
 
-from PySide6.QtWidgets import (
-    QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
-    QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView,
-    QMessageBox, QToolButton
-)
-from PySide6.QtCore import Qt, QSize
-from PySide6.QtGui import QIcon
+Permite a los usuarios consultar, abrir, reenviar o imprimir documentos generados
+durante la creación de presupuestos, accediendo a ellos por carpetas organizadas por mes.
+"""
+
 import os
 import webbrowser
-from datetime import datetime
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtWidgets import (
+    QWidget, QLabel, QVBoxLayout, QHBoxLayout, QTableWidget,
+    QTableWidgetItem, QHeaderView, QAbstractItemView, QMessageBox, QToolButton
+)
 from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaReimpresionPresupuestos(QWidget):
+    """
+    Ventana para gestionar la reimpresión de presupuestos.
+
+    Ofrece funcionalidades para abrir, reenviar e imprimir documentos PDF
+    generados como presupuestos en el sistema.
+    """
+
     def __init__(self, nombre_usuario, rol_usuario, volver_callback, parent=None):
+        """
+        Inicializa la ventana con los datos del usuario y el callback de retorno.
+
+        :param nombre_usuario: Nombre del usuario que accede.
+        :param rol_usuario: Rol asignado al usuario.
+        :param volver_callback: Función a ejecutar al pulsar el botón "Volver".
+        :param parent: Widget padre (opcional).
+        """
         super().__init__(parent)
         self.nombre_usuario = nombre_usuario
         self.rol_usuario = rol_usuario
@@ -31,6 +49,9 @@ class VentanaReimpresionPresupuestos(QWidget):
             self.setStyleSheet(f.read())
 
     def init_ui(self):
+        """
+        Configura y organiza todos los elementos gráficos de la ventana.
+        """
         layout_principal = QVBoxLayout()
 
         titulo = QLabel("Reimpresión de presupuestos")
@@ -52,6 +73,7 @@ class VentanaReimpresionPresupuestos(QWidget):
         self.tabla.cellDoubleClicked.connect(self.abrir_documento_seleccionado)
 
         layout_botones = QHBoxLayout()
+
         self.btn_enviar = QToolButton()
         self.btn_enviar.setText("Enviar")
 
@@ -82,6 +104,11 @@ class VentanaReimpresionPresupuestos(QWidget):
         self.btn_volver.clicked.connect(self.volver_callback)
 
     def cargar_documentos(self):
+        """
+        Carga y lista todos los documentos PDF disponibles en la carpeta de presupuestos.
+
+        Agrupa los archivos por carpeta (que representa un mes) para mayor claridad.
+        """
         print("🔄 Cargando documentos de presupuestos...")
         ruta_base = obtener_ruta_absoluta("documentos/presupuestos")
         if not os.path.exists(ruta_base):
@@ -106,6 +133,12 @@ class VentanaReimpresionPresupuestos(QWidget):
             self.tabla.setItem(fila_idx, 2, QTableWidgetItem(ruta))
 
     def abrir_documento_seleccionado(self, fila, columna):
+        """
+        Intenta abrir el archivo PDF de la fila seleccionada usando el navegador por defecto.
+
+        :param fila: Índice de la fila seleccionada.
+        :param columna: Índice de la columna seleccionada (no se utiliza).
+        """
         ruta_item = self.tabla.item(fila, 2)
         if ruta_item:
             ruta = ruta_item.text()
