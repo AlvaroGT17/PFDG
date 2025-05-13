@@ -1,18 +1,40 @@
-from PySide6.QtWidgets import (
-    QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
-    QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView,
-    QMessageBox
-)
-from PySide6.QtCore import Qt, QSize
-from PySide6.QtGui import QIcon
-from utilidades.rutas import obtener_ruta_absoluta
+"""
+Módulo de interfaz gráfica para la reimpresión de documentos de ventas.
+
+Contiene la clase VentanaReimpresionVentas, que permite al usuario visualizar
+una lista de contratos de venta generados, con opciones para enviarlos,
+imprimirlos o abrirlos directamente desde la aplicación.
+"""
 
 import os
 import webbrowser
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtWidgets import (
+    QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
+    QTableWidget, QTableWidgetItem, QHeaderView,
+    QAbstractItemView, QMessageBox
+)
+from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaReimpresionVentas(QWidget):
+    """
+    Ventana que permite al usuario consultar, visualizar, reenviar o imprimir
+    documentos PDF generados previamente en la sección de ventas.
+
+    Se carga una tabla con los archivos PDF encontrados en la carpeta correspondiente,
+    agrupados por mes.
+    """
+
     def __init__(self, nombre_usuario, rol_usuario, volver_callback):
+        """
+        Inicializa la ventana con el nombre del usuario, rol y una función de retorno.
+
+        :param nombre_usuario: Nombre del usuario actual.
+        :param rol_usuario: Rol del usuario actual.
+        :param volver_callback: Función que se ejecuta al pulsar el botón Volver.
+        """
         super().__init__()
         self.nombre_usuario = nombre_usuario
         self.rol_usuario = rol_usuario
@@ -30,6 +52,9 @@ class VentanaReimpresionVentas(QWidget):
             self.setStyleSheet(f.read())
 
     def init_ui(self):
+        """
+        Configura y organiza los elementos visuales de la interfaz.
+        """
         layout_principal = QVBoxLayout()
 
         titulo = QLabel("Reimpresión de ventas")
@@ -76,6 +101,10 @@ class VentanaReimpresionVentas(QWidget):
         self.btn_volver.clicked.connect(self.volver_callback)
 
     def cargar_documentos(self):
+        """
+        Busca todos los documentos PDF en la carpeta de ventas y los muestra en la tabla.
+        Agrupa por mes a partir del nombre de las carpetas.
+        """
         print("🔄 Cargando documentos de ventas...")
         ruta_base = obtener_ruta_absoluta("documentos/ventas")
         if not os.path.exists(ruta_base):
@@ -100,6 +129,12 @@ class VentanaReimpresionVentas(QWidget):
             self.tabla.setItem(fila_idx, 2, QTableWidgetItem(ruta))
 
     def abrir_documento_seleccionado(self, fila, columna):
+        """
+        Abre el documento PDF seleccionado al hacer doble clic en la tabla.
+
+        :param fila: Fila seleccionada.
+        :param columna: Columna seleccionada.
+        """
         ruta_item = self.tabla.item(fila, 2)
         if ruta_item:
             ruta = ruta_item.text()

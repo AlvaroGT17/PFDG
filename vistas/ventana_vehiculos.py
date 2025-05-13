@@ -1,14 +1,35 @@
-from PySide6.QtWidgets import (
-    QWidget, QLabel, QLineEdit, QToolButton, QVBoxLayout,
-    QHBoxLayout, QScrollArea, QComboBox, QTextEdit
-)
+"""
+Módulo de interfaz gráfica para la gestión de vehículos en ReyBoxes.
+
+Este formulario permite visualizar y gestionar información detallada de los vehículos
+asociados a un cliente, incluyendo datos personales del propietario, detalles técnicos
+del vehículo y opciones de gestión como registrar, modificar, limpiar, eliminar y volver.
+
+La ventana está dividida en dos secciones scrollables: datos del cliente y del vehículo.
+Se aplica un estilo visual personalizado cargado desde un archivo CSS externo.
+"""
+
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt, QSize
+from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QToolButton, QVBoxLayout, QHBoxLayout, QScrollArea, QComboBox, QTextEdit
 from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaVehiculos(QWidget):
+    """
+    Clase que representa la ventana principal para la gestión de vehículos.
+
+    Incluye campos de visualización del cliente, datos del vehículo, combos para tipo
+    y categoría, y botones para registrar, modificar, limpiar, eliminar y volver.
+    """
+
     def __init__(self):
+        """
+        Inicializa la ventana de gestión de vehículos.
+
+        - Define título, icono, tamaño y estilo.
+        - Construye toda la interfaz gráfica.
+        """
         super().__init__()
         self.setWindowTitle("ReyBoxes - Gestión de Vehículos")
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
@@ -20,18 +41,27 @@ class VentanaVehiculos(QWidget):
         self.aplicar_estilos()
 
     def setup_ui(self):
+        """
+        Construye y organiza todos los elementos gráficos de la interfaz.
+
+        Se divide en:
+        - Área de búsqueda (por nombre, DNI, matrícula).
+        - Información del cliente (lectura).
+        - Información del vehículo (editable).
+        - Botones de acción en la parte inferior.
+        """
         layout_principal = QVBoxLayout(self)
         layout_principal.setContentsMargins(20, 20, 20, 20)
         layout_principal.setSpacing(10)
 
-        # 🟥 Título
+        # Título principal
         titulo = QLabel(
             "<span style='color: white;'>Gestión de </span><span style='color: #d90429;'>Vehículos</span>")
         titulo.setAlignment(Qt.AlignCenter)
         titulo.setObjectName("titulo_principal")
         layout_principal.addWidget(titulo)
 
-        # 🔍 Buscadores arriba
+        # 🔍 Búsqueda
         layout_seccion_busqueda = QHBoxLayout()
         layout_seccion_busqueda.setSpacing(10)
 
@@ -56,11 +86,11 @@ class VentanaVehiculos(QWidget):
         layout_seccion_busqueda.addWidget(self.input_buscar_matricula)
         layout_principal.addLayout(layout_seccion_busqueda)
 
-        # 🧾 Scrolls principales
+        # Scrolls: cliente y vehículo
         layout_scrolls = QHBoxLayout()
         layout_scrolls.setSpacing(20)
 
-        # 🧍 Cliente
+        # Cliente
         scroll_cliente = QScrollArea()
         scroll_cliente.setWidgetResizable(True)
         contenedor_cliente = QWidget()
@@ -68,6 +98,7 @@ class VentanaVehiculos(QWidget):
         layout_cliente = QVBoxLayout(contenedor_cliente)
         layout_cliente.setSpacing(10)
 
+        # Campos cliente
         self.input_nombre = QLineEdit()
         self.input_nombre.setPlaceholderText("Nombre")
         self.input_apellido1 = QLineEdit()
@@ -101,7 +132,7 @@ class VentanaVehiculos(QWidget):
         self.input_provincia = QLineEdit()
         self.input_provincia.setPlaceholderText("Provincia")
 
-        # Hacer los campos del cliente solo lectura (no editables)
+        # Campos de solo lectura
         self.input_nombre.setReadOnly(True)
         self.input_apellido1.setReadOnly(True)
         self.input_apellido2.setReadOnly(True)
@@ -121,10 +152,9 @@ class VentanaVehiculos(QWidget):
         layout_cliente.addWidget(self.input_direccion)
         layout_cliente.addLayout(layout_cp_localidad)
         layout_cliente.addWidget(self.input_provincia)
-
         scroll_cliente.setWidget(contenedor_cliente)
 
-        # 🚗 Vehículo
+        # Vehículo
         scroll_vehiculo = QScrollArea()
         scroll_vehiculo.setWidgetResizable(True)
         contenedor_vehiculo = QWidget()
@@ -141,7 +171,6 @@ class VentanaVehiculos(QWidget):
         self.input_color = QLineEdit()
         self.input_color.setPlaceholderText("Color")
 
-        # Año y Combustible en la misma línea
         layout_anyo_combustible = QHBoxLayout()
         layout_anyo_combustible.setSpacing(10)
 
@@ -159,7 +188,6 @@ class VentanaVehiculos(QWidget):
         self.input_numero_bastidor = QLineEdit()
         self.input_numero_bastidor.setPlaceholderText("Número de bastidor")
 
-        # Categoría y Tipo
         layout_categoria_tipo = QHBoxLayout()
         layout_categoria_tipo.setSpacing(10)
 
@@ -188,12 +216,11 @@ class VentanaVehiculos(QWidget):
         layout_vehiculo.addWidget(self.input_observaciones)
 
         scroll_vehiculo.setWidget(contenedor_vehiculo)
-
         layout_scrolls.addWidget(scroll_cliente)
         layout_scrolls.addWidget(scroll_vehiculo)
         layout_principal.addLayout(layout_scrolls)
 
-        # 🔘 Botones
+        # Botones de acción
         layout_botones = QHBoxLayout()
         layout_botones.setSpacing(30)
         layout_botones.setAlignment(Qt.AlignCenter)
@@ -243,6 +270,11 @@ class VentanaVehiculos(QWidget):
         layout_principal.addLayout(layout_botones)
 
     def aplicar_estilos(self):
+        """
+        Aplica el archivo de estilos CSS personalizado a la ventana.
+
+        Si el archivo no se encuentra o da error, se imprime un mensaje.
+        """
         ruta = obtener_ruta_absoluta("css/vehiculos.css")
         try:
             with open(ruta, "r", encoding="utf-8") as f:
@@ -251,5 +283,10 @@ class VentanaVehiculos(QWidget):
             print(f"Error cargando estilos de vehículos: {e}")
 
     def closeEvent(self, event):
+        """
+        Sobrescribe el evento de cierre de ventana.
+
+        Si `forzar_cierre` no está activado, se ignora el cierre manual.
+        """
         if not getattr(self, "forzar_cierre", False):
             event.ignore()

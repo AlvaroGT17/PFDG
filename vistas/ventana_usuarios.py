@@ -1,15 +1,29 @@
-from PySide6.QtWidgets import (
-    QWidget, QLabel, QLineEdit, QToolButton, QVBoxLayout,
-    QHBoxLayout, QComboBox, QFrame
-)
+"""
+Módulo de interfaz para la creación de usuarios en el sistema ReyBoxes.
+
+Contiene la clase VentanaUsuarios, que representa una ventana con campos
+para introducir datos de un nuevo usuario, como nombre, correo y rol.
+Se incluye un sistema de estilo visual y control del cierre autorizado.
+"""
+
 from PySide6.QtGui import QIcon
-from PySide6.QtCore import Qt
-from utilidades.rutas import obtener_ruta_absoluta
 from PySide6.QtCore import Qt, QSize
+from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QToolButton, QVBoxLayout, QHBoxLayout, QComboBox, QFrame
+from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaUsuarios(QWidget):
+    """
+    Ventana gráfica para crear un nuevo usuario del sistema.
+
+    Incluye campos de entrada para nombre, apellido, correo electrónico, 
+    contraseña, rol, y botones para crear, limpiar y volver.
+    """
+
     def __init__(self):
+        """
+        Inicializa la ventana con todos los componentes visuales.
+        """
         super().__init__()
         self.setWindowTitle("ReyBoxes - Crear usuario")
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
@@ -21,6 +35,9 @@ class VentanaUsuarios(QWidget):
         self.aplicar_estilos()
 
     def setup_ui(self):
+        """
+        Crea y configura todos los elementos visuales de la interfaz.
+        """
         layout_principal = QVBoxLayout(self)
         layout_principal.setContentsMargins(40, 40, 40, 40)
 
@@ -91,15 +108,22 @@ class VentanaUsuarios(QWidget):
 
         layout_principal.addWidget(contenedor, alignment=Qt.AlignCenter)
 
-        # Conectar señal de cambio de nombre
         self.input_nombre.textChanged.connect(self.actualizar_titulo)
 
     def aplicar_estilos(self):
+        """
+        Aplica la hoja de estilo CSS personalizada a la ventana.
+        """
         ruta_css = obtener_ruta_absoluta("css/usuarios.css")
         with open(ruta_css, "r", encoding="utf-8") as f:
             self.setStyleSheet(f.read())
 
     def actualizar_titulo(self, texto):
+        """
+        Actualiza dinámicamente el título superior con el nombre introducido.
+
+        :param texto: Texto del nombre de usuario actual (en el QLineEdit).
+        """
         nombre = texto.strip().upper()
         if nombre:
             self.titulo.setText(
@@ -111,6 +135,11 @@ class VentanaUsuarios(QWidget):
                 "<span style='color: #FFFFFF;'>Crear usuario</span>")
 
     def closeEvent(self, event):
+        """
+        Controla el cierre de la ventana.
+
+        Solo permite cerrar si `cierre_autorizado` es True.
+        """
         if self.cierre_autorizado:
             event.accept()
         else:

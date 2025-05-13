@@ -1,14 +1,28 @@
-from PySide6.QtWidgets import (
-    QWidget, QLabel, QLineEdit, QPushButton,
-    QVBoxLayout, QHBoxLayout
-)
-from PySide6.QtGui import QIcon, QPixmap, QCursor
+"""
+Módulo de interfaz gráfica para restablecer la contraseña en el sistema ReyBoxes.
+
+Contiene la clase VentanaRestaurar, que permite al usuario introducir una nueva
+contraseña tras el proceso de recuperación, con una interfaz clara y segura.
+"""
+
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QIcon, QCursor
+from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout
 from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaRestaurar(QWidget):
+    """
+    Ventana gráfica para establecer una nueva contraseña del usuario.
+
+    Permite ingresar una nueva contraseña y repetirla para confirmación.
+    Se acompaña de botones para guardar los cambios o volver atrás.
+    """
+
     def __init__(self):
+        """
+        Inicializa la ventana, carga estilos y configura la interfaz.
+        """
         super().__init__()
         self.setWindowTitle("ReyBoxes - Nueva contraseña")
         self.setFixedSize(400, 360)
@@ -22,33 +36,33 @@ class VentanaRestaurar(QWidget):
         self.inicializar_ui()
 
     def inicializar_ui(self):
+        """
+        Crea y organiza los elementos visuales de la interfaz de restablecimiento.
+        """
         layout = QVBoxLayout(self)
         layout.setContentsMargins(30, 25, 30, 20)
         layout.setSpacing(15)
 
-        # Título
         titulo = QLabel(
             '<span style="color:#333;">Nueva </span><span style="color:#d90429;">Contraseña</span>')
         titulo.setAlignment(Qt.AlignCenter)
         titulo.setObjectName("titulo_restaurar")
         layout.addWidget(titulo)
 
-        # Campo nueva contraseña
         self.input_nueva = QLineEdit()
         self.input_nueva.setEchoMode(QLineEdit.Password)
         self.input_nueva.setPlaceholderText("Nueva contraseña")
         self.input_nueva.setToolTip("Introduce la nueva contraseña")
         layout.addWidget(self.input_nueva)
 
-        # Campo repetir contraseña
         self.input_repetir = QLineEdit()
         self.input_repetir.setEchoMode(QLineEdit.Password)
         self.input_repetir.setPlaceholderText("Repetir contraseña")
         self.input_repetir.setToolTip("Vuelve a escribir la nueva contraseña")
         layout.addWidget(self.input_repetir)
 
-        # Botones
         botones = QHBoxLayout()
+
         self.btn_guardar = QPushButton("  Guardar")
         self.btn_guardar.setIcon(QIcon(obtener_ruta_absoluta("img/llave.png")))
         self.btn_guardar.setCursor(QCursor(Qt.PointingHandCursor))

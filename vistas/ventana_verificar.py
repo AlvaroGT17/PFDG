@@ -1,14 +1,36 @@
-from PySide6.QtWidgets import (
-    QWidget, QLabel, QLineEdit, QPushButton,
-    QVBoxLayout, QHBoxLayout
-)
-from PySide6.QtGui import QIcon, QPixmap, QCursor
+"""
+Módulo de interfaz gráfica para la verificación de código de recuperación.
+
+Esta ventana se muestra tras solicitar el código por correo. Permite al usuario
+introducir el código recibido y verificarlo antes de continuar al restablecimiento
+de contraseña. Incluye un campo de texto, icono, botón de verificación, volver,
+y una etiqueta con cuenta atrás visible.
+
+Estilo y diseño visual cargados desde un archivo CSS externo.
+"""
+
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QIcon, QPixmap, QCursor
+from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout
 from utilidades.rutas import obtener_ruta_absoluta
 
 
 class VentanaVerificar(QWidget):
+    """
+    Clase que representa la ventana de verificación de código.
+
+    Contiene un campo de entrada para el código de 6 dígitos, un contador
+    con el tiempo restante antes de la expiración, y botones para verificar
+    o volver al login.
+    """
+
     def __init__(self):
+        """
+        Inicializa la ventana de verificación.
+
+        - Establece el título, icono, tamaño y estilo visual.
+        - Llama al método para construir y organizar la interfaz.
+        """
         super().__init__()
         self.setWindowTitle("ReyBoxes - Verificar código")
         self.setFixedSize(375, 360)
@@ -21,6 +43,15 @@ class VentanaVerificar(QWidget):
         self.inicializar_ui()
 
     def inicializar_ui(self):
+        """
+        Construye y organiza los elementos de la interfaz.
+
+        Incluye:
+        - Título y subtítulo informativo.
+        - Campo de entrada para el código con icono.
+        - Etiqueta para la cuenta atrás.
+        - Botones de verificación y volver con sus respectivos iconos.
+        """
         layout = QVBoxLayout(self)
         layout.setContentsMargins(30, 15, 30, 10)
         layout.setSpacing(10)
@@ -54,7 +85,7 @@ class VentanaVerificar(QWidget):
         fila_codigo.addWidget(self.input_codigo)
         layout.addLayout(fila_codigo)
 
-        # 🟡 Cuenta atrás
+        # Cuenta atrás
         self.label_tiempo = QLabel("El código expira en: 5:00")
         self.label_tiempo.setAlignment(Qt.AlignCenter)
         self.label_tiempo.setStyleSheet("font-size: 14px; color: black;")
