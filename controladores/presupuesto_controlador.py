@@ -15,6 +15,7 @@ from calendar import month_name
 
 class PresupuestoControlador:
     def __init__(self, ventana):
+        print("🟢 PresupuestoControlador inicializado")
         self.ventana = ventana
         self.ventana.controlador = self
         self.recepciones = []
@@ -24,7 +25,10 @@ class PresupuestoControlador:
         self.ventana.boton_guardar.clicked.connect(self.guardar_presupuesto)
 
     def cargar_recepciones(self):
+        print("🔄 Cargando recepciones...")
+        self.ventana.combo_recepciones.clear()
         self.recepciones = obtener_recepciones_para_presupuesto()
+        print(f"📋 Recepcionamientos disponibles: {len(self.recepciones)}")
         self.ventana.combo_recepciones.clear()
 
         if not self.recepciones:

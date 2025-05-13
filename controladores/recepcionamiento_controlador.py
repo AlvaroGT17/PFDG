@@ -31,8 +31,8 @@ class RecepcionamientoControlador:
         self._cargar_datos_completos()
         self._configurar_autocompletado_clientes()
         self._configurar_autocompletado_matricula()
-        self._asignar_numero_recepcionamiento()
         self._activar_ruta_predeterminada()
+        self._asignar_numero_recepcionamiento()
 
     def _conectar_eventos(self):
         self.vista.boton_confirmar.clicked.connect(

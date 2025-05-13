@@ -1,7 +1,7 @@
 # inicio_controlador.py
 # ─────────────────────
 
-from PySide6.QtCore import QObject, Signal, QTimer
+from PySide6.QtCore import QObject, Signal, QTimer, Qt
 from vistas.ventana_inicio import VentanaInicio
 from vistas.ventana_presupuesto import VentanaPresupuesto
 from controladores.fichar_controlador import FicharControlador
@@ -168,13 +168,19 @@ class InicioControlador(QObject):
         self.controlador_compraventa.show()
 
     def abrir_presupuestos(self):
-        self.ventana.hide()
+        self.ventana.hide()  # Oculta la ventana de inicio
+
         self.dialogo_presupuesto = VentanaPresupuesto(self.ventana)
-        self.dialogo_presupuesto.exec()
-        self.ventana.exec()
+
+        from controladores.presupuesto_controlador import PresupuestoControlador
+        PresupuestoControlador(self.dialogo_presupuesto)
+
+        self.dialogo_presupuesto.exec()  # Espera a que se cierre
+        self.ventana.show()  # <- Recupera la ventana de inicio al cerrarse
 
     # ─────────────────────────── NUEVA LÓGICA ──────────────────────────
     # Helper genérico
+
     def _abrir_ventana_reimpresion(self, clase_ventana, lista_documentos=None):
         """
         Crea la ventana, conecta señales y la muestra como diálogo modal.

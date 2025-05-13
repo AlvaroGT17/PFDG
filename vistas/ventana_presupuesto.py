@@ -14,6 +14,7 @@ class VentanaPresupuesto(QDialog):
     def __init__(self, ventana_padre=None):
         super().__init__(ventana_padre)
         self.ventana_padre = ventana_padre
+        self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
         self.forzar_cierre = False
 
         self.setWindowTitle("ReyBoxes - Presupuestos")
