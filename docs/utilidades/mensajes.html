@@ -52,87 +52,110 @@
                     <h1 class="modulename">
 <a href="./../utilidades.html">utilidades</a><wbr>.mensajes    </h1>
 
-                
+                        <div class="docstring"><p>Módulo de utilidades para mostrar cuadros de diálogo personalizados con PySide6.</p>
+
+<p>Contiene funciones reutilizables para mostrar mensajes de confirmación y errores
+con estilos visuales adaptados a la estética de la aplicación.</p>
+</div>
+
                         <input id="mod-mensajes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-mensajes-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMessageBox</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">Módulo de utilidades para mostrar cuadros de diálogo personalizados con PySide6.</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="k">def</span><span class="w"> </span><span class="nf">mostrar_mensaje_personalizado</span><span class="p">(</span><span class="n">vista</span><span class="p">,</span> <span class="n">titulo</span><span class="p">,</span> <span class="n">texto</span><span class="p">,</span> <span class="n">icono</span><span class="o">=</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Question</span><span class="p">,</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>                                  <span class="n">botones</span><span class="o">=</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span> <span class="o">|</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">    Muestra un QMessageBox con estilo personalizado.</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">    Args:</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">        vista: ventana padre.</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">        titulo: título del cuadro de diálogo.</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">        texto: cuerpo del mensaje.</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">        icono: tipo de icono (Question, Warning, Information, etc.).</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">        botones: botones a mostrar (Yes/No, Ok/Cancel, etc.).</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">Contiene funciones reutilizables para mostrar mensajes de confirmación y errores</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">con estilos visuales adaptados a la estética de la aplicación.</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMessageBox</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">def</span><span class="w"> </span><span class="nf">mostrar_mensaje_personalizado</span><span class="p">(</span><span class="n">vista</span><span class="p">,</span> <span class="n">titulo</span><span class="p">,</span> <span class="n">texto</span><span class="p">,</span> <span class="n">icono</span><span class="o">=</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Question</span><span class="p">,</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>                                  <span class="n">botones</span><span class="o">=</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span> <span class="o">|</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">    Muestra un cuadro de diálogo (QMessageBox) personalizado con opciones configurables.</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">    Returns:</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">        int: botón pulsado (por ejemplo QMessageBox.Yes).</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="n">box</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="n">vista</span><span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">titulo</span><span class="p">)</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">texto</span><span class="p">)</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">icono</span><span class="p">)</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setStandardButtons</span><span class="p">(</span><span class="n">botones</span><span class="p">)</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">    Se utiliza para confirmar acciones o mostrar mensajes interactivos, con un estilo visual adaptado.</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">    Args:</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">        vista: Ventana padre que invoca el cuadro de diálogo.</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">        titulo (str): Título de la ventana emergente.</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">        texto (str): Mensaje a mostrar al usuario.</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">        icono (QMessageBox.Icon, opcional): Icono del mensaje (por defecto: Question).</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">        botones (QMessageBox.StandardButtons, opcional): Botones a mostrar (por defecto: Yes y No).</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="s2">        QMessageBox {</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="s2">            background-color: #f3f3f3;</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="s2">            color: #222;</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="s2">            font-size: 14px;</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="s2">            border: 1px solid #bbb;</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="s2">        }</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="s2">        QLabel {</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="s2">            color: #222;</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="s2">        }</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="s2">        QPushButton {</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="s2">            background-color: #E30613;</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="s2">            color: white;</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="s2">            padding: 6px 14px;</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="s2">            border-radius: 6px;</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="s2">            font-weight: bold;</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">    Returns:</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">        int: Código del botón pulsado por el usuario (por ejemplo: QMessageBox.Yes).</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="n">box</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="n">vista</span><span class="p">)</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">titulo</span><span class="p">)</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">texto</span><span class="p">)</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">icono</span><span class="p">)</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setStandardButtons</span><span class="p">(</span><span class="n">botones</span><span class="p">)</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="c1"># Aplicar estilos visuales personalizados</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="s2">        QMessageBox {</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="s2">            background-color: #f3f3f3;</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="s2">            color: #222;</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="s2">            font-size: 14px;</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="s2">            border: 1px solid #bbb;</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="s2">        }</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="s2">        QPushButton:hover {</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="s2">            background-color: #b10410;</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="s2">        QLabel {</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="s2">            color: #222;</span>
 </span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="s2">        }</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="k">return</span> <span class="n">box</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMessageBox</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="k">def</span><span class="w"> </span><span class="nf">mostrar_error</span><span class="p">(</span><span class="n">vista</span><span class="p">,</span> <span class="n">titulo</span><span class="p">,</span> <span class="n">mensaje</span><span class="p">):</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="n">vista</span><span class="p">)</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Critical</span><span class="p">)</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">titulo</span><span class="p">)</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;p style=&#39;color: black;&#39;&gt;</span><span class="si">{</span><span class="n">mensaje</span><span class="si">}</span><span class="s2">&lt;/p&gt;&quot;</span><span class="p">)</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="s2">        QMessageBox {</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="s2">            background-color: white;</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="s2">        }</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a><span class="s2">        QLabel {</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="s2">            color: black;</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="s2">            font-size: 14px;</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="s2">        }</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="s2">        QPushButton {</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="s2">            min-width: 80px;</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="s2">            padding: 6px;</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="s2">            background-color: #E30613;</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a><span class="s2">            color: white;</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a><span class="s2">            font-weight: bold;</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a><span class="s2">            border-radius: 4px;</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a><span class="s2">        }</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a><span class="s2">        QPushButton:hover {</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a><span class="s2">            background-color: #ff2f2f;</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a><span class="s2">        }</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="s2">        QPushButton {</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="s2">            background-color: #E30613;</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="s2">            color: white;</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="s2">            padding: 6px 14px;</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="s2">            border-radius: 6px;</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="s2">            font-weight: bold;</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="s2">        }</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="s2">        QPushButton:hover {</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="s2">            background-color: #b10410;</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="s2">        }</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>    <span class="k">return</span> <span class="n">box</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="k">def</span><span class="w"> </span><span class="nf">mostrar_error</span><span class="p">(</span><span class="n">vista</span><span class="p">,</span> <span class="n">titulo</span><span class="p">,</span> <span class="n">mensaje</span><span class="p">):</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="sd">    Muestra un cuadro de diálogo de error con diseño personalizado.</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="sd">    Esta función se utiliza para notificar errores críticos al usuario con un mensaje claro y visualmente destacado.</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="sd">    Args:</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="sd">        vista: Ventana padre que invoca el cuadro de error.</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="sd">        titulo (str): Título de la ventana de error.</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a><span class="sd">        mensaje (str): Mensaje de error que se mostrará al usuario.</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="n">vista</span><span class="p">)</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Critical</span><span class="p">)</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">titulo</span><span class="p">)</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;p style=&#39;color: black;&#39;&gt;</span><span class="si">{</span><span class="n">mensaje</span><span class="si">}</span><span class="s2">&lt;/p&gt;&quot;</span><span class="p">)</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="s2">        QMessageBox {</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a><span class="s2">            background-color: white;</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a><span class="s2">        }</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a><span class="s2">        QLabel {</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a><span class="s2">            color: black;</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a><span class="s2">            font-size: 14px;</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a><span class="s2">        }</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a><span class="s2">        QPushButton {</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a><span class="s2">            min-width: 80px;</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a><span class="s2">            padding: 6px;</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a><span class="s2">            background-color: #E30613;</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a><span class="s2">            color: white;</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a><span class="s2">            font-weight: bold;</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a><span class="s2">            border-radius: 4px;</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a><span class="s2">        }</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos">90</span></a><span class="s2">        QPushButton:hover {</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos">91</span></a><span class="s2">            background-color: #ff2f2f;</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos">92</span></a><span class="s2">        }</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos">93</span></a><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos">94</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -148,65 +171,68 @@
 
     </div>
     <a class="headerlink" href="#mostrar_mensaje_personalizado"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="mostrar_mensaje_personalizado-5"><a href="#mostrar_mensaje_personalizado-5"><span class="linenos"> 5</span></a><span class="k">def</span><span class="w"> </span><span class="nf">mostrar_mensaje_personalizado</span><span class="p">(</span><span class="n">vista</span><span class="p">,</span> <span class="n">titulo</span><span class="p">,</span> <span class="n">texto</span><span class="p">,</span> <span class="n">icono</span><span class="o">=</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Question</span><span class="p">,</span>
-</span><span id="mostrar_mensaje_personalizado-6"><a href="#mostrar_mensaje_personalizado-6"><span class="linenos"> 6</span></a>                                  <span class="n">botones</span><span class="o">=</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span> <span class="o">|</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="mostrar_mensaje_personalizado-7"><a href="#mostrar_mensaje_personalizado-7"><span class="linenos"> 7</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="mostrar_mensaje_personalizado-8"><a href="#mostrar_mensaje_personalizado-8"><span class="linenos"> 8</span></a><span class="sd">    Muestra un QMessageBox con estilo personalizado.</span>
-</span><span id="mostrar_mensaje_personalizado-9"><a href="#mostrar_mensaje_personalizado-9"><span class="linenos"> 9</span></a>
-</span><span id="mostrar_mensaje_personalizado-10"><a href="#mostrar_mensaje_personalizado-10"><span class="linenos">10</span></a><span class="sd">    Args:</span>
-</span><span id="mostrar_mensaje_personalizado-11"><a href="#mostrar_mensaje_personalizado-11"><span class="linenos">11</span></a><span class="sd">        vista: ventana padre.</span>
-</span><span id="mostrar_mensaje_personalizado-12"><a href="#mostrar_mensaje_personalizado-12"><span class="linenos">12</span></a><span class="sd">        titulo: título del cuadro de diálogo.</span>
-</span><span id="mostrar_mensaje_personalizado-13"><a href="#mostrar_mensaje_personalizado-13"><span class="linenos">13</span></a><span class="sd">        texto: cuerpo del mensaje.</span>
-</span><span id="mostrar_mensaje_personalizado-14"><a href="#mostrar_mensaje_personalizado-14"><span class="linenos">14</span></a><span class="sd">        icono: tipo de icono (Question, Warning, Information, etc.).</span>
-</span><span id="mostrar_mensaje_personalizado-15"><a href="#mostrar_mensaje_personalizado-15"><span class="linenos">15</span></a><span class="sd">        botones: botones a mostrar (Yes/No, Ok/Cancel, etc.).</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="mostrar_mensaje_personalizado-12"><a href="#mostrar_mensaje_personalizado-12"><span class="linenos">12</span></a><span class="k">def</span><span class="w"> </span><span class="nf">mostrar_mensaje_personalizado</span><span class="p">(</span><span class="n">vista</span><span class="p">,</span> <span class="n">titulo</span><span class="p">,</span> <span class="n">texto</span><span class="p">,</span> <span class="n">icono</span><span class="o">=</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Question</span><span class="p">,</span>
+</span><span id="mostrar_mensaje_personalizado-13"><a href="#mostrar_mensaje_personalizado-13"><span class="linenos">13</span></a>                                  <span class="n">botones</span><span class="o">=</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span> <span class="o">|</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="mostrar_mensaje_personalizado-14"><a href="#mostrar_mensaje_personalizado-14"><span class="linenos">14</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="mostrar_mensaje_personalizado-15"><a href="#mostrar_mensaje_personalizado-15"><span class="linenos">15</span></a><span class="sd">    Muestra un cuadro de diálogo (QMessageBox) personalizado con opciones configurables.</span>
 </span><span id="mostrar_mensaje_personalizado-16"><a href="#mostrar_mensaje_personalizado-16"><span class="linenos">16</span></a>
-</span><span id="mostrar_mensaje_personalizado-17"><a href="#mostrar_mensaje_personalizado-17"><span class="linenos">17</span></a><span class="sd">    Returns:</span>
-</span><span id="mostrar_mensaje_personalizado-18"><a href="#mostrar_mensaje_personalizado-18"><span class="linenos">18</span></a><span class="sd">        int: botón pulsado (por ejemplo QMessageBox.Yes).</span>
-</span><span id="mostrar_mensaje_personalizado-19"><a href="#mostrar_mensaje_personalizado-19"><span class="linenos">19</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="mostrar_mensaje_personalizado-20"><a href="#mostrar_mensaje_personalizado-20"><span class="linenos">20</span></a>    <span class="n">box</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="n">vista</span><span class="p">)</span>
-</span><span id="mostrar_mensaje_personalizado-21"><a href="#mostrar_mensaje_personalizado-21"><span class="linenos">21</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">titulo</span><span class="p">)</span>
-</span><span id="mostrar_mensaje_personalizado-22"><a href="#mostrar_mensaje_personalizado-22"><span class="linenos">22</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">texto</span><span class="p">)</span>
-</span><span id="mostrar_mensaje_personalizado-23"><a href="#mostrar_mensaje_personalizado-23"><span class="linenos">23</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">icono</span><span class="p">)</span>
-</span><span id="mostrar_mensaje_personalizado-24"><a href="#mostrar_mensaje_personalizado-24"><span class="linenos">24</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setStandardButtons</span><span class="p">(</span><span class="n">botones</span><span class="p">)</span>
+</span><span id="mostrar_mensaje_personalizado-17"><a href="#mostrar_mensaje_personalizado-17"><span class="linenos">17</span></a><span class="sd">    Se utiliza para confirmar acciones o mostrar mensajes interactivos, con un estilo visual adaptado.</span>
+</span><span id="mostrar_mensaje_personalizado-18"><a href="#mostrar_mensaje_personalizado-18"><span class="linenos">18</span></a>
+</span><span id="mostrar_mensaje_personalizado-19"><a href="#mostrar_mensaje_personalizado-19"><span class="linenos">19</span></a><span class="sd">    Args:</span>
+</span><span id="mostrar_mensaje_personalizado-20"><a href="#mostrar_mensaje_personalizado-20"><span class="linenos">20</span></a><span class="sd">        vista: Ventana padre que invoca el cuadro de diálogo.</span>
+</span><span id="mostrar_mensaje_personalizado-21"><a href="#mostrar_mensaje_personalizado-21"><span class="linenos">21</span></a><span class="sd">        titulo (str): Título de la ventana emergente.</span>
+</span><span id="mostrar_mensaje_personalizado-22"><a href="#mostrar_mensaje_personalizado-22"><span class="linenos">22</span></a><span class="sd">        texto (str): Mensaje a mostrar al usuario.</span>
+</span><span id="mostrar_mensaje_personalizado-23"><a href="#mostrar_mensaje_personalizado-23"><span class="linenos">23</span></a><span class="sd">        icono (QMessageBox.Icon, opcional): Icono del mensaje (por defecto: Question).</span>
+</span><span id="mostrar_mensaje_personalizado-24"><a href="#mostrar_mensaje_personalizado-24"><span class="linenos">24</span></a><span class="sd">        botones (QMessageBox.StandardButtons, opcional): Botones a mostrar (por defecto: Yes y No).</span>
 </span><span id="mostrar_mensaje_personalizado-25"><a href="#mostrar_mensaje_personalizado-25"><span class="linenos">25</span></a>
-</span><span id="mostrar_mensaje_personalizado-26"><a href="#mostrar_mensaje_personalizado-26"><span class="linenos">26</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="mostrar_mensaje_personalizado-27"><a href="#mostrar_mensaje_personalizado-27"><span class="linenos">27</span></a><span class="s2">        QMessageBox {</span>
-</span><span id="mostrar_mensaje_personalizado-28"><a href="#mostrar_mensaje_personalizado-28"><span class="linenos">28</span></a><span class="s2">            background-color: #f3f3f3;</span>
-</span><span id="mostrar_mensaje_personalizado-29"><a href="#mostrar_mensaje_personalizado-29"><span class="linenos">29</span></a><span class="s2">            color: #222;</span>
-</span><span id="mostrar_mensaje_personalizado-30"><a href="#mostrar_mensaje_personalizado-30"><span class="linenos">30</span></a><span class="s2">            font-size: 14px;</span>
-</span><span id="mostrar_mensaje_personalizado-31"><a href="#mostrar_mensaje_personalizado-31"><span class="linenos">31</span></a><span class="s2">            border: 1px solid #bbb;</span>
-</span><span id="mostrar_mensaje_personalizado-32"><a href="#mostrar_mensaje_personalizado-32"><span class="linenos">32</span></a><span class="s2">        }</span>
-</span><span id="mostrar_mensaje_personalizado-33"><a href="#mostrar_mensaje_personalizado-33"><span class="linenos">33</span></a><span class="s2">        QLabel {</span>
-</span><span id="mostrar_mensaje_personalizado-34"><a href="#mostrar_mensaje_personalizado-34"><span class="linenos">34</span></a><span class="s2">            color: #222;</span>
-</span><span id="mostrar_mensaje_personalizado-35"><a href="#mostrar_mensaje_personalizado-35"><span class="linenos">35</span></a><span class="s2">        }</span>
-</span><span id="mostrar_mensaje_personalizado-36"><a href="#mostrar_mensaje_personalizado-36"><span class="linenos">36</span></a><span class="s2">        QPushButton {</span>
-</span><span id="mostrar_mensaje_personalizado-37"><a href="#mostrar_mensaje_personalizado-37"><span class="linenos">37</span></a><span class="s2">            background-color: #E30613;</span>
-</span><span id="mostrar_mensaje_personalizado-38"><a href="#mostrar_mensaje_personalizado-38"><span class="linenos">38</span></a><span class="s2">            color: white;</span>
-</span><span id="mostrar_mensaje_personalizado-39"><a href="#mostrar_mensaje_personalizado-39"><span class="linenos">39</span></a><span class="s2">            padding: 6px 14px;</span>
-</span><span id="mostrar_mensaje_personalizado-40"><a href="#mostrar_mensaje_personalizado-40"><span class="linenos">40</span></a><span class="s2">            border-radius: 6px;</span>
-</span><span id="mostrar_mensaje_personalizado-41"><a href="#mostrar_mensaje_personalizado-41"><span class="linenos">41</span></a><span class="s2">            font-weight: bold;</span>
+</span><span id="mostrar_mensaje_personalizado-26"><a href="#mostrar_mensaje_personalizado-26"><span class="linenos">26</span></a><span class="sd">    Returns:</span>
+</span><span id="mostrar_mensaje_personalizado-27"><a href="#mostrar_mensaje_personalizado-27"><span class="linenos">27</span></a><span class="sd">        int: Código del botón pulsado por el usuario (por ejemplo: QMessageBox.Yes).</span>
+</span><span id="mostrar_mensaje_personalizado-28"><a href="#mostrar_mensaje_personalizado-28"><span class="linenos">28</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="mostrar_mensaje_personalizado-29"><a href="#mostrar_mensaje_personalizado-29"><span class="linenos">29</span></a>    <span class="n">box</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="n">vista</span><span class="p">)</span>
+</span><span id="mostrar_mensaje_personalizado-30"><a href="#mostrar_mensaje_personalizado-30"><span class="linenos">30</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">titulo</span><span class="p">)</span>
+</span><span id="mostrar_mensaje_personalizado-31"><a href="#mostrar_mensaje_personalizado-31"><span class="linenos">31</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">texto</span><span class="p">)</span>
+</span><span id="mostrar_mensaje_personalizado-32"><a href="#mostrar_mensaje_personalizado-32"><span class="linenos">32</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">icono</span><span class="p">)</span>
+</span><span id="mostrar_mensaje_personalizado-33"><a href="#mostrar_mensaje_personalizado-33"><span class="linenos">33</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setStandardButtons</span><span class="p">(</span><span class="n">botones</span><span class="p">)</span>
+</span><span id="mostrar_mensaje_personalizado-34"><a href="#mostrar_mensaje_personalizado-34"><span class="linenos">34</span></a>
+</span><span id="mostrar_mensaje_personalizado-35"><a href="#mostrar_mensaje_personalizado-35"><span class="linenos">35</span></a>    <span class="c1"># Aplicar estilos visuales personalizados</span>
+</span><span id="mostrar_mensaje_personalizado-36"><a href="#mostrar_mensaje_personalizado-36"><span class="linenos">36</span></a>    <span class="n">box</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="mostrar_mensaje_personalizado-37"><a href="#mostrar_mensaje_personalizado-37"><span class="linenos">37</span></a><span class="s2">        QMessageBox {</span>
+</span><span id="mostrar_mensaje_personalizado-38"><a href="#mostrar_mensaje_personalizado-38"><span class="linenos">38</span></a><span class="s2">            background-color: #f3f3f3;</span>
+</span><span id="mostrar_mensaje_personalizado-39"><a href="#mostrar_mensaje_personalizado-39"><span class="linenos">39</span></a><span class="s2">            color: #222;</span>
+</span><span id="mostrar_mensaje_personalizado-40"><a href="#mostrar_mensaje_personalizado-40"><span class="linenos">40</span></a><span class="s2">            font-size: 14px;</span>
+</span><span id="mostrar_mensaje_personalizado-41"><a href="#mostrar_mensaje_personalizado-41"><span class="linenos">41</span></a><span class="s2">            border: 1px solid #bbb;</span>
 </span><span id="mostrar_mensaje_personalizado-42"><a href="#mostrar_mensaje_personalizado-42"><span class="linenos">42</span></a><span class="s2">        }</span>
-</span><span id="mostrar_mensaje_personalizado-43"><a href="#mostrar_mensaje_personalizado-43"><span class="linenos">43</span></a><span class="s2">        QPushButton:hover {</span>
-</span><span id="mostrar_mensaje_personalizado-44"><a href="#mostrar_mensaje_personalizado-44"><span class="linenos">44</span></a><span class="s2">            background-color: #b10410;</span>
+</span><span id="mostrar_mensaje_personalizado-43"><a href="#mostrar_mensaje_personalizado-43"><span class="linenos">43</span></a><span class="s2">        QLabel {</span>
+</span><span id="mostrar_mensaje_personalizado-44"><a href="#mostrar_mensaje_personalizado-44"><span class="linenos">44</span></a><span class="s2">            color: #222;</span>
 </span><span id="mostrar_mensaje_personalizado-45"><a href="#mostrar_mensaje_personalizado-45"><span class="linenos">45</span></a><span class="s2">        }</span>
-</span><span id="mostrar_mensaje_personalizado-46"><a href="#mostrar_mensaje_personalizado-46"><span class="linenos">46</span></a><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
-</span><span id="mostrar_mensaje_personalizado-47"><a href="#mostrar_mensaje_personalizado-47"><span class="linenos">47</span></a>    <span class="k">return</span> <span class="n">box</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
-</span><span id="mostrar_mensaje_personalizado-48"><a href="#mostrar_mensaje_personalizado-48"><span class="linenos">48</span></a>
-</span><span id="mostrar_mensaje_personalizado-49"><a href="#mostrar_mensaje_personalizado-49"><span class="linenos">49</span></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMessageBox</span>
+</span><span id="mostrar_mensaje_personalizado-46"><a href="#mostrar_mensaje_personalizado-46"><span class="linenos">46</span></a><span class="s2">        QPushButton {</span>
+</span><span id="mostrar_mensaje_personalizado-47"><a href="#mostrar_mensaje_personalizado-47"><span class="linenos">47</span></a><span class="s2">            background-color: #E30613;</span>
+</span><span id="mostrar_mensaje_personalizado-48"><a href="#mostrar_mensaje_personalizado-48"><span class="linenos">48</span></a><span class="s2">            color: white;</span>
+</span><span id="mostrar_mensaje_personalizado-49"><a href="#mostrar_mensaje_personalizado-49"><span class="linenos">49</span></a><span class="s2">            padding: 6px 14px;</span>
+</span><span id="mostrar_mensaje_personalizado-50"><a href="#mostrar_mensaje_personalizado-50"><span class="linenos">50</span></a><span class="s2">            border-radius: 6px;</span>
+</span><span id="mostrar_mensaje_personalizado-51"><a href="#mostrar_mensaje_personalizado-51"><span class="linenos">51</span></a><span class="s2">            font-weight: bold;</span>
+</span><span id="mostrar_mensaje_personalizado-52"><a href="#mostrar_mensaje_personalizado-52"><span class="linenos">52</span></a><span class="s2">        }</span>
+</span><span id="mostrar_mensaje_personalizado-53"><a href="#mostrar_mensaje_personalizado-53"><span class="linenos">53</span></a><span class="s2">        QPushButton:hover {</span>
+</span><span id="mostrar_mensaje_personalizado-54"><a href="#mostrar_mensaje_personalizado-54"><span class="linenos">54</span></a><span class="s2">            background-color: #b10410;</span>
+</span><span id="mostrar_mensaje_personalizado-55"><a href="#mostrar_mensaje_personalizado-55"><span class="linenos">55</span></a><span class="s2">        }</span>
+</span><span id="mostrar_mensaje_personalizado-56"><a href="#mostrar_mensaje_personalizado-56"><span class="linenos">56</span></a><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="mostrar_mensaje_personalizado-57"><a href="#mostrar_mensaje_personalizado-57"><span class="linenos">57</span></a>    <span class="k">return</span> <span class="n">box</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Muestra un QMessageBox con estilo personalizado.</p>
+            <div class="docstring"><p>Muestra un cuadro de diálogo (QMessageBox) personalizado con opciones configurables.</p>
+
+<p>Se utiliza para confirmar acciones o mostrar mensajes interactivos, con un estilo visual adaptado.</p>
 
 <p>Args:
-    vista: ventana padre.
-    titulo: título del cuadro de diálogo.
-    texto: cuerpo del mensaje.
-    icono: tipo de icono (Question, Warning, Information, etc.).
-    botones: botones a mostrar (Yes/No, Ok/Cancel, etc.).</p>
+    vista: Ventana padre que invoca el cuadro de diálogo.
+    titulo (str): Título de la ventana emergente.
+    texto (str): Mensaje a mostrar al usuario.
+    icono (QMessageBox.Icon, opcional): Icono del mensaje (por defecto: Question).
+    botones (QMessageBox.StandardButtons, opcional): Botones a mostrar (por defecto: Yes y No).</p>
 
 <p>Returns:
-    int: botón pulsado (por ejemplo QMessageBox.Yes).</p>
+    int: Código del botón pulsado por el usuario (por ejemplo: QMessageBox.Yes).</p>
 </div>
 
 
@@ -222,36 +248,55 @@
 
     </div>
     <a class="headerlink" href="#mostrar_error"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="mostrar_error-52"><a href="#mostrar_error-52"><span class="linenos">52</span></a><span class="k">def</span><span class="w"> </span><span class="nf">mostrar_error</span><span class="p">(</span><span class="n">vista</span><span class="p">,</span> <span class="n">titulo</span><span class="p">,</span> <span class="n">mensaje</span><span class="p">):</span>
-</span><span id="mostrar_error-53"><a href="#mostrar_error-53"><span class="linenos">53</span></a>    <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="n">vista</span><span class="p">)</span>
-</span><span id="mostrar_error-54"><a href="#mostrar_error-54"><span class="linenos">54</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Critical</span><span class="p">)</span>
-</span><span id="mostrar_error-55"><a href="#mostrar_error-55"><span class="linenos">55</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">titulo</span><span class="p">)</span>
-</span><span id="mostrar_error-56"><a href="#mostrar_error-56"><span class="linenos">56</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;p style=&#39;color: black;&#39;&gt;</span><span class="si">{</span><span class="n">mensaje</span><span class="si">}</span><span class="s2">&lt;/p&gt;&quot;</span><span class="p">)</span>
-</span><span id="mostrar_error-57"><a href="#mostrar_error-57"><span class="linenos">57</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="mostrar_error-58"><a href="#mostrar_error-58"><span class="linenos">58</span></a><span class="s2">        QMessageBox {</span>
-</span><span id="mostrar_error-59"><a href="#mostrar_error-59"><span class="linenos">59</span></a><span class="s2">            background-color: white;</span>
-</span><span id="mostrar_error-60"><a href="#mostrar_error-60"><span class="linenos">60</span></a><span class="s2">        }</span>
-</span><span id="mostrar_error-61"><a href="#mostrar_error-61"><span class="linenos">61</span></a><span class="s2">        QLabel {</span>
-</span><span id="mostrar_error-62"><a href="#mostrar_error-62"><span class="linenos">62</span></a><span class="s2">            color: black;</span>
-</span><span id="mostrar_error-63"><a href="#mostrar_error-63"><span class="linenos">63</span></a><span class="s2">            font-size: 14px;</span>
-</span><span id="mostrar_error-64"><a href="#mostrar_error-64"><span class="linenos">64</span></a><span class="s2">        }</span>
-</span><span id="mostrar_error-65"><a href="#mostrar_error-65"><span class="linenos">65</span></a><span class="s2">        QPushButton {</span>
-</span><span id="mostrar_error-66"><a href="#mostrar_error-66"><span class="linenos">66</span></a><span class="s2">            min-width: 80px;</span>
-</span><span id="mostrar_error-67"><a href="#mostrar_error-67"><span class="linenos">67</span></a><span class="s2">            padding: 6px;</span>
-</span><span id="mostrar_error-68"><a href="#mostrar_error-68"><span class="linenos">68</span></a><span class="s2">            background-color: #E30613;</span>
-</span><span id="mostrar_error-69"><a href="#mostrar_error-69"><span class="linenos">69</span></a><span class="s2">            color: white;</span>
-</span><span id="mostrar_error-70"><a href="#mostrar_error-70"><span class="linenos">70</span></a><span class="s2">            font-weight: bold;</span>
-</span><span id="mostrar_error-71"><a href="#mostrar_error-71"><span class="linenos">71</span></a><span class="s2">            border-radius: 4px;</span>
-</span><span id="mostrar_error-72"><a href="#mostrar_error-72"><span class="linenos">72</span></a><span class="s2">        }</span>
-</span><span id="mostrar_error-73"><a href="#mostrar_error-73"><span class="linenos">73</span></a><span class="s2">        QPushButton:hover {</span>
-</span><span id="mostrar_error-74"><a href="#mostrar_error-74"><span class="linenos">74</span></a><span class="s2">            background-color: #ff2f2f;</span>
-</span><span id="mostrar_error-75"><a href="#mostrar_error-75"><span class="linenos">75</span></a><span class="s2">        }</span>
-</span><span id="mostrar_error-76"><a href="#mostrar_error-76"><span class="linenos">76</span></a><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
-</span><span id="mostrar_error-77"><a href="#mostrar_error-77"><span class="linenos">77</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="mostrar_error-60"><a href="#mostrar_error-60"><span class="linenos">60</span></a><span class="k">def</span><span class="w"> </span><span class="nf">mostrar_error</span><span class="p">(</span><span class="n">vista</span><span class="p">,</span> <span class="n">titulo</span><span class="p">,</span> <span class="n">mensaje</span><span class="p">):</span>
+</span><span id="mostrar_error-61"><a href="#mostrar_error-61"><span class="linenos">61</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="mostrar_error-62"><a href="#mostrar_error-62"><span class="linenos">62</span></a><span class="sd">    Muestra un cuadro de diálogo de error con diseño personalizado.</span>
+</span><span id="mostrar_error-63"><a href="#mostrar_error-63"><span class="linenos">63</span></a>
+</span><span id="mostrar_error-64"><a href="#mostrar_error-64"><span class="linenos">64</span></a><span class="sd">    Esta función se utiliza para notificar errores críticos al usuario con un mensaje claro y visualmente destacado.</span>
+</span><span id="mostrar_error-65"><a href="#mostrar_error-65"><span class="linenos">65</span></a>
+</span><span id="mostrar_error-66"><a href="#mostrar_error-66"><span class="linenos">66</span></a><span class="sd">    Args:</span>
+</span><span id="mostrar_error-67"><a href="#mostrar_error-67"><span class="linenos">67</span></a><span class="sd">        vista: Ventana padre que invoca el cuadro de error.</span>
+</span><span id="mostrar_error-68"><a href="#mostrar_error-68"><span class="linenos">68</span></a><span class="sd">        titulo (str): Título de la ventana de error.</span>
+</span><span id="mostrar_error-69"><a href="#mostrar_error-69"><span class="linenos">69</span></a><span class="sd">        mensaje (str): Mensaje de error que se mostrará al usuario.</span>
+</span><span id="mostrar_error-70"><a href="#mostrar_error-70"><span class="linenos">70</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="mostrar_error-71"><a href="#mostrar_error-71"><span class="linenos">71</span></a>    <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="n">vista</span><span class="p">)</span>
+</span><span id="mostrar_error-72"><a href="#mostrar_error-72"><span class="linenos">72</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Critical</span><span class="p">)</span>
+</span><span id="mostrar_error-73"><a href="#mostrar_error-73"><span class="linenos">73</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">titulo</span><span class="p">)</span>
+</span><span id="mostrar_error-74"><a href="#mostrar_error-74"><span class="linenos">74</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;p style=&#39;color: black;&#39;&gt;</span><span class="si">{</span><span class="n">mensaje</span><span class="si">}</span><span class="s2">&lt;/p&gt;&quot;</span><span class="p">)</span>
+</span><span id="mostrar_error-75"><a href="#mostrar_error-75"><span class="linenos">75</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="mostrar_error-76"><a href="#mostrar_error-76"><span class="linenos">76</span></a><span class="s2">        QMessageBox {</span>
+</span><span id="mostrar_error-77"><a href="#mostrar_error-77"><span class="linenos">77</span></a><span class="s2">            background-color: white;</span>
+</span><span id="mostrar_error-78"><a href="#mostrar_error-78"><span class="linenos">78</span></a><span class="s2">        }</span>
+</span><span id="mostrar_error-79"><a href="#mostrar_error-79"><span class="linenos">79</span></a><span class="s2">        QLabel {</span>
+</span><span id="mostrar_error-80"><a href="#mostrar_error-80"><span class="linenos">80</span></a><span class="s2">            color: black;</span>
+</span><span id="mostrar_error-81"><a href="#mostrar_error-81"><span class="linenos">81</span></a><span class="s2">            font-size: 14px;</span>
+</span><span id="mostrar_error-82"><a href="#mostrar_error-82"><span class="linenos">82</span></a><span class="s2">        }</span>
+</span><span id="mostrar_error-83"><a href="#mostrar_error-83"><span class="linenos">83</span></a><span class="s2">        QPushButton {</span>
+</span><span id="mostrar_error-84"><a href="#mostrar_error-84"><span class="linenos">84</span></a><span class="s2">            min-width: 80px;</span>
+</span><span id="mostrar_error-85"><a href="#mostrar_error-85"><span class="linenos">85</span></a><span class="s2">            padding: 6px;</span>
+</span><span id="mostrar_error-86"><a href="#mostrar_error-86"><span class="linenos">86</span></a><span class="s2">            background-color: #E30613;</span>
+</span><span id="mostrar_error-87"><a href="#mostrar_error-87"><span class="linenos">87</span></a><span class="s2">            color: white;</span>
+</span><span id="mostrar_error-88"><a href="#mostrar_error-88"><span class="linenos">88</span></a><span class="s2">            font-weight: bold;</span>
+</span><span id="mostrar_error-89"><a href="#mostrar_error-89"><span class="linenos">89</span></a><span class="s2">            border-radius: 4px;</span>
+</span><span id="mostrar_error-90"><a href="#mostrar_error-90"><span class="linenos">90</span></a><span class="s2">        }</span>
+</span><span id="mostrar_error-91"><a href="#mostrar_error-91"><span class="linenos">91</span></a><span class="s2">        QPushButton:hover {</span>
+</span><span id="mostrar_error-92"><a href="#mostrar_error-92"><span class="linenos">92</span></a><span class="s2">            background-color: #ff2f2f;</span>
+</span><span id="mostrar_error-93"><a href="#mostrar_error-93"><span class="linenos">93</span></a><span class="s2">        }</span>
+</span><span id="mostrar_error-94"><a href="#mostrar_error-94"><span class="linenos">94</span></a><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="mostrar_error-95"><a href="#mostrar_error-95"><span class="linenos">95</span></a>    <span class="n">msg</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Muestra un cuadro de diálogo de error con diseño personalizado.</p>
+
+<p>Esta función se utiliza para notificar errores críticos al usuario con un mensaje claro y visualmente destacado.</p>
+
+<p>Args:
+    vista: Ventana padre que invoca el cuadro de error.
+    titulo (str): Título de la ventana de error.
+    mensaje (str): Mensaje de error que se mostrará al usuario.</p>
+</div>
+
 
                 </section>
     </main>

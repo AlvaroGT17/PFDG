@@ -76,44 +76,84 @@
                     <h1 class="modulename">
 <a href="./../utilidades.html">utilidades</a><wbr>.abridor_con_carga    </h1>
 
-                
+                        <div class="docstring"><p>Módulo que define la clase <code><a href="#AbridorConCarga">AbridorConCarga</a></code>, utilizada para mostrar una ventana con animación de carga
+(GIF) mientras se ejecuta una operación pesada en segundo plano mediante hilos.</p>
+
+<p>Una vez completada la carga, se instancia la ventana de destino y su controlador con los datos cargados.</p>
+</div>
+
                         <input id="mod-abridor_con_carga-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-abridor_con_carga-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTimer</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">vistas.ventana_carga_gif</span><span class="w"> </span><span class="kn">import</span> <span class="n">VentanaCargaGif</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">utilidades.hilos.hilo_generico</span><span class="w"> </span><span class="kn">import</span> <span class="n">HiloGenericoCarga</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">Módulo que define la clase `AbridorConCarga`, utilizada para mostrar una ventana con animación de carga</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">(GIF) mientras se ejecuta una operación pesada en segundo plano mediante hilos.</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AbridorConCarga</span><span class="p">:</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ventana_padre</span><span class="p">,</span> <span class="n">clase_ventana</span><span class="p">,</span> <span class="n">clase_controlador</span><span class="p">,</span> <span class="n">funcion_carga</span><span class="p">):</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_padre</span> <span class="o">=</span> <span class="n">ventana_padre</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">clase_ventana</span> <span class="o">=</span> <span class="n">clase_ventana</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">clase_controlador</span> <span class="o">=</span> <span class="n">clase_controlador</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">funcion_carga</span> <span class="o">=</span> <span class="n">funcion_carga</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">Una vez completada la carga, se instancia la ventana de destino y su controlador con los datos cargados.</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTimer</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">vistas.ventana_carga_gif</span><span class="w"> </span><span class="kn">import</span> <span class="n">VentanaCargaGif</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">utilidades.hilos.hilo_generico</span><span class="w"> </span><span class="kn">import</span> <span class="n">HiloGenericoCarga</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="c1"># Mostrar GIF de carga</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="n">VentanaCargaGif</span><span class="p">()</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana_padre</span><span class="p">)</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AbridorConCarga</span><span class="p">:</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    Controlador de utilidad para abrir ventanas que requieren tiempo de carga previo.</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="c1"># Crear y lanzar el hilo</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span> <span class="o">=</span> <span class="n">HiloGenericoCarga</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">funcion_carga</span><span class="p">)</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">senal_datos_cargados</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">continuar</span><span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">)</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">continuar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datos</span><span class="p">):</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clase_ventana</span><span class="p">()</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">controlador</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clase_controlador</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="n">datos</span><span class="p">)</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="c1"># ⏹️ Cerrar hilo correctamente</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">exec</span><span class="p">)</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">    Esta clase muestra una animación de carga (ventana con GIF) mientras se ejecuta una función</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">    que obtiene los datos necesarios en segundo plano. Una vez finalizada la carga, se crea la</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">    ventana final y se le asigna su controlador correspondiente.</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">    Ideal para vistas que necesitan precargar datos desde base de datos o cálculos pesados.</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ventana_padre</span><span class="p">,</span> <span class="n">clase_ventana</span><span class="p">,</span> <span class="n">clase_controlador</span><span class="p">,</span> <span class="n">funcion_carga</span><span class="p">):</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">        Inicializa el flujo de carga con animación y lanza el hilo de carga de datos.</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">        Args:</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">            ventana_padre (QWidget): La ventana que actúa como padre de la animación de carga.</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="sd">            clase_ventana (type): Clase de la ventana que se abrirá tras la carga.</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="sd">            clase_controlador (type): Clase del controlador asociado a la ventana.</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">            funcion_carga (function): Función que se ejecutará en segundo plano para obtener los datos.</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_padre</span> <span class="o">=</span> <span class="n">ventana_padre</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">clase_ventana</span> <span class="o">=</span> <span class="n">clase_ventana</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">clase_controlador</span> <span class="o">=</span> <span class="n">clase_controlador</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">funcion_carga</span> <span class="o">=</span> <span class="n">funcion_carga</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="c1"># Mostrar GIF de carga</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="n">VentanaCargaGif</span><span class="p">()</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana_padre</span><span class="p">)</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>        <span class="c1"># Crear y lanzar el hilo</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span> <span class="o">=</span> <span class="n">HiloGenericoCarga</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">funcion_carga</span><span class="p">)</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">senal_datos_cargados</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">continuar</span><span class="p">)</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">)</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">continuar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datos</span><span class="p">):</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="sd">        Método que se ejecuta automáticamente al completarse el hilo.</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="sd">        Instancia la nueva ventana y su controlador con los datos recibidos, cierra el GIF</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="sd">        de carga y lanza la ventana de forma modal.</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="sd">        Args:</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="sd">            datos (Any): Datos devueltos por `funcion_carga`.</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clase_ventana</span><span class="p">()</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">controlador</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clase_controlador</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="n">datos</span><span class="p">)</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>        <span class="c1"># Cerrar hilo correctamente</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">exec</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -129,38 +169,74 @@
 
     </div>
     <a class="headerlink" href="#AbridorConCarga"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AbridorConCarga-7"><a href="#AbridorConCarga-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AbridorConCarga</span><span class="p">:</span>
-</span><span id="AbridorConCarga-8"><a href="#AbridorConCarga-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ventana_padre</span><span class="p">,</span> <span class="n">clase_ventana</span><span class="p">,</span> <span class="n">clase_controlador</span><span class="p">,</span> <span class="n">funcion_carga</span><span class="p">):</span>
-</span><span id="AbridorConCarga-9"><a href="#AbridorConCarga-9"><span class="linenos"> 9</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_padre</span> <span class="o">=</span> <span class="n">ventana_padre</span>
-</span><span id="AbridorConCarga-10"><a href="#AbridorConCarga-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">clase_ventana</span> <span class="o">=</span> <span class="n">clase_ventana</span>
-</span><span id="AbridorConCarga-11"><a href="#AbridorConCarga-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">clase_controlador</span> <span class="o">=</span> <span class="n">clase_controlador</span>
-</span><span id="AbridorConCarga-12"><a href="#AbridorConCarga-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">funcion_carga</span> <span class="o">=</span> <span class="n">funcion_carga</span>
-</span><span id="AbridorConCarga-13"><a href="#AbridorConCarga-13"><span class="linenos">13</span></a>
-</span><span id="AbridorConCarga-14"><a href="#AbridorConCarga-14"><span class="linenos">14</span></a>        <span class="c1"># Mostrar GIF de carga</span>
-</span><span id="AbridorConCarga-15"><a href="#AbridorConCarga-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="n">VentanaCargaGif</span><span class="p">()</span>
-</span><span id="AbridorConCarga-16"><a href="#AbridorConCarga-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana_padre</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AbridorConCarga-14"><a href="#AbridorConCarga-14"><span class="linenos">14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AbridorConCarga</span><span class="p">:</span>
+</span><span id="AbridorConCarga-15"><a href="#AbridorConCarga-15"><span class="linenos">15</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AbridorConCarga-16"><a href="#AbridorConCarga-16"><span class="linenos">16</span></a><span class="sd">    Controlador de utilidad para abrir ventanas que requieren tiempo de carga previo.</span>
 </span><span id="AbridorConCarga-17"><a href="#AbridorConCarga-17"><span class="linenos">17</span></a>
-</span><span id="AbridorConCarga-18"><a href="#AbridorConCarga-18"><span class="linenos">18</span></a>        <span class="c1"># Crear y lanzar el hilo</span>
-</span><span id="AbridorConCarga-19"><a href="#AbridorConCarga-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span> <span class="o">=</span> <span class="n">HiloGenericoCarga</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">funcion_carga</span><span class="p">)</span>
-</span><span id="AbridorConCarga-20"><a href="#AbridorConCarga-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">senal_datos_cargados</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">continuar</span><span class="p">)</span>
-</span><span id="AbridorConCarga-21"><a href="#AbridorConCarga-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">)</span>
-</span><span id="AbridorConCarga-22"><a href="#AbridorConCarga-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="AbridorConCarga-23"><a href="#AbridorConCarga-23"><span class="linenos">23</span></a>
-</span><span id="AbridorConCarga-24"><a href="#AbridorConCarga-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">continuar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datos</span><span class="p">):</span>
-</span><span id="AbridorConCarga-25"><a href="#AbridorConCarga-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clase_ventana</span><span class="p">()</span>
-</span><span id="AbridorConCarga-26"><a href="#AbridorConCarga-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">controlador</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clase_controlador</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="n">datos</span><span class="p">)</span>
-</span><span id="AbridorConCarga-27"><a href="#AbridorConCarga-27"><span class="linenos">27</span></a>
-</span><span id="AbridorConCarga-28"><a href="#AbridorConCarga-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
-</span><span id="AbridorConCarga-29"><a href="#AbridorConCarga-29"><span class="linenos">29</span></a>
-</span><span id="AbridorConCarga-30"><a href="#AbridorConCarga-30"><span class="linenos">30</span></a>        <span class="c1"># ⏹️ Cerrar hilo correctamente</span>
-</span><span id="AbridorConCarga-31"><a href="#AbridorConCarga-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
-</span><span id="AbridorConCarga-32"><a href="#AbridorConCarga-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
-</span><span id="AbridorConCarga-33"><a href="#AbridorConCarga-33"><span class="linenos">33</span></a>
-</span><span id="AbridorConCarga-34"><a href="#AbridorConCarga-34"><span class="linenos">34</span></a>        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">exec</span><span class="p">)</span>
+</span><span id="AbridorConCarga-18"><a href="#AbridorConCarga-18"><span class="linenos">18</span></a><span class="sd">    Esta clase muestra una animación de carga (ventana con GIF) mientras se ejecuta una función</span>
+</span><span id="AbridorConCarga-19"><a href="#AbridorConCarga-19"><span class="linenos">19</span></a><span class="sd">    que obtiene los datos necesarios en segundo plano. Una vez finalizada la carga, se crea la</span>
+</span><span id="AbridorConCarga-20"><a href="#AbridorConCarga-20"><span class="linenos">20</span></a><span class="sd">    ventana final y se le asigna su controlador correspondiente.</span>
+</span><span id="AbridorConCarga-21"><a href="#AbridorConCarga-21"><span class="linenos">21</span></a>
+</span><span id="AbridorConCarga-22"><a href="#AbridorConCarga-22"><span class="linenos">22</span></a><span class="sd">    Ideal para vistas que necesitan precargar datos desde base de datos o cálculos pesados.</span>
+</span><span id="AbridorConCarga-23"><a href="#AbridorConCarga-23"><span class="linenos">23</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="AbridorConCarga-24"><a href="#AbridorConCarga-24"><span class="linenos">24</span></a>
+</span><span id="AbridorConCarga-25"><a href="#AbridorConCarga-25"><span class="linenos">25</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ventana_padre</span><span class="p">,</span> <span class="n">clase_ventana</span><span class="p">,</span> <span class="n">clase_controlador</span><span class="p">,</span> <span class="n">funcion_carga</span><span class="p">):</span>
+</span><span id="AbridorConCarga-26"><a href="#AbridorConCarga-26"><span class="linenos">26</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AbridorConCarga-27"><a href="#AbridorConCarga-27"><span class="linenos">27</span></a><span class="sd">        Inicializa el flujo de carga con animación y lanza el hilo de carga de datos.</span>
+</span><span id="AbridorConCarga-28"><a href="#AbridorConCarga-28"><span class="linenos">28</span></a>
+</span><span id="AbridorConCarga-29"><a href="#AbridorConCarga-29"><span class="linenos">29</span></a><span class="sd">        Args:</span>
+</span><span id="AbridorConCarga-30"><a href="#AbridorConCarga-30"><span class="linenos">30</span></a><span class="sd">            ventana_padre (QWidget): La ventana que actúa como padre de la animación de carga.</span>
+</span><span id="AbridorConCarga-31"><a href="#AbridorConCarga-31"><span class="linenos">31</span></a><span class="sd">            clase_ventana (type): Clase de la ventana que se abrirá tras la carga.</span>
+</span><span id="AbridorConCarga-32"><a href="#AbridorConCarga-32"><span class="linenos">32</span></a><span class="sd">            clase_controlador (type): Clase del controlador asociado a la ventana.</span>
+</span><span id="AbridorConCarga-33"><a href="#AbridorConCarga-33"><span class="linenos">33</span></a><span class="sd">            funcion_carga (function): Función que se ejecutará en segundo plano para obtener los datos.</span>
+</span><span id="AbridorConCarga-34"><a href="#AbridorConCarga-34"><span class="linenos">34</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AbridorConCarga-35"><a href="#AbridorConCarga-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_padre</span> <span class="o">=</span> <span class="n">ventana_padre</span>
+</span><span id="AbridorConCarga-36"><a href="#AbridorConCarga-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">clase_ventana</span> <span class="o">=</span> <span class="n">clase_ventana</span>
+</span><span id="AbridorConCarga-37"><a href="#AbridorConCarga-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">clase_controlador</span> <span class="o">=</span> <span class="n">clase_controlador</span>
+</span><span id="AbridorConCarga-38"><a href="#AbridorConCarga-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">funcion_carga</span> <span class="o">=</span> <span class="n">funcion_carga</span>
+</span><span id="AbridorConCarga-39"><a href="#AbridorConCarga-39"><span class="linenos">39</span></a>
+</span><span id="AbridorConCarga-40"><a href="#AbridorConCarga-40"><span class="linenos">40</span></a>        <span class="c1"># Mostrar GIF de carga</span>
+</span><span id="AbridorConCarga-41"><a href="#AbridorConCarga-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="n">VentanaCargaGif</span><span class="p">()</span>
+</span><span id="AbridorConCarga-42"><a href="#AbridorConCarga-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana_padre</span><span class="p">)</span>
+</span><span id="AbridorConCarga-43"><a href="#AbridorConCarga-43"><span class="linenos">43</span></a>
+</span><span id="AbridorConCarga-44"><a href="#AbridorConCarga-44"><span class="linenos">44</span></a>        <span class="c1"># Crear y lanzar el hilo</span>
+</span><span id="AbridorConCarga-45"><a href="#AbridorConCarga-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span> <span class="o">=</span> <span class="n">HiloGenericoCarga</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">funcion_carga</span><span class="p">)</span>
+</span><span id="AbridorConCarga-46"><a href="#AbridorConCarga-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">senal_datos_cargados</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">continuar</span><span class="p">)</span>
+</span><span id="AbridorConCarga-47"><a href="#AbridorConCarga-47"><span class="linenos">47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">)</span>
+</span><span id="AbridorConCarga-48"><a href="#AbridorConCarga-48"><span class="linenos">48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span id="AbridorConCarga-49"><a href="#AbridorConCarga-49"><span class="linenos">49</span></a>
+</span><span id="AbridorConCarga-50"><a href="#AbridorConCarga-50"><span class="linenos">50</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">continuar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datos</span><span class="p">):</span>
+</span><span id="AbridorConCarga-51"><a href="#AbridorConCarga-51"><span class="linenos">51</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AbridorConCarga-52"><a href="#AbridorConCarga-52"><span class="linenos">52</span></a><span class="sd">        Método que se ejecuta automáticamente al completarse el hilo.</span>
+</span><span id="AbridorConCarga-53"><a href="#AbridorConCarga-53"><span class="linenos">53</span></a>
+</span><span id="AbridorConCarga-54"><a href="#AbridorConCarga-54"><span class="linenos">54</span></a><span class="sd">        Instancia la nueva ventana y su controlador con los datos recibidos, cierra el GIF</span>
+</span><span id="AbridorConCarga-55"><a href="#AbridorConCarga-55"><span class="linenos">55</span></a><span class="sd">        de carga y lanza la ventana de forma modal.</span>
+</span><span id="AbridorConCarga-56"><a href="#AbridorConCarga-56"><span class="linenos">56</span></a>
+</span><span id="AbridorConCarga-57"><a href="#AbridorConCarga-57"><span class="linenos">57</span></a><span class="sd">        Args:</span>
+</span><span id="AbridorConCarga-58"><a href="#AbridorConCarga-58"><span class="linenos">58</span></a><span class="sd">            datos (Any): Datos devueltos por `funcion_carga`.</span>
+</span><span id="AbridorConCarga-59"><a href="#AbridorConCarga-59"><span class="linenos">59</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AbridorConCarga-60"><a href="#AbridorConCarga-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clase_ventana</span><span class="p">()</span>
+</span><span id="AbridorConCarga-61"><a href="#AbridorConCarga-61"><span class="linenos">61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">controlador</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clase_controlador</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="n">datos</span><span class="p">)</span>
+</span><span id="AbridorConCarga-62"><a href="#AbridorConCarga-62"><span class="linenos">62</span></a>
+</span><span id="AbridorConCarga-63"><a href="#AbridorConCarga-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
+</span><span id="AbridorConCarga-64"><a href="#AbridorConCarga-64"><span class="linenos">64</span></a>
+</span><span id="AbridorConCarga-65"><a href="#AbridorConCarga-65"><span class="linenos">65</span></a>        <span class="c1"># Cerrar hilo correctamente</span>
+</span><span id="AbridorConCarga-66"><a href="#AbridorConCarga-66"><span class="linenos">66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+</span><span id="AbridorConCarga-67"><a href="#AbridorConCarga-67"><span class="linenos">67</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</span><span id="AbridorConCarga-68"><a href="#AbridorConCarga-68"><span class="linenos">68</span></a>
+</span><span id="AbridorConCarga-69"><a href="#AbridorConCarga-69"><span class="linenos">69</span></a>        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">exec</span><span class="p">)</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Controlador de utilidad para abrir ventanas que requieren tiempo de carga previo.</p>
+
+<p>Esta clase muestra una animación de carga (ventana con GIF) mientras se ejecuta una función
+que obtiene los datos necesarios en segundo plano. Una vez finalizada la carga, se crea la
+ventana final y se le asigna su controlador correspondiente.</p>
+
+<p>Ideal para vistas que necesitan precargar datos desde base de datos o cálculos pesados.</p>
+</div>
+
 
                             <div id="AbridorConCarga.__init__" class="classattr">
                                         <input id="AbridorConCarga.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -172,25 +248,42 @@
 
     </div>
     <a class="headerlink" href="#AbridorConCarga.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AbridorConCarga.__init__-8"><a href="#AbridorConCarga.__init__-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ventana_padre</span><span class="p">,</span> <span class="n">clase_ventana</span><span class="p">,</span> <span class="n">clase_controlador</span><span class="p">,</span> <span class="n">funcion_carga</span><span class="p">):</span>
-</span><span id="AbridorConCarga.__init__-9"><a href="#AbridorConCarga.__init__-9"><span class="linenos"> 9</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_padre</span> <span class="o">=</span> <span class="n">ventana_padre</span>
-</span><span id="AbridorConCarga.__init__-10"><a href="#AbridorConCarga.__init__-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">clase_ventana</span> <span class="o">=</span> <span class="n">clase_ventana</span>
-</span><span id="AbridorConCarga.__init__-11"><a href="#AbridorConCarga.__init__-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">clase_controlador</span> <span class="o">=</span> <span class="n">clase_controlador</span>
-</span><span id="AbridorConCarga.__init__-12"><a href="#AbridorConCarga.__init__-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">funcion_carga</span> <span class="o">=</span> <span class="n">funcion_carga</span>
-</span><span id="AbridorConCarga.__init__-13"><a href="#AbridorConCarga.__init__-13"><span class="linenos">13</span></a>
-</span><span id="AbridorConCarga.__init__-14"><a href="#AbridorConCarga.__init__-14"><span class="linenos">14</span></a>        <span class="c1"># Mostrar GIF de carga</span>
-</span><span id="AbridorConCarga.__init__-15"><a href="#AbridorConCarga.__init__-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="n">VentanaCargaGif</span><span class="p">()</span>
-</span><span id="AbridorConCarga.__init__-16"><a href="#AbridorConCarga.__init__-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana_padre</span><span class="p">)</span>
-</span><span id="AbridorConCarga.__init__-17"><a href="#AbridorConCarga.__init__-17"><span class="linenos">17</span></a>
-</span><span id="AbridorConCarga.__init__-18"><a href="#AbridorConCarga.__init__-18"><span class="linenos">18</span></a>        <span class="c1"># Crear y lanzar el hilo</span>
-</span><span id="AbridorConCarga.__init__-19"><a href="#AbridorConCarga.__init__-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span> <span class="o">=</span> <span class="n">HiloGenericoCarga</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">funcion_carga</span><span class="p">)</span>
-</span><span id="AbridorConCarga.__init__-20"><a href="#AbridorConCarga.__init__-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">senal_datos_cargados</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">continuar</span><span class="p">)</span>
-</span><span id="AbridorConCarga.__init__-21"><a href="#AbridorConCarga.__init__-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">)</span>
-</span><span id="AbridorConCarga.__init__-22"><a href="#AbridorConCarga.__init__-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AbridorConCarga.__init__-25"><a href="#AbridorConCarga.__init__-25"><span class="linenos">25</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ventana_padre</span><span class="p">,</span> <span class="n">clase_ventana</span><span class="p">,</span> <span class="n">clase_controlador</span><span class="p">,</span> <span class="n">funcion_carga</span><span class="p">):</span>
+</span><span id="AbridorConCarga.__init__-26"><a href="#AbridorConCarga.__init__-26"><span class="linenos">26</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AbridorConCarga.__init__-27"><a href="#AbridorConCarga.__init__-27"><span class="linenos">27</span></a><span class="sd">        Inicializa el flujo de carga con animación y lanza el hilo de carga de datos.</span>
+</span><span id="AbridorConCarga.__init__-28"><a href="#AbridorConCarga.__init__-28"><span class="linenos">28</span></a>
+</span><span id="AbridorConCarga.__init__-29"><a href="#AbridorConCarga.__init__-29"><span class="linenos">29</span></a><span class="sd">        Args:</span>
+</span><span id="AbridorConCarga.__init__-30"><a href="#AbridorConCarga.__init__-30"><span class="linenos">30</span></a><span class="sd">            ventana_padre (QWidget): La ventana que actúa como padre de la animación de carga.</span>
+</span><span id="AbridorConCarga.__init__-31"><a href="#AbridorConCarga.__init__-31"><span class="linenos">31</span></a><span class="sd">            clase_ventana (type): Clase de la ventana que se abrirá tras la carga.</span>
+</span><span id="AbridorConCarga.__init__-32"><a href="#AbridorConCarga.__init__-32"><span class="linenos">32</span></a><span class="sd">            clase_controlador (type): Clase del controlador asociado a la ventana.</span>
+</span><span id="AbridorConCarga.__init__-33"><a href="#AbridorConCarga.__init__-33"><span class="linenos">33</span></a><span class="sd">            funcion_carga (function): Función que se ejecutará en segundo plano para obtener los datos.</span>
+</span><span id="AbridorConCarga.__init__-34"><a href="#AbridorConCarga.__init__-34"><span class="linenos">34</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AbridorConCarga.__init__-35"><a href="#AbridorConCarga.__init__-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_padre</span> <span class="o">=</span> <span class="n">ventana_padre</span>
+</span><span id="AbridorConCarga.__init__-36"><a href="#AbridorConCarga.__init__-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">clase_ventana</span> <span class="o">=</span> <span class="n">clase_ventana</span>
+</span><span id="AbridorConCarga.__init__-37"><a href="#AbridorConCarga.__init__-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">clase_controlador</span> <span class="o">=</span> <span class="n">clase_controlador</span>
+</span><span id="AbridorConCarga.__init__-38"><a href="#AbridorConCarga.__init__-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">funcion_carga</span> <span class="o">=</span> <span class="n">funcion_carga</span>
+</span><span id="AbridorConCarga.__init__-39"><a href="#AbridorConCarga.__init__-39"><span class="linenos">39</span></a>
+</span><span id="AbridorConCarga.__init__-40"><a href="#AbridorConCarga.__init__-40"><span class="linenos">40</span></a>        <span class="c1"># Mostrar GIF de carga</span>
+</span><span id="AbridorConCarga.__init__-41"><a href="#AbridorConCarga.__init__-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="n">VentanaCargaGif</span><span class="p">()</span>
+</span><span id="AbridorConCarga.__init__-42"><a href="#AbridorConCarga.__init__-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana_padre</span><span class="p">)</span>
+</span><span id="AbridorConCarga.__init__-43"><a href="#AbridorConCarga.__init__-43"><span class="linenos">43</span></a>
+</span><span id="AbridorConCarga.__init__-44"><a href="#AbridorConCarga.__init__-44"><span class="linenos">44</span></a>        <span class="c1"># Crear y lanzar el hilo</span>
+</span><span id="AbridorConCarga.__init__-45"><a href="#AbridorConCarga.__init__-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span> <span class="o">=</span> <span class="n">HiloGenericoCarga</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">funcion_carga</span><span class="p">)</span>
+</span><span id="AbridorConCarga.__init__-46"><a href="#AbridorConCarga.__init__-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">senal_datos_cargados</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">continuar</span><span class="p">)</span>
+</span><span id="AbridorConCarga.__init__-47"><a href="#AbridorConCarga.__init__-47"><span class="linenos">47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">)</span>
+</span><span id="AbridorConCarga.__init__-48"><a href="#AbridorConCarga.__init__-48"><span class="linenos">48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Inicializa el flujo de carga con animación y lanza el hilo de carga de datos.</p>
+
+<p>Args:
+    ventana_padre (QWidget): La ventana que actúa como padre de la animación de carga.
+    clase_ventana (type): Clase de la ventana que se abrirá tras la carga.
+    clase_controlador (type): Clase del controlador asociado a la ventana.
+    funcion_carga (function): Función que se ejecutará en segundo plano para obtener los datos.</p>
+</div>
+
 
                             </div>
                             <div id="AbridorConCarga.ventana_padre" class="classattr">
@@ -270,21 +363,38 @@
 
     </div>
     <a class="headerlink" href="#AbridorConCarga.continuar"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AbridorConCarga.continuar-24"><a href="#AbridorConCarga.continuar-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">continuar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datos</span><span class="p">):</span>
-</span><span id="AbridorConCarga.continuar-25"><a href="#AbridorConCarga.continuar-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clase_ventana</span><span class="p">()</span>
-</span><span id="AbridorConCarga.continuar-26"><a href="#AbridorConCarga.continuar-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">controlador</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clase_controlador</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="n">datos</span><span class="p">)</span>
-</span><span id="AbridorConCarga.continuar-27"><a href="#AbridorConCarga.continuar-27"><span class="linenos">27</span></a>
-</span><span id="AbridorConCarga.continuar-28"><a href="#AbridorConCarga.continuar-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
-</span><span id="AbridorConCarga.continuar-29"><a href="#AbridorConCarga.continuar-29"><span class="linenos">29</span></a>
-</span><span id="AbridorConCarga.continuar-30"><a href="#AbridorConCarga.continuar-30"><span class="linenos">30</span></a>        <span class="c1"># ⏹️ Cerrar hilo correctamente</span>
-</span><span id="AbridorConCarga.continuar-31"><a href="#AbridorConCarga.continuar-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
-</span><span id="AbridorConCarga.continuar-32"><a href="#AbridorConCarga.continuar-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
-</span><span id="AbridorConCarga.continuar-33"><a href="#AbridorConCarga.continuar-33"><span class="linenos">33</span></a>
-</span><span id="AbridorConCarga.continuar-34"><a href="#AbridorConCarga.continuar-34"><span class="linenos">34</span></a>        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">exec</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AbridorConCarga.continuar-50"><a href="#AbridorConCarga.continuar-50"><span class="linenos">50</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">continuar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datos</span><span class="p">):</span>
+</span><span id="AbridorConCarga.continuar-51"><a href="#AbridorConCarga.continuar-51"><span class="linenos">51</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AbridorConCarga.continuar-52"><a href="#AbridorConCarga.continuar-52"><span class="linenos">52</span></a><span class="sd">        Método que se ejecuta automáticamente al completarse el hilo.</span>
+</span><span id="AbridorConCarga.continuar-53"><a href="#AbridorConCarga.continuar-53"><span class="linenos">53</span></a>
+</span><span id="AbridorConCarga.continuar-54"><a href="#AbridorConCarga.continuar-54"><span class="linenos">54</span></a><span class="sd">        Instancia la nueva ventana y su controlador con los datos recibidos, cierra el GIF</span>
+</span><span id="AbridorConCarga.continuar-55"><a href="#AbridorConCarga.continuar-55"><span class="linenos">55</span></a><span class="sd">        de carga y lanza la ventana de forma modal.</span>
+</span><span id="AbridorConCarga.continuar-56"><a href="#AbridorConCarga.continuar-56"><span class="linenos">56</span></a>
+</span><span id="AbridorConCarga.continuar-57"><a href="#AbridorConCarga.continuar-57"><span class="linenos">57</span></a><span class="sd">        Args:</span>
+</span><span id="AbridorConCarga.continuar-58"><a href="#AbridorConCarga.continuar-58"><span class="linenos">58</span></a><span class="sd">            datos (Any): Datos devueltos por `funcion_carga`.</span>
+</span><span id="AbridorConCarga.continuar-59"><a href="#AbridorConCarga.continuar-59"><span class="linenos">59</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AbridorConCarga.continuar-60"><a href="#AbridorConCarga.continuar-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clase_ventana</span><span class="p">()</span>
+</span><span id="AbridorConCarga.continuar-61"><a href="#AbridorConCarga.continuar-61"><span class="linenos">61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">controlador</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clase_controlador</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="n">datos</span><span class="p">)</span>
+</span><span id="AbridorConCarga.continuar-62"><a href="#AbridorConCarga.continuar-62"><span class="linenos">62</span></a>
+</span><span id="AbridorConCarga.continuar-63"><a href="#AbridorConCarga.continuar-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
+</span><span id="AbridorConCarga.continuar-64"><a href="#AbridorConCarga.continuar-64"><span class="linenos">64</span></a>
+</span><span id="AbridorConCarga.continuar-65"><a href="#AbridorConCarga.continuar-65"><span class="linenos">65</span></a>        <span class="c1"># Cerrar hilo correctamente</span>
+</span><span id="AbridorConCarga.continuar-66"><a href="#AbridorConCarga.continuar-66"><span class="linenos">66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+</span><span id="AbridorConCarga.continuar-67"><a href="#AbridorConCarga.continuar-67"><span class="linenos">67</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hilo</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</span><span id="AbridorConCarga.continuar-68"><a href="#AbridorConCarga.continuar-68"><span class="linenos">68</span></a>
+</span><span id="AbridorConCarga.continuar-69"><a href="#AbridorConCarga.continuar-69"><span class="linenos">69</span></a>        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">exec</span><span class="p">)</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Método que se ejecuta automáticamente al completarse el hilo.</p>
+
+<p>Instancia la nueva ventana y su controlador con los datos recibidos, cierra el GIF
+de carga y lanza la ventana de forma modal.</p>
+
+<p>Args:
+    datos (Any): Datos devueltos por <code><a href="#AbridorConCarga.funcion_carga">funcion_carga</a></code>.</p>
+</div>
+
 
                             </div>
                 </section>

@@ -1,15 +1,27 @@
-from PySide6.QtWidgets import QApplication
-from vistas.ventana_recepcionamiento import VentanaRecepcionamiento
-from controladores.recepcionamiento_controlador import RecepcionamientoControlador
-from PySide6.QtGui import QPainter, QPixmap, QPen
-from PySide6.QtCore import Qt, QPoint
+# pruebas/recepcionamiento_test.py
+
+"""
+Script visual para lanzar la ventana de recepción de vehículos con datos de prueba.
+
+Uso:
+  - Ejecutar directamente con: `python -m pruebas.recepcionamiento_test`
+  - Importar `iniciar_ventana_recepcionamiento` en test unitarios.
+"""
+
 import sys
 import os
 from datetime import date
+from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QPainter, QPixmap, QPen
+from PySide6.QtCore import Qt, QPoint
+from vistas.ventana_recepcionamiento import VentanaRecepcionamiento
+from controladores.recepcionamiento_controlador import RecepcionamientoControlador
 
 
 def simular_firma(path):
-    """Genera una firma de prueba simple en la ruta especificada."""
+    """
+    Genera una firma de prueba como imagen PNG.
+    """
     pixmap = QPixmap(400, 100)
     pixmap.fill(Qt.white)
 
@@ -22,13 +34,13 @@ def simular_firma(path):
     pixmap.save(path, "PNG")
 
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-
-    # Crear la ventana
+def iniciar_ventana_recepcionamiento():
+    """
+    Prepara la ventana de recepción con datos simulados para pruebas.
+    No ejecuta `show()` ni `app.exec()` (solo para tests).
+    """
     ventana = VentanaRecepcionamiento()
 
-    # Datos simulados de prueba
     datos_prueba = {
         "tipos": [{"nombre": "Turismo", "categoria": "Terrestre"}],
         "categorias": ["Terrestre", "Acuático"],
@@ -39,21 +51,18 @@ if __name__ == "__main__":
         "estado_id": 1,
     }
 
-    # Cargar controlador con ventana y datos simulados
     controlador = RecepcionamientoControlador(ventana, datos_prueba)
 
-    # Simular firma de prueba
     firma_path = os.path.join(os.getcwd(), "firma_temporal.png")
     simular_firma(firma_path)
 
-    # CLIENTE 5 - Carlos Gómez Hernández
+    # Datos cliente y vehículo
     ventana.input_nombre.setText("Carlos Gómez Hernández")
     ventana.input_dni.setText("23456789B")
     ventana.input_telefono.setText("622345678")
     ventana.input_email.setText("carlos.gomez@example.com")
     ventana.input_direccion.setText("Avda. de la Paz 45")
 
-    # Vehículo vinculado - Matrícula: 4567DEF
     ventana.input_matricula.setCurrentText("4567DEF")
     ventana.input_marca.setText("OPEL")
     ventana.input_modelo.setText("Corsa")
@@ -65,10 +74,10 @@ if __name__ == "__main__":
     ventana.combo_categoria.setCurrentText("Terrestre")
     ventana.combo_tipo.setCurrentText("Turismo")
 
+    # Otros campos
     ventana.combo_motivo.setCurrentText("Mantenimiento")
     ventana.combo_urgencia.setCurrentText("Alta")
     ventana.fecha_recepcion.setDate(date.today())
-
     ventana.check_arranca.setChecked(True)
     ventana.check_grua.setChecked(False)
     ventana.check_itv.setChecked(True)
@@ -89,9 +98,11 @@ if __name__ == "__main__":
     ventana.checkbox_enviar_correo.setChecked(False)
     ventana.checkbox_imprimir.setChecked(False)
 
+    return ventana
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    ventana = iniciar_ventana_recepcionamiento()
     ventana.show()
     sys.exit(app.exec())
-
-
-# para abrir este mofdulo, ejecuta el siguiente comando en la terminal:
-# python -m pruebas.recepcionamiento_test

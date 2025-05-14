@@ -55,82 +55,134 @@
                     <h1 class="modulename">
 <a href="./../utilidades.html">utilidades</a><wbr>.recepcionamiento_utilidades    </h1>
 
-                
+                        <div class="docstring"><p>Módulo de utilidades para la generación de documentos PDF de recepcionamiento.</p>
+
+<p>Incluye funciones para:</p>
+
+<ul>
+<li>Validar correos electrónicos.</li>
+<li>Generar documentos PDF a partir de plantillas HTML usando Jinja2 y WeasyPrint.</li>
+<li>Limpiar nombres para su uso seguro como nombres de archivo.</li>
+</ul>
+</div>
+
                         <input id="mod-recepcionamiento_utilidades-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-recepcionamiento_utilidades-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">jinja2</span><span class="w"> </span><span class="kn">import</span> <span class="n">Environment</span><span class="p">,</span> <span class="n">FileSystemLoader</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">weasyprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTML</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDir</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">unicodedata</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="k">def</span><span class="w"> </span><span class="nf">validar_correo</span><span class="p">(</span><span class="n">correo</span><span class="p">):</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^@]+@[^@]+\.[^@]+&quot;</span><span class="p">,</span> <span class="n">correo</span><span class="p">)</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="k">def</span><span class="w"> </span><span class="nf">generar_documento_pdf</span><span class="p">(</span><span class="n">datos</span><span class="p">,</span> <span class="n">firma_cliente_path</span><span class="p">,</span> <span class="n">ruta_guardado</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="n">ahora</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>  <span class="c1"># ✅ Se define correctamente aquí</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="n">fecha_emision</span> <span class="o">=</span> <span class="n">ahora</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>  <span class="c1"># ✅ Formato DD/MM/YYYY</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="c1"># Ruta base del proyecto</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="n">ruta_base</span> <span class="o">=</span> <span class="n">QDir</span><span class="o">.</span><span class="n">currentPath</span><span class="p">()</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="c1"># Rutas absolutas a plantilla HTML, CSS y firma del taller</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="n">plantilla_html</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;plantillas&quot;</span><span class="p">,</span> <span class="s2">&quot;recepcionamiento.html&quot;</span><span class="p">)</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="n">plantilla_css</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;plantillas&quot;</span><span class="p">,</span> <span class="s2">&quot;recepcionamiento.css&quot;</span><span class="p">)</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="n">firma_taller_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;plantillas&quot;</span><span class="p">,</span> <span class="s2">&quot;img&quot;</span><span class="p">,</span> <span class="s2">&quot;firmataller.png&quot;</span><span class="p">)</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="c1"># Preparar entorno de Jinja2 con la carpeta de plantillas</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">plantilla_html</span><span class="p">)))</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="n">plantilla</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">plantilla_html</span><span class="p">))</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="c1"># Rellenar HTML con datos</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="n">html_renderizado</span> <span class="o">=</span> <span class="n">plantilla</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="n">datos</span><span class="o">=</span><span class="n">datos</span><span class="p">,</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="n">firma_path</span><span class="o">=</span><span class="n">firma_cliente_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">),</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="n">firma_taller</span><span class="o">=</span><span class="n">firma_taller_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">),</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="n">fecha_emision</span><span class="o">=</span><span class="n">fecha_emision</span>  <span class="c1"># ✅ Se pasa a la plantilla</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="p">)</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="c1"># Generar nombre de archivo único</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="n">nombre_cliente</span> <span class="o">=</span> <span class="n">limpiar_nombre_para_archivo</span><span class="p">(</span><span class="n">datos</span><span class="p">[</span><span class="s2">&quot;Nombre&quot;</span><span class="p">])</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="n">numero_recepcion</span> <span class="o">=</span> <span class="n">datos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NúmeroRecepcion&quot;</span><span class="p">,</span> <span class="s2">&quot;00000&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="n">nombre_archivo</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Recepcion_</span><span class="si">{</span><span class="n">nombre_cliente</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">numero_recepcion</span><span class="si">}</span><span class="s2">.pdf&quot;</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="c1"># Ruta de guardado</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">ruta_guardado</span><span class="p">:</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>        <span class="n">ruta_guardado</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>            <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;documentos&quot;</span><span class="p">,</span> <span class="s2">&quot;recepcionamientos&quot;</span><span class="p">,</span> <span class="n">ahora</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>                <span class="s2">&quot;%Y-%m&quot;</span><span class="p">)</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>        <span class="p">)</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">ruta_guardado</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="n">ruta_pdf</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ruta_guardado</span><span class="p">,</span> <span class="n">nombre_archivo</span><span class="p">)</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>    <span class="c1"># Generar el PDF</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>    <span class="n">HTML</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="n">html_renderizado</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">ruta_base</span><span class="p">)</span><span class="o">.</span><span class="n">write_pdf</span><span class="p">(</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="n">ruta_pdf</span><span class="p">,</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>        <span class="n">stylesheets</span><span class="o">=</span><span class="p">[</span><span class="n">plantilla_css</span><span class="p">]</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>    <span class="p">)</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>    <span class="k">return</span> <span class="n">ruta_pdf</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>
-</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="k">def</span><span class="w"> </span><span class="nf">limpiar_nombre_para_archivo</span><span class="p">(</span><span class="n">nombre</span><span class="p">):</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s1">&#39;NFD&#39;</span><span class="p">,</span> <span class="n">nombre</span><span class="p">)</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^A-Z0-9_]&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">nombre</span><span class="p">)</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>    <span class="k">return</span> <span class="n">nombre</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">Módulo de utilidades para la generación de documentos PDF de recepcionamiento.</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">Incluye funciones para:</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">- Validar correos electrónicos.</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="sd">- Generar documentos PDF a partir de plantillas HTML usando Jinja2 y WeasyPrint.</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="sd">- Limpiar nombres para su uso seguro como nombres de archivo.</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">unicodedata</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">weasyprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTML</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDir</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">jinja2</span><span class="w"> </span><span class="kn">import</span> <span class="n">Environment</span><span class="p">,</span> <span class="n">FileSystemLoader</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="k">def</span><span class="w"> </span><span class="nf">validar_correo</span><span class="p">(</span><span class="n">correo</span><span class="p">):</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">    Valida si una cadena tiene formato de correo electrónico válido.</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">    Args:</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">        correo (str): Dirección de correo a validar.</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">    Returns:</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">        MatchObject or None: Resultado de la validación. `None` si no es válido.</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^@]+@[^@]+\.[^@]+&quot;</span><span class="p">,</span> <span class="n">correo</span><span class="p">)</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="k">def</span><span class="w"> </span><span class="nf">generar_documento_pdf</span><span class="p">(</span><span class="n">datos</span><span class="p">,</span> <span class="n">firma_cliente_path</span><span class="p">,</span> <span class="n">ruta_guardado</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="sd">    Genera un archivo PDF de recepcionamiento a partir de una plantilla HTML y datos proporcionados.</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">    Usa Jinja2 para renderizar el HTML con los datos del formulario y WeasyPrint</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">    para convertir ese HTML en un archivo PDF.</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="sd">    Args:</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">        datos (dict): Diccionario con los datos a incluir en el PDF (nombre, número de recepción, etc.).</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="sd">        firma_cliente_path (str): Ruta a la imagen de la firma del cliente.</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="sd">        ruta_guardado (str, opcional): Carpeta donde se guardará el PDF. Si no se especifica, se crea una predeterminada.</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">    Returns:</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">        str: Ruta completa donde se ha guardado el archivo PDF generado.</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    <span class="n">ahora</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>    <span class="n">fecha_emision</span> <span class="o">=</span> <span class="n">ahora</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>    <span class="c1"># Ruta base del proyecto</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>    <span class="n">ruta_base</span> <span class="o">=</span> <span class="n">QDir</span><span class="o">.</span><span class="n">currentPath</span><span class="p">()</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>    <span class="c1"># Rutas a plantillas y firma del taller</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>    <span class="n">plantilla_html</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>        <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;plantillas&quot;</span><span class="p">,</span> <span class="s2">&quot;recepcionamiento.html&quot;</span><span class="p">)</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>    <span class="n">plantilla_css</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>        <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;plantillas&quot;</span><span class="p">,</span> <span class="s2">&quot;recepcionamiento.css&quot;</span><span class="p">)</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>    <span class="n">firma_taller_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>        <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;plantillas&quot;</span><span class="p">,</span> <span class="s2">&quot;img&quot;</span><span class="p">,</span> <span class="s2">&quot;firmataller.png&quot;</span><span class="p">)</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>    <span class="c1"># Preparar motor de plantillas Jinja2</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>    <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">plantilla_html</span><span class="p">)))</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>    <span class="n">plantilla</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">plantilla_html</span><span class="p">))</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>    <span class="c1"># Renderizar plantilla con los datos</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>    <span class="n">html_renderizado</span> <span class="o">=</span> <span class="n">plantilla</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="n">datos</span><span class="o">=</span><span class="n">datos</span><span class="p">,</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>        <span class="n">firma_path</span><span class="o">=</span><span class="n">firma_cliente_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">),</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>        <span class="n">firma_taller</span><span class="o">=</span><span class="n">firma_taller_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">),</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>        <span class="n">fecha_emision</span><span class="o">=</span><span class="n">fecha_emision</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>    <span class="p">)</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>    <span class="c1"># Generar nombre de archivo único</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>    <span class="n">nombre_cliente</span> <span class="o">=</span> <span class="n">limpiar_nombre_para_archivo</span><span class="p">(</span><span class="n">datos</span><span class="p">[</span><span class="s2">&quot;Nombre&quot;</span><span class="p">])</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>    <span class="n">numero_recepcion</span> <span class="o">=</span> <span class="n">datos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NúmeroRecepcion&quot;</span><span class="p">,</span> <span class="s2">&quot;00000&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>    <span class="n">nombre_archivo</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Recepcion_</span><span class="si">{</span><span class="n">nombre_cliente</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">numero_recepcion</span><span class="si">}</span><span class="s2">.pdf&quot;</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>    <span class="c1"># Determinar ruta de guardado</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">ruta_guardado</span><span class="p">:</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>        <span class="n">ruta_guardado</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>            <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;documentos&quot;</span><span class="p">,</span> <span class="s2">&quot;recepcionamientos&quot;</span><span class="p">,</span> <span class="n">ahora</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>                <span class="s2">&quot;%Y-%m&quot;</span><span class="p">)</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>        <span class="p">)</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">ruta_guardado</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>    <span class="n">ruta_pdf</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ruta_guardado</span><span class="p">,</span> <span class="n">nombre_archivo</span><span class="p">)</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>    <span class="c1"># Generar PDF desde HTML renderizado</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>    <span class="n">HTML</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="n">html_renderizado</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">ruta_base</span><span class="p">)</span><span class="o">.</span><span class="n">write_pdf</span><span class="p">(</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>        <span class="n">ruta_pdf</span><span class="p">,</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>        <span class="n">stylesheets</span><span class="o">=</span><span class="p">[</span><span class="n">plantilla_css</span><span class="p">]</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>    <span class="p">)</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="k">return</span> <span class="n">ruta_pdf</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="k">def</span><span class="w"> </span><span class="nf">limpiar_nombre_para_archivo</span><span class="p">(</span><span class="n">nombre</span><span class="p">):</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">    Limpia y formatea una cadena para que pueda ser usada como nombre de archivo válido.</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">    Reemplaza caracteres especiales por guiones bajos y convierte a mayúsculas.</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">    Args:</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">        nombre (str): Nombre original del cliente o entidad.</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">    Returns:</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">        str: Nombre limpio, adecuado para ser usado como nombre de archivo.</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s1">&#39;NFD&#39;</span><span class="p">,</span> <span class="n">nombre</span><span class="p">)</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^A-Z0-9_]&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">nombre</span><span class="p">)</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>    <span class="k">return</span> <span class="n">nombre</span>
 </span></pre></div>
 
 
@@ -146,13 +198,30 @@
 
     </div>
     <a class="headerlink" href="#validar_correo"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="validar_correo-11"><a href="#validar_correo-11"><span class="linenos">11</span></a><span class="k">def</span><span class="w"> </span><span class="nf">validar_correo</span><span class="p">(</span><span class="n">correo</span><span class="p">):</span>
-</span><span id="validar_correo-12"><a href="#validar_correo-12"><span class="linenos">12</span></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-</span><span id="validar_correo-13"><a href="#validar_correo-13"><span class="linenos">13</span></a>    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^@]+@[^@]+\.[^@]+&quot;</span><span class="p">,</span> <span class="n">correo</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="validar_correo-19"><a href="#validar_correo-19"><span class="linenos">19</span></a><span class="k">def</span><span class="w"> </span><span class="nf">validar_correo</span><span class="p">(</span><span class="n">correo</span><span class="p">):</span>
+</span><span id="validar_correo-20"><a href="#validar_correo-20"><span class="linenos">20</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="validar_correo-21"><a href="#validar_correo-21"><span class="linenos">21</span></a><span class="sd">    Valida si una cadena tiene formato de correo electrónico válido.</span>
+</span><span id="validar_correo-22"><a href="#validar_correo-22"><span class="linenos">22</span></a>
+</span><span id="validar_correo-23"><a href="#validar_correo-23"><span class="linenos">23</span></a><span class="sd">    Args:</span>
+</span><span id="validar_correo-24"><a href="#validar_correo-24"><span class="linenos">24</span></a><span class="sd">        correo (str): Dirección de correo a validar.</span>
+</span><span id="validar_correo-25"><a href="#validar_correo-25"><span class="linenos">25</span></a>
+</span><span id="validar_correo-26"><a href="#validar_correo-26"><span class="linenos">26</span></a><span class="sd">    Returns:</span>
+</span><span id="validar_correo-27"><a href="#validar_correo-27"><span class="linenos">27</span></a><span class="sd">        MatchObject or None: Resultado de la validación. `None` si no es válido.</span>
+</span><span id="validar_correo-28"><a href="#validar_correo-28"><span class="linenos">28</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="validar_correo-29"><a href="#validar_correo-29"><span class="linenos">29</span></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+</span><span id="validar_correo-30"><a href="#validar_correo-30"><span class="linenos">30</span></a>    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^@]+@[^@]+\.[^@]+&quot;</span><span class="p">,</span> <span class="n">correo</span><span class="p">)</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Valida si una cadena tiene formato de correo electrónico válido.</p>
+
+<p>Args:
+    correo (str): Dirección de correo a validar.</p>
+
+<p>Returns:
+    MatchObject or None: Resultado de la validación. <code>None</code> si no es válido.</p>
+</div>
+
 
                 </section>
                 <section id="generar_documento_pdf">
@@ -166,59 +235,86 @@
 
     </div>
     <a class="headerlink" href="#generar_documento_pdf"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="generar_documento_pdf-16"><a href="#generar_documento_pdf-16"><span class="linenos">16</span></a><span class="k">def</span><span class="w"> </span><span class="nf">generar_documento_pdf</span><span class="p">(</span><span class="n">datos</span><span class="p">,</span> <span class="n">firma_cliente_path</span><span class="p">,</span> <span class="n">ruta_guardado</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="generar_documento_pdf-17"><a href="#generar_documento_pdf-17"><span class="linenos">17</span></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
-</span><span id="generar_documento_pdf-18"><a href="#generar_documento_pdf-18"><span class="linenos">18</span></a>    <span class="n">ahora</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>  <span class="c1"># ✅ Se define correctamente aquí</span>
-</span><span id="generar_documento_pdf-19"><a href="#generar_documento_pdf-19"><span class="linenos">19</span></a>    <span class="n">fecha_emision</span> <span class="o">=</span> <span class="n">ahora</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>  <span class="c1"># ✅ Formato DD/MM/YYYY</span>
-</span><span id="generar_documento_pdf-20"><a href="#generar_documento_pdf-20"><span class="linenos">20</span></a>
-</span><span id="generar_documento_pdf-21"><a href="#generar_documento_pdf-21"><span class="linenos">21</span></a>    <span class="c1"># Ruta base del proyecto</span>
-</span><span id="generar_documento_pdf-22"><a href="#generar_documento_pdf-22"><span class="linenos">22</span></a>    <span class="n">ruta_base</span> <span class="o">=</span> <span class="n">QDir</span><span class="o">.</span><span class="n">currentPath</span><span class="p">()</span>
-</span><span id="generar_documento_pdf-23"><a href="#generar_documento_pdf-23"><span class="linenos">23</span></a>
-</span><span id="generar_documento_pdf-24"><a href="#generar_documento_pdf-24"><span class="linenos">24</span></a>    <span class="c1"># Rutas absolutas a plantilla HTML, CSS y firma del taller</span>
-</span><span id="generar_documento_pdf-25"><a href="#generar_documento_pdf-25"><span class="linenos">25</span></a>    <span class="n">plantilla_html</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-</span><span id="generar_documento_pdf-26"><a href="#generar_documento_pdf-26"><span class="linenos">26</span></a>        <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;plantillas&quot;</span><span class="p">,</span> <span class="s2">&quot;recepcionamiento.html&quot;</span><span class="p">)</span>
-</span><span id="generar_documento_pdf-27"><a href="#generar_documento_pdf-27"><span class="linenos">27</span></a>    <span class="n">plantilla_css</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-</span><span id="generar_documento_pdf-28"><a href="#generar_documento_pdf-28"><span class="linenos">28</span></a>        <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;plantillas&quot;</span><span class="p">,</span> <span class="s2">&quot;recepcionamiento.css&quot;</span><span class="p">)</span>
-</span><span id="generar_documento_pdf-29"><a href="#generar_documento_pdf-29"><span class="linenos">29</span></a>    <span class="n">firma_taller_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-</span><span id="generar_documento_pdf-30"><a href="#generar_documento_pdf-30"><span class="linenos">30</span></a>        <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;plantillas&quot;</span><span class="p">,</span> <span class="s2">&quot;img&quot;</span><span class="p">,</span> <span class="s2">&quot;firmataller.png&quot;</span><span class="p">)</span>
-</span><span id="generar_documento_pdf-31"><a href="#generar_documento_pdf-31"><span class="linenos">31</span></a>
-</span><span id="generar_documento_pdf-32"><a href="#generar_documento_pdf-32"><span class="linenos">32</span></a>    <span class="c1"># Preparar entorno de Jinja2 con la carpeta de plantillas</span>
-</span><span id="generar_documento_pdf-33"><a href="#generar_documento_pdf-33"><span class="linenos">33</span></a>    <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">plantilla_html</span><span class="p">)))</span>
-</span><span id="generar_documento_pdf-34"><a href="#generar_documento_pdf-34"><span class="linenos">34</span></a>    <span class="n">plantilla</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">plantilla_html</span><span class="p">))</span>
-</span><span id="generar_documento_pdf-35"><a href="#generar_documento_pdf-35"><span class="linenos">35</span></a>
-</span><span id="generar_documento_pdf-36"><a href="#generar_documento_pdf-36"><span class="linenos">36</span></a>    <span class="c1"># Rellenar HTML con datos</span>
-</span><span id="generar_documento_pdf-37"><a href="#generar_documento_pdf-37"><span class="linenos">37</span></a>    <span class="n">html_renderizado</span> <span class="o">=</span> <span class="n">plantilla</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
-</span><span id="generar_documento_pdf-38"><a href="#generar_documento_pdf-38"><span class="linenos">38</span></a>        <span class="n">datos</span><span class="o">=</span><span class="n">datos</span><span class="p">,</span>
-</span><span id="generar_documento_pdf-39"><a href="#generar_documento_pdf-39"><span class="linenos">39</span></a>        <span class="n">firma_path</span><span class="o">=</span><span class="n">firma_cliente_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">),</span>
-</span><span id="generar_documento_pdf-40"><a href="#generar_documento_pdf-40"><span class="linenos">40</span></a>        <span class="n">firma_taller</span><span class="o">=</span><span class="n">firma_taller_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">),</span>
-</span><span id="generar_documento_pdf-41"><a href="#generar_documento_pdf-41"><span class="linenos">41</span></a>        <span class="n">fecha_emision</span><span class="o">=</span><span class="n">fecha_emision</span>  <span class="c1"># ✅ Se pasa a la plantilla</span>
-</span><span id="generar_documento_pdf-42"><a href="#generar_documento_pdf-42"><span class="linenos">42</span></a>    <span class="p">)</span>
-</span><span id="generar_documento_pdf-43"><a href="#generar_documento_pdf-43"><span class="linenos">43</span></a>
-</span><span id="generar_documento_pdf-44"><a href="#generar_documento_pdf-44"><span class="linenos">44</span></a>    <span class="c1"># Generar nombre de archivo único</span>
-</span><span id="generar_documento_pdf-45"><a href="#generar_documento_pdf-45"><span class="linenos">45</span></a>    <span class="n">nombre_cliente</span> <span class="o">=</span> <span class="n">limpiar_nombre_para_archivo</span><span class="p">(</span><span class="n">datos</span><span class="p">[</span><span class="s2">&quot;Nombre&quot;</span><span class="p">])</span>
-</span><span id="generar_documento_pdf-46"><a href="#generar_documento_pdf-46"><span class="linenos">46</span></a>    <span class="n">numero_recepcion</span> <span class="o">=</span> <span class="n">datos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NúmeroRecepcion&quot;</span><span class="p">,</span> <span class="s2">&quot;00000&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-</span><span id="generar_documento_pdf-47"><a href="#generar_documento_pdf-47"><span class="linenos">47</span></a>    <span class="n">nombre_archivo</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Recepcion_</span><span class="si">{</span><span class="n">nombre_cliente</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">numero_recepcion</span><span class="si">}</span><span class="s2">.pdf&quot;</span>
-</span><span id="generar_documento_pdf-48"><a href="#generar_documento_pdf-48"><span class="linenos">48</span></a>
-</span><span id="generar_documento_pdf-49"><a href="#generar_documento_pdf-49"><span class="linenos">49</span></a>    <span class="c1"># Ruta de guardado</span>
-</span><span id="generar_documento_pdf-50"><a href="#generar_documento_pdf-50"><span class="linenos">50</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">ruta_guardado</span><span class="p">:</span>
-</span><span id="generar_documento_pdf-51"><a href="#generar_documento_pdf-51"><span class="linenos">51</span></a>        <span class="n">ruta_guardado</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-</span><span id="generar_documento_pdf-52"><a href="#generar_documento_pdf-52"><span class="linenos">52</span></a>            <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;documentos&quot;</span><span class="p">,</span> <span class="s2">&quot;recepcionamientos&quot;</span><span class="p">,</span> <span class="n">ahora</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
-</span><span id="generar_documento_pdf-53"><a href="#generar_documento_pdf-53"><span class="linenos">53</span></a>                <span class="s2">&quot;%Y-%m&quot;</span><span class="p">)</span>
-</span><span id="generar_documento_pdf-54"><a href="#generar_documento_pdf-54"><span class="linenos">54</span></a>        <span class="p">)</span>
-</span><span id="generar_documento_pdf-55"><a href="#generar_documento_pdf-55"><span class="linenos">55</span></a>    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">ruta_guardado</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="generar_documento_pdf-56"><a href="#generar_documento_pdf-56"><span class="linenos">56</span></a>    <span class="n">ruta_pdf</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ruta_guardado</span><span class="p">,</span> <span class="n">nombre_archivo</span><span class="p">)</span>
-</span><span id="generar_documento_pdf-57"><a href="#generar_documento_pdf-57"><span class="linenos">57</span></a>
-</span><span id="generar_documento_pdf-58"><a href="#generar_documento_pdf-58"><span class="linenos">58</span></a>    <span class="c1"># Generar el PDF</span>
-</span><span id="generar_documento_pdf-59"><a href="#generar_documento_pdf-59"><span class="linenos">59</span></a>    <span class="n">HTML</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="n">html_renderizado</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">ruta_base</span><span class="p">)</span><span class="o">.</span><span class="n">write_pdf</span><span class="p">(</span>
-</span><span id="generar_documento_pdf-60"><a href="#generar_documento_pdf-60"><span class="linenos">60</span></a>        <span class="n">ruta_pdf</span><span class="p">,</span>
-</span><span id="generar_documento_pdf-61"><a href="#generar_documento_pdf-61"><span class="linenos">61</span></a>        <span class="n">stylesheets</span><span class="o">=</span><span class="p">[</span><span class="n">plantilla_css</span><span class="p">]</span>
-</span><span id="generar_documento_pdf-62"><a href="#generar_documento_pdf-62"><span class="linenos">62</span></a>    <span class="p">)</span>
-</span><span id="generar_documento_pdf-63"><a href="#generar_documento_pdf-63"><span class="linenos">63</span></a>
-</span><span id="generar_documento_pdf-64"><a href="#generar_documento_pdf-64"><span class="linenos">64</span></a>    <span class="k">return</span> <span class="n">ruta_pdf</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="generar_documento_pdf-33"><a href="#generar_documento_pdf-33"><span class="linenos">33</span></a><span class="k">def</span><span class="w"> </span><span class="nf">generar_documento_pdf</span><span class="p">(</span><span class="n">datos</span><span class="p">,</span> <span class="n">firma_cliente_path</span><span class="p">,</span> <span class="n">ruta_guardado</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="generar_documento_pdf-34"><a href="#generar_documento_pdf-34"><span class="linenos">34</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="generar_documento_pdf-35"><a href="#generar_documento_pdf-35"><span class="linenos">35</span></a><span class="sd">    Genera un archivo PDF de recepcionamiento a partir de una plantilla HTML y datos proporcionados.</span>
+</span><span id="generar_documento_pdf-36"><a href="#generar_documento_pdf-36"><span class="linenos">36</span></a>
+</span><span id="generar_documento_pdf-37"><a href="#generar_documento_pdf-37"><span class="linenos">37</span></a><span class="sd">    Usa Jinja2 para renderizar el HTML con los datos del formulario y WeasyPrint</span>
+</span><span id="generar_documento_pdf-38"><a href="#generar_documento_pdf-38"><span class="linenos">38</span></a><span class="sd">    para convertir ese HTML en un archivo PDF.</span>
+</span><span id="generar_documento_pdf-39"><a href="#generar_documento_pdf-39"><span class="linenos">39</span></a>
+</span><span id="generar_documento_pdf-40"><a href="#generar_documento_pdf-40"><span class="linenos">40</span></a><span class="sd">    Args:</span>
+</span><span id="generar_documento_pdf-41"><a href="#generar_documento_pdf-41"><span class="linenos">41</span></a><span class="sd">        datos (dict): Diccionario con los datos a incluir en el PDF (nombre, número de recepción, etc.).</span>
+</span><span id="generar_documento_pdf-42"><a href="#generar_documento_pdf-42"><span class="linenos">42</span></a><span class="sd">        firma_cliente_path (str): Ruta a la imagen de la firma del cliente.</span>
+</span><span id="generar_documento_pdf-43"><a href="#generar_documento_pdf-43"><span class="linenos">43</span></a><span class="sd">        ruta_guardado (str, opcional): Carpeta donde se guardará el PDF. Si no se especifica, se crea una predeterminada.</span>
+</span><span id="generar_documento_pdf-44"><a href="#generar_documento_pdf-44"><span class="linenos">44</span></a>
+</span><span id="generar_documento_pdf-45"><a href="#generar_documento_pdf-45"><span class="linenos">45</span></a><span class="sd">    Returns:</span>
+</span><span id="generar_documento_pdf-46"><a href="#generar_documento_pdf-46"><span class="linenos">46</span></a><span class="sd">        str: Ruta completa donde se ha guardado el archivo PDF generado.</span>
+</span><span id="generar_documento_pdf-47"><a href="#generar_documento_pdf-47"><span class="linenos">47</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="generar_documento_pdf-48"><a href="#generar_documento_pdf-48"><span class="linenos">48</span></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+</span><span id="generar_documento_pdf-49"><a href="#generar_documento_pdf-49"><span class="linenos">49</span></a>    <span class="n">ahora</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+</span><span id="generar_documento_pdf-50"><a href="#generar_documento_pdf-50"><span class="linenos">50</span></a>    <span class="n">fecha_emision</span> <span class="o">=</span> <span class="n">ahora</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
+</span><span id="generar_documento_pdf-51"><a href="#generar_documento_pdf-51"><span class="linenos">51</span></a>
+</span><span id="generar_documento_pdf-52"><a href="#generar_documento_pdf-52"><span class="linenos">52</span></a>    <span class="c1"># Ruta base del proyecto</span>
+</span><span id="generar_documento_pdf-53"><a href="#generar_documento_pdf-53"><span class="linenos">53</span></a>    <span class="n">ruta_base</span> <span class="o">=</span> <span class="n">QDir</span><span class="o">.</span><span class="n">currentPath</span><span class="p">()</span>
+</span><span id="generar_documento_pdf-54"><a href="#generar_documento_pdf-54"><span class="linenos">54</span></a>
+</span><span id="generar_documento_pdf-55"><a href="#generar_documento_pdf-55"><span class="linenos">55</span></a>    <span class="c1"># Rutas a plantillas y firma del taller</span>
+</span><span id="generar_documento_pdf-56"><a href="#generar_documento_pdf-56"><span class="linenos">56</span></a>    <span class="n">plantilla_html</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="generar_documento_pdf-57"><a href="#generar_documento_pdf-57"><span class="linenos">57</span></a>        <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;plantillas&quot;</span><span class="p">,</span> <span class="s2">&quot;recepcionamiento.html&quot;</span><span class="p">)</span>
+</span><span id="generar_documento_pdf-58"><a href="#generar_documento_pdf-58"><span class="linenos">58</span></a>    <span class="n">plantilla_css</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="generar_documento_pdf-59"><a href="#generar_documento_pdf-59"><span class="linenos">59</span></a>        <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;plantillas&quot;</span><span class="p">,</span> <span class="s2">&quot;recepcionamiento.css&quot;</span><span class="p">)</span>
+</span><span id="generar_documento_pdf-60"><a href="#generar_documento_pdf-60"><span class="linenos">60</span></a>    <span class="n">firma_taller_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="generar_documento_pdf-61"><a href="#generar_documento_pdf-61"><span class="linenos">61</span></a>        <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;plantillas&quot;</span><span class="p">,</span> <span class="s2">&quot;img&quot;</span><span class="p">,</span> <span class="s2">&quot;firmataller.png&quot;</span><span class="p">)</span>
+</span><span id="generar_documento_pdf-62"><a href="#generar_documento_pdf-62"><span class="linenos">62</span></a>
+</span><span id="generar_documento_pdf-63"><a href="#generar_documento_pdf-63"><span class="linenos">63</span></a>    <span class="c1"># Preparar motor de plantillas Jinja2</span>
+</span><span id="generar_documento_pdf-64"><a href="#generar_documento_pdf-64"><span class="linenos">64</span></a>    <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">plantilla_html</span><span class="p">)))</span>
+</span><span id="generar_documento_pdf-65"><a href="#generar_documento_pdf-65"><span class="linenos">65</span></a>    <span class="n">plantilla</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">plantilla_html</span><span class="p">))</span>
+</span><span id="generar_documento_pdf-66"><a href="#generar_documento_pdf-66"><span class="linenos">66</span></a>
+</span><span id="generar_documento_pdf-67"><a href="#generar_documento_pdf-67"><span class="linenos">67</span></a>    <span class="c1"># Renderizar plantilla con los datos</span>
+</span><span id="generar_documento_pdf-68"><a href="#generar_documento_pdf-68"><span class="linenos">68</span></a>    <span class="n">html_renderizado</span> <span class="o">=</span> <span class="n">plantilla</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+</span><span id="generar_documento_pdf-69"><a href="#generar_documento_pdf-69"><span class="linenos">69</span></a>        <span class="n">datos</span><span class="o">=</span><span class="n">datos</span><span class="p">,</span>
+</span><span id="generar_documento_pdf-70"><a href="#generar_documento_pdf-70"><span class="linenos">70</span></a>        <span class="n">firma_path</span><span class="o">=</span><span class="n">firma_cliente_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">),</span>
+</span><span id="generar_documento_pdf-71"><a href="#generar_documento_pdf-71"><span class="linenos">71</span></a>        <span class="n">firma_taller</span><span class="o">=</span><span class="n">firma_taller_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">),</span>
+</span><span id="generar_documento_pdf-72"><a href="#generar_documento_pdf-72"><span class="linenos">72</span></a>        <span class="n">fecha_emision</span><span class="o">=</span><span class="n">fecha_emision</span>
+</span><span id="generar_documento_pdf-73"><a href="#generar_documento_pdf-73"><span class="linenos">73</span></a>    <span class="p">)</span>
+</span><span id="generar_documento_pdf-74"><a href="#generar_documento_pdf-74"><span class="linenos">74</span></a>
+</span><span id="generar_documento_pdf-75"><a href="#generar_documento_pdf-75"><span class="linenos">75</span></a>    <span class="c1"># Generar nombre de archivo único</span>
+</span><span id="generar_documento_pdf-76"><a href="#generar_documento_pdf-76"><span class="linenos">76</span></a>    <span class="n">nombre_cliente</span> <span class="o">=</span> <span class="n">limpiar_nombre_para_archivo</span><span class="p">(</span><span class="n">datos</span><span class="p">[</span><span class="s2">&quot;Nombre&quot;</span><span class="p">])</span>
+</span><span id="generar_documento_pdf-77"><a href="#generar_documento_pdf-77"><span class="linenos">77</span></a>    <span class="n">numero_recepcion</span> <span class="o">=</span> <span class="n">datos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NúmeroRecepcion&quot;</span><span class="p">,</span> <span class="s2">&quot;00000&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span><span id="generar_documento_pdf-78"><a href="#generar_documento_pdf-78"><span class="linenos">78</span></a>    <span class="n">nombre_archivo</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Recepcion_</span><span class="si">{</span><span class="n">nombre_cliente</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">numero_recepcion</span><span class="si">}</span><span class="s2">.pdf&quot;</span>
+</span><span id="generar_documento_pdf-79"><a href="#generar_documento_pdf-79"><span class="linenos">79</span></a>
+</span><span id="generar_documento_pdf-80"><a href="#generar_documento_pdf-80"><span class="linenos">80</span></a>    <span class="c1"># Determinar ruta de guardado</span>
+</span><span id="generar_documento_pdf-81"><a href="#generar_documento_pdf-81"><span class="linenos">81</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">ruta_guardado</span><span class="p">:</span>
+</span><span id="generar_documento_pdf-82"><a href="#generar_documento_pdf-82"><span class="linenos">82</span></a>        <span class="n">ruta_guardado</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="generar_documento_pdf-83"><a href="#generar_documento_pdf-83"><span class="linenos">83</span></a>            <span class="n">ruta_base</span><span class="p">,</span> <span class="s2">&quot;documentos&quot;</span><span class="p">,</span> <span class="s2">&quot;recepcionamientos&quot;</span><span class="p">,</span> <span class="n">ahora</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+</span><span id="generar_documento_pdf-84"><a href="#generar_documento_pdf-84"><span class="linenos">84</span></a>                <span class="s2">&quot;%Y-%m&quot;</span><span class="p">)</span>
+</span><span id="generar_documento_pdf-85"><a href="#generar_documento_pdf-85"><span class="linenos">85</span></a>        <span class="p">)</span>
+</span><span id="generar_documento_pdf-86"><a href="#generar_documento_pdf-86"><span class="linenos">86</span></a>    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">ruta_guardado</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="generar_documento_pdf-87"><a href="#generar_documento_pdf-87"><span class="linenos">87</span></a>    <span class="n">ruta_pdf</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ruta_guardado</span><span class="p">,</span> <span class="n">nombre_archivo</span><span class="p">)</span>
+</span><span id="generar_documento_pdf-88"><a href="#generar_documento_pdf-88"><span class="linenos">88</span></a>
+</span><span id="generar_documento_pdf-89"><a href="#generar_documento_pdf-89"><span class="linenos">89</span></a>    <span class="c1"># Generar PDF desde HTML renderizado</span>
+</span><span id="generar_documento_pdf-90"><a href="#generar_documento_pdf-90"><span class="linenos">90</span></a>    <span class="n">HTML</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="n">html_renderizado</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">ruta_base</span><span class="p">)</span><span class="o">.</span><span class="n">write_pdf</span><span class="p">(</span>
+</span><span id="generar_documento_pdf-91"><a href="#generar_documento_pdf-91"><span class="linenos">91</span></a>        <span class="n">ruta_pdf</span><span class="p">,</span>
+</span><span id="generar_documento_pdf-92"><a href="#generar_documento_pdf-92"><span class="linenos">92</span></a>        <span class="n">stylesheets</span><span class="o">=</span><span class="p">[</span><span class="n">plantilla_css</span><span class="p">]</span>
+</span><span id="generar_documento_pdf-93"><a href="#generar_documento_pdf-93"><span class="linenos">93</span></a>    <span class="p">)</span>
+</span><span id="generar_documento_pdf-94"><a href="#generar_documento_pdf-94"><span class="linenos">94</span></a>
+</span><span id="generar_documento_pdf-95"><a href="#generar_documento_pdf-95"><span class="linenos">95</span></a>    <span class="k">return</span> <span class="n">ruta_pdf</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Genera un archivo PDF de recepcionamiento a partir de una plantilla HTML y datos proporcionados.</p>
+
+<p>Usa Jinja2 para renderizar el HTML con los datos del formulario y WeasyPrint
+para convertir ese HTML en un archivo PDF.</p>
+
+<p>Args:
+    datos (dict): Diccionario con los datos a incluir en el PDF (nombre, número de recepción, etc.).
+    firma_cliente_path (str): Ruta a la imagen de la firma del cliente.
+    ruta_guardado (str, opcional): Carpeta donde se guardará el PDF. Si no se especifica, se crea una predeterminada.</p>
+
+<p>Returns:
+    str: Ruta completa donde se ha guardado el archivo PDF generado.</p>
+</div>
+
 
                 </section>
                 <section id="limpiar_nombre_para_archivo">
@@ -232,16 +328,37 @@
 
     </div>
     <a class="headerlink" href="#limpiar_nombre_para_archivo"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="limpiar_nombre_para_archivo-67"><a href="#limpiar_nombre_para_archivo-67"><span class="linenos">67</span></a><span class="k">def</span><span class="w"> </span><span class="nf">limpiar_nombre_para_archivo</span><span class="p">(</span><span class="n">nombre</span><span class="p">):</span>
-</span><span id="limpiar_nombre_para_archivo-68"><a href="#limpiar_nombre_para_archivo-68"><span class="linenos">68</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-</span><span id="limpiar_nombre_para_archivo-69"><a href="#limpiar_nombre_para_archivo-69"><span class="linenos">69</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s1">&#39;NFD&#39;</span><span class="p">,</span> <span class="n">nombre</span><span class="p">)</span>
-</span><span id="limpiar_nombre_para_archivo-70"><a href="#limpiar_nombre_para_archivo-70"><span class="linenos">70</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-</span><span id="limpiar_nombre_para_archivo-71"><a href="#limpiar_nombre_para_archivo-71"><span class="linenos">71</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^A-Z0-9_]&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">nombre</span><span class="p">)</span>
-</span><span id="limpiar_nombre_para_archivo-72"><a href="#limpiar_nombre_para_archivo-72"><span class="linenos">72</span></a>    <span class="k">return</span> <span class="n">nombre</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="limpiar_nombre_para_archivo-98"><a href="#limpiar_nombre_para_archivo-98"><span class="linenos"> 98</span></a><span class="k">def</span><span class="w"> </span><span class="nf">limpiar_nombre_para_archivo</span><span class="p">(</span><span class="n">nombre</span><span class="p">):</span>
+</span><span id="limpiar_nombre_para_archivo-99"><a href="#limpiar_nombre_para_archivo-99"><span class="linenos"> 99</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="limpiar_nombre_para_archivo-100"><a href="#limpiar_nombre_para_archivo-100"><span class="linenos">100</span></a><span class="sd">    Limpia y formatea una cadena para que pueda ser usada como nombre de archivo válido.</span>
+</span><span id="limpiar_nombre_para_archivo-101"><a href="#limpiar_nombre_para_archivo-101"><span class="linenos">101</span></a>
+</span><span id="limpiar_nombre_para_archivo-102"><a href="#limpiar_nombre_para_archivo-102"><span class="linenos">102</span></a><span class="sd">    Reemplaza caracteres especiales por guiones bajos y convierte a mayúsculas.</span>
+</span><span id="limpiar_nombre_para_archivo-103"><a href="#limpiar_nombre_para_archivo-103"><span class="linenos">103</span></a>
+</span><span id="limpiar_nombre_para_archivo-104"><a href="#limpiar_nombre_para_archivo-104"><span class="linenos">104</span></a><span class="sd">    Args:</span>
+</span><span id="limpiar_nombre_para_archivo-105"><a href="#limpiar_nombre_para_archivo-105"><span class="linenos">105</span></a><span class="sd">        nombre (str): Nombre original del cliente o entidad.</span>
+</span><span id="limpiar_nombre_para_archivo-106"><a href="#limpiar_nombre_para_archivo-106"><span class="linenos">106</span></a>
+</span><span id="limpiar_nombre_para_archivo-107"><a href="#limpiar_nombre_para_archivo-107"><span class="linenos">107</span></a><span class="sd">    Returns:</span>
+</span><span id="limpiar_nombre_para_archivo-108"><a href="#limpiar_nombre_para_archivo-108"><span class="linenos">108</span></a><span class="sd">        str: Nombre limpio, adecuado para ser usado como nombre de archivo.</span>
+</span><span id="limpiar_nombre_para_archivo-109"><a href="#limpiar_nombre_para_archivo-109"><span class="linenos">109</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="limpiar_nombre_para_archivo-110"><a href="#limpiar_nombre_para_archivo-110"><span class="linenos">110</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+</span><span id="limpiar_nombre_para_archivo-111"><a href="#limpiar_nombre_para_archivo-111"><span class="linenos">111</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s1">&#39;NFD&#39;</span><span class="p">,</span> <span class="n">nombre</span><span class="p">)</span>
+</span><span id="limpiar_nombre_para_archivo-112"><a href="#limpiar_nombre_para_archivo-112"><span class="linenos">112</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+</span><span id="limpiar_nombre_para_archivo-113"><a href="#limpiar_nombre_para_archivo-113"><span class="linenos">113</span></a>    <span class="n">nombre</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^A-Z0-9_]&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">nombre</span><span class="p">)</span>
+</span><span id="limpiar_nombre_para_archivo-114"><a href="#limpiar_nombre_para_archivo-114"><span class="linenos">114</span></a>    <span class="k">return</span> <span class="n">nombre</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Limpia y formatea una cadena para que pueda ser usada como nombre de archivo válido.</p>
+
+<p>Reemplaza caracteres especiales por guiones bajos y convierte a mayúsculas.</p>
+
+<p>Args:
+    nombre (str): Nombre original del cliente o entidad.</p>
+
+<p>Returns:
+    str: Nombre limpio, adecuado para ser usado como nombre de archivo.</p>
+</div>
+
 
                 </section>
     </main>

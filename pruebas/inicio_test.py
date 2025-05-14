@@ -1,19 +1,38 @@
-# pruebas/inicio_test.py
+"""
+Módulo de prueba para lanzar la ventana de inicio (dashboard principal).
+
+Puede ejecutarse manualmente o ser importado en tests automatizados
+sin mostrar la ventana.
+"""
+
 import sys
-from PySide6.QtWidgets import QApplication
 from controladores.inicio_controlador import InicioControlador
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
+# Indicador de si se está ejecutando como test
+setattr(sys, "_called_from_test", False)
 
-    # ⚙️ Usuario simulado para pruebas
+
+def iniciar_ventana_inicio():
+    """
+    Crea una instancia del controlador de la ventana de inicio (dashboard)
+    con un usuario ficticio.
+
+    Returns:
+        InicioControlador: Controlador ya inicializado.
+    """
     nombre = "CRESNIK"
     rol = "Administrador"
+    return InicioControlador(nombre, rol)
 
-    controlador_inicio = InicioControlador(nombre, rol)
-    controlador_inicio.senal_cerrar_sesion.connect(app.quit)
-    controlador_inicio.mostrar()
+
+# Solo ejecuta visualmente si es lanzado manualmente y no desde pytest
+if __name__ == "__main__" and not getattr(sys, "_called_from_test", False):
+    from PySide6.QtWidgets import QApplication
+
+    app = QApplication(sys.argv)
+
+    controlador = iniciar_ventana_inicio()
+    controlador.senal_cerrar_sesion.connect(app.quit)
+    controlador.mostrar()
 
     sys.exit(app.exec())
-
-    # Para ejecutarlo desde la terminal: python -m pruebas.inicio_test

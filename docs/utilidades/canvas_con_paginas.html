@@ -64,43 +64,84 @@
                     <h1 class="modulename">
 <a href="./../utilidades.html">utilidades</a><wbr>.canvas_con_paginas    </h1>
 
-                
+                        <div class="docstring"><p>Módulo para añadir numeración de páginas a documentos PDF generados con ReportLab.</p>
+
+<p>Incluye una clase <code><a href="#NumeroPaginasCanvas">NumeroPaginasCanvas</a></code> que extiende <code>reportlab.pdfgen.canvas.Canvas</code>
+para permitir mostrar la numeración total de páginas y un pie de página personalizado
+al estilo de la aplicación ReyBoxes.</p>
+</div>
+
                         <input id="mod-canvas_con_paginas-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-canvas_con_paginas-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.pdfgen</span><span class="w"> </span><span class="kn">import</span> <span class="n">canvas</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.lib.pagesizes</span><span class="w"> </span><span class="kn">import</span> <span class="n">A4</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">colors</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">class</span><span class="w"> </span><span class="nc">NumeroPaginasCanvas</span><span class="p">(</span><span class="n">canvas</span><span class="o">.</span><span class="n">Canvas</span><span class="p">):</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">showPage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">))</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_startPage</span><span class="p">()</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="n">total_pages</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="p">)</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="p">:</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">draw_page_number</span><span class="p">(</span><span class="n">total_pages</span><span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">showPage</span><span class="p">()</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">draw_page_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total_pages</span><span class="p">):</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">saveState</span><span class="p">()</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setStrokeColor</span><span class="p">(</span><span class="n">colors</span><span class="o">.</span><span class="n">red</span><span class="p">)</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setLineWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">A4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="s2">&quot;ReyBoxes - Sistema de Gestión de Taller&quot;</span><span class="p">)</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawRightString</span><span class="p">(</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>            <span class="n">A4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Página </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_pageNumber</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="n">total_pages</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">restoreState</span><span class="p">()</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">Módulo para añadir numeración de páginas a documentos PDF generados con ReportLab.</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">Incluye una clase `NumeroPaginasCanvas` que extiende `reportlab.pdfgen.canvas.Canvas`</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">para permitir mostrar la numeración total de páginas y un pie de página personalizado</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">al estilo de la aplicación ReyBoxes.</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">colors</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.pdfgen</span><span class="w"> </span><span class="kn">import</span> <span class="n">canvas</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.lib.pagesizes</span><span class="w"> </span><span class="kn">import</span> <span class="n">A4</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">NumeroPaginasCanvas</span><span class="p">(</span><span class="n">canvas</span><span class="o">.</span><span class="n">Canvas</span><span class="p">):</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">    Canvas personalizado que añade numeración de páginas y un pie de página con estilo ReyBoxes.</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">    Esta clase guarda el estado de cada página antes de finalizarla con `showPage()`,</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">    y en `save()` vuelve a procesar todas para añadir el número de página sobre el documento.</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">        Inicializa el canvas extendido y prepara el almacenamiento de los estados de página.</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">showPage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="sd">        Guarda el estado de la página actual antes de iniciar una nueva.</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">        Esto permite reescribir el contenido después con la numeración total.</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">))</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_startPage</span><span class="p">()</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="sd">        Finaliza el documento PDF, reescribiendo cada página para incluir la numeración total.</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="sd">        Se invoca al final del proceso de escritura del PDF.</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="n">total_pages</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="p">)</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="p">:</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">draw_page_number</span><span class="p">(</span><span class="n">total_pages</span><span class="p">)</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">showPage</span><span class="p">()</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">draw_page_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total_pages</span><span class="p">):</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="sd">        Dibuja el número de página y una línea inferior con pie de página personalizado.</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a><span class="sd">        Args:</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="sd">            total_pages (int): Número total de páginas del documento.</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">saveState</span><span class="p">()</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setStrokeColor</span><span class="p">(</span><span class="n">colors</span><span class="o">.</span><span class="n">red</span><span class="p">)</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setLineWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">A4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>  <span class="c1"># Línea horizontal al pie</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="s2">&quot;ReyBoxes - Sistema de Gestión de Taller&quot;</span><span class="p">)</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawRightString</span><span class="p">(</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>            <span class="n">A4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Página </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_pageNumber</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="n">total_pages</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">restoreState</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -116,82 +157,67 @@
 
     </div>
     <a class="headerlink" href="#NumeroPaginasCanvas"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumeroPaginasCanvas-7"><a href="#NumeroPaginasCanvas-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">NumeroPaginasCanvas</span><span class="p">(</span><span class="n">canvas</span><span class="o">.</span><span class="n">Canvas</span><span class="p">):</span>
-</span><span id="NumeroPaginasCanvas-8"><a href="#NumeroPaginasCanvas-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="NumeroPaginasCanvas-9"><a href="#NumeroPaginasCanvas-9"><span class="linenos"> 9</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas-10"><a href="#NumeroPaginasCanvas-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="NumeroPaginasCanvas-11"><a href="#NumeroPaginasCanvas-11"><span class="linenos">11</span></a>
-</span><span id="NumeroPaginasCanvas-12"><a href="#NumeroPaginasCanvas-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">showPage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumeroPaginasCanvas-13"><a href="#NumeroPaginasCanvas-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">))</span>
-</span><span id="NumeroPaginasCanvas-14"><a href="#NumeroPaginasCanvas-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_startPage</span><span class="p">()</span>
-</span><span id="NumeroPaginasCanvas-15"><a href="#NumeroPaginasCanvas-15"><span class="linenos">15</span></a>
-</span><span id="NumeroPaginasCanvas-16"><a href="#NumeroPaginasCanvas-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumeroPaginasCanvas-17"><a href="#NumeroPaginasCanvas-17"><span class="linenos">17</span></a>        <span class="n">total_pages</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas-18"><a href="#NumeroPaginasCanvas-18"><span class="linenos">18</span></a>        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="p">:</span>
-</span><span id="NumeroPaginasCanvas-19"><a href="#NumeroPaginasCanvas-19"><span class="linenos">19</span></a>            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas-20"><a href="#NumeroPaginasCanvas-20"><span class="linenos">20</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">draw_page_number</span><span class="p">(</span><span class="n">total_pages</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas-21"><a href="#NumeroPaginasCanvas-21"><span class="linenos">21</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">showPage</span><span class="p">()</span>
-</span><span id="NumeroPaginasCanvas-22"><a href="#NumeroPaginasCanvas-22"><span class="linenos">22</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-</span><span id="NumeroPaginasCanvas-23"><a href="#NumeroPaginasCanvas-23"><span class="linenos">23</span></a>
-</span><span id="NumeroPaginasCanvas-24"><a href="#NumeroPaginasCanvas-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">draw_page_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total_pages</span><span class="p">):</span>
-</span><span id="NumeroPaginasCanvas-25"><a href="#NumeroPaginasCanvas-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">saveState</span><span class="p">()</span>
-</span><span id="NumeroPaginasCanvas-26"><a href="#NumeroPaginasCanvas-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setStrokeColor</span><span class="p">(</span><span class="n">colors</span><span class="o">.</span><span class="n">red</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas-27"><a href="#NumeroPaginasCanvas-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setLineWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas-28"><a href="#NumeroPaginasCanvas-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">A4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas-29"><a href="#NumeroPaginasCanvas-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas-30"><a href="#NumeroPaginasCanvas-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="s2">&quot;ReyBoxes - Sistema de Gestión de Taller&quot;</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas-31"><a href="#NumeroPaginasCanvas-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawRightString</span><span class="p">(</span>
-</span><span id="NumeroPaginasCanvas-32"><a href="#NumeroPaginasCanvas-32"><span class="linenos">32</span></a>            <span class="n">A4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Página </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_pageNumber</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="n">total_pages</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas-33"><a href="#NumeroPaginasCanvas-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">restoreState</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumeroPaginasCanvas-15"><a href="#NumeroPaginasCanvas-15"><span class="linenos">15</span></a><span class="k">class</span><span class="w"> </span><span class="nc">NumeroPaginasCanvas</span><span class="p">(</span><span class="n">canvas</span><span class="o">.</span><span class="n">Canvas</span><span class="p">):</span>
+</span><span id="NumeroPaginasCanvas-16"><a href="#NumeroPaginasCanvas-16"><span class="linenos">16</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas-17"><a href="#NumeroPaginasCanvas-17"><span class="linenos">17</span></a><span class="sd">    Canvas personalizado que añade numeración de páginas y un pie de página con estilo ReyBoxes.</span>
+</span><span id="NumeroPaginasCanvas-18"><a href="#NumeroPaginasCanvas-18"><span class="linenos">18</span></a>
+</span><span id="NumeroPaginasCanvas-19"><a href="#NumeroPaginasCanvas-19"><span class="linenos">19</span></a><span class="sd">    Esta clase guarda el estado de cada página antes de finalizarla con `showPage()`,</span>
+</span><span id="NumeroPaginasCanvas-20"><a href="#NumeroPaginasCanvas-20"><span class="linenos">20</span></a><span class="sd">    y en `save()` vuelve a procesar todas para añadir el número de página sobre el documento.</span>
+</span><span id="NumeroPaginasCanvas-21"><a href="#NumeroPaginasCanvas-21"><span class="linenos">21</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas-22"><a href="#NumeroPaginasCanvas-22"><span class="linenos">22</span></a>
+</span><span id="NumeroPaginasCanvas-23"><a href="#NumeroPaginasCanvas-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="NumeroPaginasCanvas-24"><a href="#NumeroPaginasCanvas-24"><span class="linenos">24</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas-25"><a href="#NumeroPaginasCanvas-25"><span class="linenos">25</span></a><span class="sd">        Inicializa el canvas extendido y prepara el almacenamiento de los estados de página.</span>
+</span><span id="NumeroPaginasCanvas-26"><a href="#NumeroPaginasCanvas-26"><span class="linenos">26</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas-27"><a href="#NumeroPaginasCanvas-27"><span class="linenos">27</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas-28"><a href="#NumeroPaginasCanvas-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="NumeroPaginasCanvas-29"><a href="#NumeroPaginasCanvas-29"><span class="linenos">29</span></a>
+</span><span id="NumeroPaginasCanvas-30"><a href="#NumeroPaginasCanvas-30"><span class="linenos">30</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">showPage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="NumeroPaginasCanvas-31"><a href="#NumeroPaginasCanvas-31"><span class="linenos">31</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas-32"><a href="#NumeroPaginasCanvas-32"><span class="linenos">32</span></a><span class="sd">        Guarda el estado de la página actual antes de iniciar una nueva.</span>
+</span><span id="NumeroPaginasCanvas-33"><a href="#NumeroPaginasCanvas-33"><span class="linenos">33</span></a>
+</span><span id="NumeroPaginasCanvas-34"><a href="#NumeroPaginasCanvas-34"><span class="linenos">34</span></a><span class="sd">        Esto permite reescribir el contenido después con la numeración total.</span>
+</span><span id="NumeroPaginasCanvas-35"><a href="#NumeroPaginasCanvas-35"><span class="linenos">35</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas-36"><a href="#NumeroPaginasCanvas-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">))</span>
+</span><span id="NumeroPaginasCanvas-37"><a href="#NumeroPaginasCanvas-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_startPage</span><span class="p">()</span>
+</span><span id="NumeroPaginasCanvas-38"><a href="#NumeroPaginasCanvas-38"><span class="linenos">38</span></a>
+</span><span id="NumeroPaginasCanvas-39"><a href="#NumeroPaginasCanvas-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="NumeroPaginasCanvas-40"><a href="#NumeroPaginasCanvas-40"><span class="linenos">40</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas-41"><a href="#NumeroPaginasCanvas-41"><span class="linenos">41</span></a><span class="sd">        Finaliza el documento PDF, reescribiendo cada página para incluir la numeración total.</span>
+</span><span id="NumeroPaginasCanvas-42"><a href="#NumeroPaginasCanvas-42"><span class="linenos">42</span></a>
+</span><span id="NumeroPaginasCanvas-43"><a href="#NumeroPaginasCanvas-43"><span class="linenos">43</span></a><span class="sd">        Se invoca al final del proceso de escritura del PDF.</span>
+</span><span id="NumeroPaginasCanvas-44"><a href="#NumeroPaginasCanvas-44"><span class="linenos">44</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas-45"><a href="#NumeroPaginasCanvas-45"><span class="linenos">45</span></a>        <span class="n">total_pages</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas-46"><a href="#NumeroPaginasCanvas-46"><span class="linenos">46</span></a>        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="p">:</span>
+</span><span id="NumeroPaginasCanvas-47"><a href="#NumeroPaginasCanvas-47"><span class="linenos">47</span></a>            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas-48"><a href="#NumeroPaginasCanvas-48"><span class="linenos">48</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">draw_page_number</span><span class="p">(</span><span class="n">total_pages</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas-49"><a href="#NumeroPaginasCanvas-49"><span class="linenos">49</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">showPage</span><span class="p">()</span>
+</span><span id="NumeroPaginasCanvas-50"><a href="#NumeroPaginasCanvas-50"><span class="linenos">50</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</span><span id="NumeroPaginasCanvas-51"><a href="#NumeroPaginasCanvas-51"><span class="linenos">51</span></a>
+</span><span id="NumeroPaginasCanvas-52"><a href="#NumeroPaginasCanvas-52"><span class="linenos">52</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">draw_page_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total_pages</span><span class="p">):</span>
+</span><span id="NumeroPaginasCanvas-53"><a href="#NumeroPaginasCanvas-53"><span class="linenos">53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas-54"><a href="#NumeroPaginasCanvas-54"><span class="linenos">54</span></a><span class="sd">        Dibuja el número de página y una línea inferior con pie de página personalizado.</span>
+</span><span id="NumeroPaginasCanvas-55"><a href="#NumeroPaginasCanvas-55"><span class="linenos">55</span></a>
+</span><span id="NumeroPaginasCanvas-56"><a href="#NumeroPaginasCanvas-56"><span class="linenos">56</span></a><span class="sd">        Args:</span>
+</span><span id="NumeroPaginasCanvas-57"><a href="#NumeroPaginasCanvas-57"><span class="linenos">57</span></a><span class="sd">            total_pages (int): Número total de páginas del documento.</span>
+</span><span id="NumeroPaginasCanvas-58"><a href="#NumeroPaginasCanvas-58"><span class="linenos">58</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas-59"><a href="#NumeroPaginasCanvas-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">saveState</span><span class="p">()</span>
+</span><span id="NumeroPaginasCanvas-60"><a href="#NumeroPaginasCanvas-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setStrokeColor</span><span class="p">(</span><span class="n">colors</span><span class="o">.</span><span class="n">red</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas-61"><a href="#NumeroPaginasCanvas-61"><span class="linenos">61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setLineWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas-62"><a href="#NumeroPaginasCanvas-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">A4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>  <span class="c1"># Línea horizontal al pie</span>
+</span><span id="NumeroPaginasCanvas-63"><a href="#NumeroPaginasCanvas-63"><span class="linenos">63</span></a>
+</span><span id="NumeroPaginasCanvas-64"><a href="#NumeroPaginasCanvas-64"><span class="linenos">64</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas-65"><a href="#NumeroPaginasCanvas-65"><span class="linenos">65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="s2">&quot;ReyBoxes - Sistema de Gestión de Taller&quot;</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas-66"><a href="#NumeroPaginasCanvas-66"><span class="linenos">66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawRightString</span><span class="p">(</span>
+</span><span id="NumeroPaginasCanvas-67"><a href="#NumeroPaginasCanvas-67"><span class="linenos">67</span></a>            <span class="n">A4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Página </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_pageNumber</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="n">total_pages</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas-68"><a href="#NumeroPaginasCanvas-68"><span class="linenos">68</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">restoreState</span><span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>This class is the programmer's interface to the PDF file format.  Methods
-are (or will be) provided here to do just about everything PDF can do.</p>
+            <div class="docstring"><p>Canvas personalizado que añade numeración de páginas y un pie de página con estilo ReyBoxes.</p>
 
-<p>The underlying model to the canvas concept is that of a graphics state machine
-that at any given point in time has a current font, fill color (for figure
-interiors), stroke color (for figure borders), line width and geometric transform, among
-many other characteristics.</p>
-
-<p>Canvas methods generally either draw something (like canvas.line) using the
-current state of the canvas or change some component of the canvas
-state (like canvas.setFont).  The current state can be saved and restored
-using the saveState/restoreState methods.</p>
-
-<p>Objects are "painted" in the order they are drawn so if, for example
-two rectangles overlap the last draw will appear "on top".  PDF form
-objects (supported here) are used to draw complex drawings only once,
-for possible repeated use.</p>
-
-<p>There are other features of canvas which are not visible when printed,
-such as outlines and bookmarks which are used for navigating a document
-in a viewer.</p>
-
-<p>Here is a very silly example usage which generates a Hello World pdf document.</p>
-
-<p>Example:: </p>
-
-<p>from reportlab.pdfgen import canvas
-   c = canvas.Canvas("hello.pdf")
-   from reportlab.lib.units import inch
-   # move the origin up and to the left
-   c.translate(inch,inch)
-   # define a large font
-   c.setFont("Helvetica", 80)
-   # choose some colors
-   c.setStrokeColorRGB(0.2,0.5,0.3)
-   c.setFillColorRGB(1,0,1)
-   # draw a rectangle
-   c.rect(inch,inch,6<em>inch,9</em>inch, fill=1)
-   # make text go straight up
-   c.rotate(90)
-   # change color
-   c.setFillColorRGB(0,0,0.77)
-   # say hello (note after rotate the y coord needs to be negative!)
-   c.drawString(3<em>inch, -3</em>inch, "Hello World")
-   c.showPage()
-   c.save()</p>
+<p>Esta clase guarda el estado de cada página antes de finalizarla con <code><a href="#NumeroPaginasCanvas.showPage">showPage()</a></code>,
+y en <code><a href="#NumeroPaginasCanvas.save">save()</a></code> vuelve a procesar todas para añadir el número de página sobre el documento.</p>
 </div>
 
 
@@ -205,26 +231,16 @@ in a viewer.</p>
 
     </div>
     <a class="headerlink" href="#NumeroPaginasCanvas.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumeroPaginasCanvas.__init__-8"><a href="#NumeroPaginasCanvas.__init__-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="NumeroPaginasCanvas.__init__-9"><a href="#NumeroPaginasCanvas.__init__-9"><span class="linenos"> 9</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas.__init__-10"><a href="#NumeroPaginasCanvas.__init__-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span> <span class="o">=</span> <span class="p">[]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumeroPaginasCanvas.__init__-23"><a href="#NumeroPaginasCanvas.__init__-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="NumeroPaginasCanvas.__init__-24"><a href="#NumeroPaginasCanvas.__init__-24"><span class="linenos">24</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas.__init__-25"><a href="#NumeroPaginasCanvas.__init__-25"><span class="linenos">25</span></a><span class="sd">        Inicializa el canvas extendido y prepara el almacenamiento de los estados de página.</span>
+</span><span id="NumeroPaginasCanvas.__init__-26"><a href="#NumeroPaginasCanvas.__init__-26"><span class="linenos">26</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas.__init__-27"><a href="#NumeroPaginasCanvas.__init__-27"><span class="linenos">27</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas.__init__-28"><a href="#NumeroPaginasCanvas.__init__-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span> <span class="o">=</span> <span class="p">[]</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Create a canvas of a given size. etc.</p>
-
-<p>You may pass a file-like object to filename as an alternative to
-a string.
-For more information about the encrypt parameter refer to the setEncrypt method.</p>
-
-<p>Most of the attributes are private - we will use set/get methods
-as the preferred interface.  Default page size is A4.
-cropMarks may be True/False or an object with parameters borderWidth, markColor, markWidth
-and markLength</p>
-
-<p>if enforceColorSpace is in ('cmyk', 'rgb', 'sep','sep_black','sep_cmyk') then one of
-the standard _PDFColorSetter callables will be used to enforce appropriate color settings.
-If it is a callable then that will be used.</p>
+            <div class="docstring"><p>Inicializa el canvas extendido y prepara el almacenamiento de los estados de página.</p>
 </div>
 
 
@@ -240,13 +256,20 @@ If it is a callable then that will be used.</p>
 
     </div>
     <a class="headerlink" href="#NumeroPaginasCanvas.showPage"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumeroPaginasCanvas.showPage-12"><a href="#NumeroPaginasCanvas.showPage-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">showPage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumeroPaginasCanvas.showPage-13"><a href="#NumeroPaginasCanvas.showPage-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">))</span>
-</span><span id="NumeroPaginasCanvas.showPage-14"><a href="#NumeroPaginasCanvas.showPage-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_startPage</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumeroPaginasCanvas.showPage-30"><a href="#NumeroPaginasCanvas.showPage-30"><span class="linenos">30</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">showPage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="NumeroPaginasCanvas.showPage-31"><a href="#NumeroPaginasCanvas.showPage-31"><span class="linenos">31</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas.showPage-32"><a href="#NumeroPaginasCanvas.showPage-32"><span class="linenos">32</span></a><span class="sd">        Guarda el estado de la página actual antes de iniciar una nueva.</span>
+</span><span id="NumeroPaginasCanvas.showPage-33"><a href="#NumeroPaginasCanvas.showPage-33"><span class="linenos">33</span></a>
+</span><span id="NumeroPaginasCanvas.showPage-34"><a href="#NumeroPaginasCanvas.showPage-34"><span class="linenos">34</span></a><span class="sd">        Esto permite reescribir el contenido después con la numeración total.</span>
+</span><span id="NumeroPaginasCanvas.showPage-35"><a href="#NumeroPaginasCanvas.showPage-35"><span class="linenos">35</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas.showPage-36"><a href="#NumeroPaginasCanvas.showPage-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">))</span>
+</span><span id="NumeroPaginasCanvas.showPage-37"><a href="#NumeroPaginasCanvas.showPage-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_startPage</span><span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Close the current page and possibly start on a new page.</p>
+            <div class="docstring"><p>Guarda el estado de la página actual antes de iniciar una nueva.</p>
+
+<p>Esto permite reescribir el contenido después con la numeración total.</p>
 </div>
 
 
@@ -262,19 +285,24 @@ If it is a callable then that will be used.</p>
 
     </div>
     <a class="headerlink" href="#NumeroPaginasCanvas.save"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumeroPaginasCanvas.save-16"><a href="#NumeroPaginasCanvas.save-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumeroPaginasCanvas.save-17"><a href="#NumeroPaginasCanvas.save-17"><span class="linenos">17</span></a>        <span class="n">total_pages</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas.save-18"><a href="#NumeroPaginasCanvas.save-18"><span class="linenos">18</span></a>        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="p">:</span>
-</span><span id="NumeroPaginasCanvas.save-19"><a href="#NumeroPaginasCanvas.save-19"><span class="linenos">19</span></a>            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas.save-20"><a href="#NumeroPaginasCanvas.save-20"><span class="linenos">20</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">draw_page_number</span><span class="p">(</span><span class="n">total_pages</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas.save-21"><a href="#NumeroPaginasCanvas.save-21"><span class="linenos">21</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">showPage</span><span class="p">()</span>
-</span><span id="NumeroPaginasCanvas.save-22"><a href="#NumeroPaginasCanvas.save-22"><span class="linenos">22</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumeroPaginasCanvas.save-39"><a href="#NumeroPaginasCanvas.save-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="NumeroPaginasCanvas.save-40"><a href="#NumeroPaginasCanvas.save-40"><span class="linenos">40</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas.save-41"><a href="#NumeroPaginasCanvas.save-41"><span class="linenos">41</span></a><span class="sd">        Finaliza el documento PDF, reescribiendo cada página para incluir la numeración total.</span>
+</span><span id="NumeroPaginasCanvas.save-42"><a href="#NumeroPaginasCanvas.save-42"><span class="linenos">42</span></a>
+</span><span id="NumeroPaginasCanvas.save-43"><a href="#NumeroPaginasCanvas.save-43"><span class="linenos">43</span></a><span class="sd">        Se invoca al final del proceso de escritura del PDF.</span>
+</span><span id="NumeroPaginasCanvas.save-44"><a href="#NumeroPaginasCanvas.save-44"><span class="linenos">44</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas.save-45"><a href="#NumeroPaginasCanvas.save-45"><span class="linenos">45</span></a>        <span class="n">total_pages</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas.save-46"><a href="#NumeroPaginasCanvas.save-46"><span class="linenos">46</span></a>        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saved_page_states</span><span class="p">:</span>
+</span><span id="NumeroPaginasCanvas.save-47"><a href="#NumeroPaginasCanvas.save-47"><span class="linenos">47</span></a>            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas.save-48"><a href="#NumeroPaginasCanvas.save-48"><span class="linenos">48</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">draw_page_number</span><span class="p">(</span><span class="n">total_pages</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas.save-49"><a href="#NumeroPaginasCanvas.save-49"><span class="linenos">49</span></a>            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">showPage</span><span class="p">()</span>
+</span><span id="NumeroPaginasCanvas.save-50"><a href="#NumeroPaginasCanvas.save-50"><span class="linenos">50</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Saves and close the PDF document in the file.
-If there is current data a ShowPage is executed automatically.
-After this operation the canvas must not be used further.</p>
+            <div class="docstring"><p>Finaliza el documento PDF, reescribiendo cada página para incluir la numeración total.</p>
+
+<p>Se invoca al final del proceso de escritura del PDF.</p>
 </div>
 
 
@@ -290,20 +318,32 @@ After this operation the canvas must not be used further.</p>
 
     </div>
     <a class="headerlink" href="#NumeroPaginasCanvas.draw_page_number"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumeroPaginasCanvas.draw_page_number-24"><a href="#NumeroPaginasCanvas.draw_page_number-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">draw_page_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total_pages</span><span class="p">):</span>
-</span><span id="NumeroPaginasCanvas.draw_page_number-25"><a href="#NumeroPaginasCanvas.draw_page_number-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">saveState</span><span class="p">()</span>
-</span><span id="NumeroPaginasCanvas.draw_page_number-26"><a href="#NumeroPaginasCanvas.draw_page_number-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setStrokeColor</span><span class="p">(</span><span class="n">colors</span><span class="o">.</span><span class="n">red</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas.draw_page_number-27"><a href="#NumeroPaginasCanvas.draw_page_number-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setLineWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas.draw_page_number-28"><a href="#NumeroPaginasCanvas.draw_page_number-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">A4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas.draw_page_number-29"><a href="#NumeroPaginasCanvas.draw_page_number-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas.draw_page_number-30"><a href="#NumeroPaginasCanvas.draw_page_number-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="s2">&quot;ReyBoxes - Sistema de Gestión de Taller&quot;</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas.draw_page_number-31"><a href="#NumeroPaginasCanvas.draw_page_number-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawRightString</span><span class="p">(</span>
-</span><span id="NumeroPaginasCanvas.draw_page_number-32"><a href="#NumeroPaginasCanvas.draw_page_number-32"><span class="linenos">32</span></a>            <span class="n">A4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Página </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_pageNumber</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="n">total_pages</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="NumeroPaginasCanvas.draw_page_number-33"><a href="#NumeroPaginasCanvas.draw_page_number-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">restoreState</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumeroPaginasCanvas.draw_page_number-52"><a href="#NumeroPaginasCanvas.draw_page_number-52"><span class="linenos">52</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">draw_page_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total_pages</span><span class="p">):</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-53"><a href="#NumeroPaginasCanvas.draw_page_number-53"><span class="linenos">53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-54"><a href="#NumeroPaginasCanvas.draw_page_number-54"><span class="linenos">54</span></a><span class="sd">        Dibuja el número de página y una línea inferior con pie de página personalizado.</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-55"><a href="#NumeroPaginasCanvas.draw_page_number-55"><span class="linenos">55</span></a>
+</span><span id="NumeroPaginasCanvas.draw_page_number-56"><a href="#NumeroPaginasCanvas.draw_page_number-56"><span class="linenos">56</span></a><span class="sd">        Args:</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-57"><a href="#NumeroPaginasCanvas.draw_page_number-57"><span class="linenos">57</span></a><span class="sd">            total_pages (int): Número total de páginas del documento.</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-58"><a href="#NumeroPaginasCanvas.draw_page_number-58"><span class="linenos">58</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-59"><a href="#NumeroPaginasCanvas.draw_page_number-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">saveState</span><span class="p">()</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-60"><a href="#NumeroPaginasCanvas.draw_page_number-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setStrokeColor</span><span class="p">(</span><span class="n">colors</span><span class="o">.</span><span class="n">red</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-61"><a href="#NumeroPaginasCanvas.draw_page_number-61"><span class="linenos">61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setLineWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-62"><a href="#NumeroPaginasCanvas.draw_page_number-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">A4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>  <span class="c1"># Línea horizontal al pie</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-63"><a href="#NumeroPaginasCanvas.draw_page_number-63"><span class="linenos">63</span></a>
+</span><span id="NumeroPaginasCanvas.draw_page_number-64"><a href="#NumeroPaginasCanvas.draw_page_number-64"><span class="linenos">64</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-65"><a href="#NumeroPaginasCanvas.draw_page_number-65"><span class="linenos">65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="s2">&quot;ReyBoxes - Sistema de Gestión de Taller&quot;</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-66"><a href="#NumeroPaginasCanvas.draw_page_number-66"><span class="linenos">66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawRightString</span><span class="p">(</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-67"><a href="#NumeroPaginasCanvas.draw_page_number-67"><span class="linenos">67</span></a>            <span class="n">A4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Página </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_pageNumber</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="n">total_pages</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="NumeroPaginasCanvas.draw_page_number-68"><a href="#NumeroPaginasCanvas.draw_page_number-68"><span class="linenos">68</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">restoreState</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Dibuja el número de página y una línea inferior con pie de página personalizado.</p>
+
+<p>Args:
+    total_pages (int): Número total de páginas del documento.</p>
+</div>
+
 
                             </div>
                 </section>

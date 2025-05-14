@@ -1,15 +1,18 @@
-import sys
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QComboBox
 from vistas.ventana_compraventa import VentanaCompraventa
+from unittest.mock import MagicMock
+
+
+def simular_secciones(ventana):
+    """
+    Prepara las secciones necesarias para que los atributos existan antes de cargar datos.
+    """
+    ventana.seccion_cliente = ventana.crear_seccion_datos_cliente()
+    ventana.seccion_vehiculo = ventana.crear_seccion_datos_vehiculo()
+    ventana.seccion_operacion = ventana.crear_seccion_datos_operacion()
 
 
 def cargar_datos_prueba(ventana):
-    # Seleccionar tipo de operación automáticamente
-    ventana.combo_operacion.setCurrentText(
-        "Compra por parte del concesionario")
-    ventana.actualizar_secciones("COMPRA POR PARTE DEL CONCESIONARIO")
-
-    # Simular cliente real
     ventana.cliente_nombre.setText("SERGIO CABRERA PEÑA")
     ventana.cliente_dni.setText("99001122T")
     ventana.cliente_telefono.setText("437913693")
@@ -20,7 +23,6 @@ def cargar_datos_prueba(ventana):
     ventana.cliente_observaciones.setText(
         "Cliente habitual. Buen estado financiero.")
 
-    # Simular datos del vehículo
     ventana.vehiculo_matricula.setText("1234ABC")
     ventana.vehiculo_marca.setText("SEAT")
     ventana.vehiculo_modelo.setText("Ibiza")
@@ -39,12 +41,31 @@ def cargar_datos_prueba(ventana):
     ventana.vehiculo_descuento.setText("5")
 
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    ventana_dummy = VentanaCompraventa(None)
-    cargar_datos_prueba(ventana_dummy)
-    ventana_dummy.show()
-    sys.exit(app.exec())
+def iniciar_ventana_compraventa():
+    ventana = VentanaCompraventa(None)
 
-# para ejecutar el test, usar el siguiente comando en la terminal:
-# python -m pruebas.compraventa_test
+    # Añadir combo simulado
+    combo = QComboBox()
+    combo.addItems([
+        "Seleccione la operación deseada",
+        "Compra por parte del concesionario",
+        "Venta por parte del concesionario"
+    ])
+    combo.setCurrentText("Compra por parte del concesionario")
+    ventana.combo_operacion = combo
+
+    # Añadir un controlador simulado
+    ventana.controlador = MagicMock()
+    ventana.controlador.toggle_ruta_guardado = MagicMock()
+    ventana.controlador.simular_contrato = MagicMock()
+    ventana.controlador.aceptar_contrato_compra = MagicMock()
+
+    # Crear secciones después de asignar el controlador
+    simular_secciones(ventana)
+
+    # Simular la selección para activar secciones
+    ventana.actualizar_secciones("Compra por parte del concesionario")
+
+    cargar_datos_prueba(ventana)
+
+    return ventana

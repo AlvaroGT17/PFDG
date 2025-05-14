@@ -49,90 +49,114 @@
                     <h1 class="modulename">
 <a href="./../utilidades.html">utilidades</a><wbr>.correo    </h1>
 
-                
+                        <div class="docstring"><p>Módulo de utilidades para el envío de correos electrónicos con códigos de recuperación de cuenta.</p>
+
+<p>Utiliza el protocolo SMTP con SSL para enviar un mensaje personalizado al usuario con
+su código de verificación. La plantilla HTML está diseñada con los estilos visuales de ReyBoxes.</p>
+</div>
+
                         <input id="mod-correo-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-correo-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">smtplib</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">email.mime.multipart</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIMEMultipart</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">email.mime.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIMEText</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="n">load_dotenv</span><span class="p">()</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="k">def</span><span class="w"> </span><span class="nf">enviar_correo</span><span class="p">(</span><span class="n">destinatario</span><span class="p">,</span> <span class="n">nombre_usuario</span><span class="p">,</span> <span class="n">codigo</span><span class="p">):</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">    Envía un correo electrónico con el código de recuperación.</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="c1"># Normalizar nombre con solo la primera letra mayúscula</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="n">nombre_normalizado</span> <span class="o">=</span> <span class="n">nombre_usuario</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">Módulo de utilidades para el envío de correos electrónicos con códigos de recuperación de cuenta.</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">Utiliza el protocolo SMTP con SSL para enviar un mensaje personalizado al usuario con</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">su código de verificación. La plantilla HTML está diseñada con los estilos visuales de ReyBoxes.</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">smtplib</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">email.mime.multipart</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIMEMultipart</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">email.mime.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIMEText</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="c1"># Cargar variables de entorno desde .env</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="n">load_dotenv</span><span class="p">()</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="c1"># Configuración</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="n">remitente</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EMAIL_USER&quot;</span><span class="p">)</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="n">contraseña</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EMAIL_PASS&quot;</span><span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="n">asunto</span> <span class="o">=</span> <span class="s2">&quot;🔐 Recuperación de cuenta - 🚗 ReyBoxes&quot;</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="k">def</span><span class="w"> </span><span class="nf">enviar_correo</span><span class="p">(</span><span class="n">destinatario</span><span class="p">,</span> <span class="n">nombre_usuario</span><span class="p">,</span> <span class="n">codigo</span><span class="p">):</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">    Envía un correo electrónico con un código de recuperación de cuenta a un destinatario específico.</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="c1"># HTML del correo</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="s2">        &lt;div style=&quot;font-family: Arial, sans-serif; max-width: 600px; color: black; margin: auto; background: #f1f1f1; border-radius: 12px; padding: 20px; border: 1px solid #ccc;&quot;&gt;</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="s2">            &lt;div style=&quot;text-align: center;&quot;&gt;</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="s2">                &lt;img src=&quot;https://scontent-mad1-1.xx.fbcdn.net/v/t39.30808-6/415751285_874525538008163_7351325140883369283_n.jpg?_nc_cat=106&amp;ccb=1-7&amp;_nc_sid=6ee11a&amp;_nc_ohc=gUw4mD02ckEQ7kNvgH3L28l&amp;_nc_oc=AdmXIuxkTubdFB4r5ade3UMMMH9Nl8WlDJppLUmqIlhbaS5VLmJvdwbgnNBTMaoWWPdGXx-t16sw04TFPUE-5g1O&amp;_nc_zt=23&amp;_nc_ht=scontent-mad1-1.xx&amp;_nc_gid=hf3BWj-cnV-OFf4f-kIKIQ&amp;oh=00_AYEWAHl6_bh33YPUNsWKf372IpfTdQ5xXm9-icVOzGjfJQ&amp;oe=67ECB23E&quot;</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="s2">                alt=&quot;Logo ReyBoxes&quot; style=&quot;max-width: 150px; border-radius: 10px; margin-bottom: 10px;&quot; /&gt;</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="s2">                &lt;h2 style=&quot;color: #E30613; margin-bottom: 0;&quot;&gt;Código de recuperación&lt;/h2&gt;</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="s2">            &lt;/div&gt;</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="s2">                Hola, &lt;strong style=&quot;color: #E30613;&quot;&gt;</span><span class="si">{</span><span class="n">nombre_normalizado</span><span class="si">}</span><span class="s2">&lt;/strong&gt;,</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="s2">            &lt;/p&gt;</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="s2">                Recibimos una solicitud para restablecer tu contraseña en </span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="s2">                &lt;strong style=&quot;color:rgb(115, 132, 150);&quot;&gt;Rey&lt;/strong&gt; </span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="s2">                &lt;strong style=&quot;color: #E30613;&quot;&gt;Boxes&lt;/strong&gt;.</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="s2">                Usa el siguiente código para continuar con el proceso:</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="s2">            &lt;/p&gt;</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="s2">            &lt;div style=&quot;text-align: center; margin: 20px 0;&quot;&gt;</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="s2">                &lt;span style=&quot;display: inline-block; font-size: 24px; font-weight: bold; color: #FFC107; border: 2px dashed #E30613; padding: 10px 30px; border-radius: 8px;&quot;&gt;</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="s2">                    </span><span class="si">{</span><span class="n">codigo</span><span class="si">}</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="s2">                &lt;/span&gt;</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="s2">            &lt;/div&gt;</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="s2">                Este código expirará en &lt;strong&gt;5 minutos&lt;/strong&gt;.</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="s2">            &lt;/p&gt;</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="s2">                Si no solicitaste este código, simplemente ignora este mensaje. Tu cuenta sigue segura.</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="s2">            &lt;/p&gt;</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="s2">            &lt;hr style=&quot;border: none; border-top: 1px solid #ccc; margin: 30px 0;&quot; /&gt;</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="s2">            &lt;p style=&quot;text-align: center; font-size: 13px; color: #999;&quot;&gt;</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="s2">                © 2025 &lt;strong style=&quot;color:rgb(115, 132, 150);&quot;&gt;Rey&lt;/strong&gt; &lt;strong style=&quot;color: #E30613;&quot;&gt;Boxes&lt;/strong&gt; | Mecánica y mantenimiento</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a><span class="s2">            &lt;/p&gt;</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="s2">        &lt;/div&gt;</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="s2">    &quot;&quot;&quot;</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>    <span class="c1"># Configurar mensaje</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>    <span class="n">mensaje</span> <span class="o">=</span> <span class="n">MIMEMultipart</span><span class="p">(</span><span class="s2">&quot;alternative&quot;</span><span class="p">)</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>    <span class="n">mensaje</span><span class="p">[</span><span class="s2">&quot;From&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">remitente</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>    <span class="n">mensaje</span><span class="p">[</span><span class="s2">&quot;To&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">destinatario</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>    <span class="n">mensaje</span><span class="p">[</span><span class="s2">&quot;Subject&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asunto</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>    <span class="n">mensaje</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">MIMEText</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s2">&quot;html&quot;</span><span class="p">))</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">    El mensaje incluye una plantilla HTML personalizada con el estilo corporativo de ReyBoxes.</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">    Utiliza credenciales definidas en variables de entorno (.env) para autenticar el envío.</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">    Args:</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">        destinatario (str): Dirección de correo del destinatario.</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">        nombre_usuario (str): Nombre del usuario que recibirá el código (se normaliza).</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">        codigo (str): Código de recuperación temporal que se enviará por correo.</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="sd">    Raises:</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="sd">        Exception: Propaga cualquier error relacionado con la conexión o envío del correo.</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="c1"># Normalizar nombre para mostrar con la primera letra mayúscula</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="n">nombre_normalizado</span> <span class="o">=</span> <span class="n">nombre_usuario</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="c1"># Configuración del remitente (desde .env)</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="n">remitente</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EMAIL_USER&quot;</span><span class="p">)</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="n">contraseña</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EMAIL_PASS&quot;</span><span class="p">)</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">asunto</span> <span class="o">=</span> <span class="s2">&quot;🔐 Recuperación de cuenta - 🚗 ReyBoxes&quot;</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="c1"># Cuerpo HTML del mensaje</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="s2">        &lt;div style=&quot;font-family: Arial, sans-serif; max-width: 600px; color: black; margin: auto; background: #f1f1f1; border-radius: 12px; padding: 20px; border: 1px solid #ccc;&quot;&gt;</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="s2">            &lt;div style=&quot;text-align: center;&quot;&gt;</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="s2">                &lt;img src=&quot;https://scontent-mad1-1.xx.fbcdn.net/v/t39.30808-6/415751285_874525538008163_7351325140883369283_n.jpg?_nc_cat=106&amp;ccb=1-7&amp;_nc_sid=6ee11a&amp;_nc_ohc=gUw4mD02ckEQ7kNvgH3L28l&amp;_nc_oc=AdmXIuxkTubdFB4r5ade3UMMMH9Nl8WlDJppLUmqIlhbaS5VLmJvdwbgnNBTMaoWWPdGXx-t16sw04TFPUE-5g1O&amp;_nc_zt=23&amp;_nc_ht=scontent-mad1-1.xx&amp;_nc_gid=hf3BWj-cnV-OFf4f-kIKIQ&amp;oh=00_AYEWAHl6_bh33YPUNsWKf372IpfTdQ5xXm9-icVOzGjfJQ&amp;oe=67ECB23E&quot;</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="s2">                alt=&quot;Logo ReyBoxes&quot; style=&quot;max-width: 150px; border-radius: 10px; margin-bottom: 10px;&quot; /&gt;</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="s2">                &lt;h2 style=&quot;color: #E30613; margin-bottom: 0;&quot;&gt;Código de recuperación&lt;/h2&gt;</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="s2">            &lt;/div&gt;</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="s2">                Hola, &lt;strong style=&quot;color: #E30613;&quot;&gt;</span><span class="si">{</span><span class="n">nombre_normalizado</span><span class="si">}</span><span class="s2">&lt;/strong&gt;,</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="s2">            &lt;/p&gt;</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a><span class="s2">                Recibimos una solicitud para restablecer tu contraseña en </span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="s2">                &lt;strong style=&quot;color:rgb(115, 132, 150);&quot;&gt;Rey&lt;/strong&gt; </span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="s2">                &lt;strong style=&quot;color: #E30613;&quot;&gt;Boxes&lt;/strong&gt;.</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="s2">                Usa el siguiente código para continuar con el proceso:</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="s2">            &lt;/p&gt;</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="s2">            &lt;div style=&quot;text-align: center; margin: 20px 0;&quot;&gt;</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="s2">                &lt;span style=&quot;display: inline-block; font-size: 24px; font-weight: bold; color: #FFC107; border: 2px dashed #E30613; padding: 10px 30px; border-radius: 8px;&quot;&gt;</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="s2">                    </span><span class="si">{</span><span class="n">codigo</span><span class="si">}</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="s2">                &lt;/span&gt;</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="s2">            &lt;/div&gt;</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a><span class="s2">                Este código expirará en &lt;strong&gt;5 minutos&lt;/strong&gt;.</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a><span class="s2">            &lt;/p&gt;</span>
 </span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>
-</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>    <span class="c1"># Enviar mensaje</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>        <span class="k">with</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP_SSL</span><span class="p">(</span><span class="s2">&quot;smtp.gmail.com&quot;</span><span class="p">,</span> <span class="mi">465</span><span class="p">)</span> <span class="k">as</span> <span class="n">servidor</span><span class="p">:</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>            <span class="n">servidor</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">remitente</span><span class="p">,</span> <span class="n">contraseña</span><span class="p">)</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a>            <span class="n">servidor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;📨 Correo enviado correctamente a&quot;</span><span class="p">,</span> <span class="n">destinatario</span><span class="p">)</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;❌ Error al enviar correo:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>        <span class="k">raise</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a><span class="s2">                Si no solicitaste este código, simplemente ignora este mensaje. Tu cuenta sigue segura.</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a><span class="s2">            &lt;/p&gt;</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="s2">            &lt;hr style=&quot;border: none; border-top: 1px solid #ccc; margin: 30px 0;&quot; /&gt;</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a><span class="s2">            &lt;p style=&quot;text-align: center; font-size: 13px; color: #999;&quot;&gt;</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a><span class="s2">                © 2025 &lt;strong style=&quot;color:rgb(115, 132, 150);&quot;&gt;Rey&lt;/strong&gt; &lt;strong style=&quot;color: #E30613;&quot;&gt;Boxes&lt;/strong&gt; | Mecánica y mantenimiento</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a><span class="s2">            &lt;/p&gt;</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a><span class="s2">        &lt;/div&gt;</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a><span class="s2">    &quot;&quot;&quot;</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>
+</span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a>    <span class="c1"># Configurar el mensaje MIME</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>    <span class="n">mensaje</span> <span class="o">=</span> <span class="n">MIMEMultipart</span><span class="p">(</span><span class="s2">&quot;alternative&quot;</span><span class="p">)</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>    <span class="n">mensaje</span><span class="p">[</span><span class="s2">&quot;From&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">remitente</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>    <span class="n">mensaje</span><span class="p">[</span><span class="s2">&quot;To&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">destinatario</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>    <span class="n">mensaje</span><span class="p">[</span><span class="s2">&quot;Subject&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asunto</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a>    <span class="n">mensaje</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">MIMEText</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s2">&quot;html&quot;</span><span class="p">))</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a>
+</span><span id="L-90"><a href="#L-90"><span class="linenos">90</span></a>    <span class="c1"># Enviar el correo por SMTP con SSL</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos">91</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos">92</span></a>        <span class="k">with</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP_SSL</span><span class="p">(</span><span class="s2">&quot;smtp.gmail.com&quot;</span><span class="p">,</span> <span class="mi">465</span><span class="p">)</span> <span class="k">as</span> <span class="n">servidor</span><span class="p">:</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos">93</span></a>            <span class="n">servidor</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">remitente</span><span class="p">,</span> <span class="n">contraseña</span><span class="p">)</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos">94</span></a>            <span class="n">servidor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos">95</span></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;📨 Correo enviado correctamente a&quot;</span><span class="p">,</span> <span class="n">destinatario</span><span class="p">)</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos">96</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos">97</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;❌ Error al enviar correo:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos">98</span></a>        <span class="k">raise</span>
 </span></pre></div>
 
 
@@ -148,80 +172,102 @@
 
     </div>
     <a class="headerlink" href="#enviar_correo"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="enviar_correo-11"><a href="#enviar_correo-11"><span class="linenos">11</span></a><span class="k">def</span><span class="w"> </span><span class="nf">enviar_correo</span><span class="p">(</span><span class="n">destinatario</span><span class="p">,</span> <span class="n">nombre_usuario</span><span class="p">,</span> <span class="n">codigo</span><span class="p">):</span>
-</span><span id="enviar_correo-12"><a href="#enviar_correo-12"><span class="linenos">12</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="enviar_correo-13"><a href="#enviar_correo-13"><span class="linenos">13</span></a><span class="sd">    Envía un correo electrónico con el código de recuperación.</span>
-</span><span id="enviar_correo-14"><a href="#enviar_correo-14"><span class="linenos">14</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="enviar_correo-15"><a href="#enviar_correo-15"><span class="linenos">15</span></a>    <span class="c1"># Normalizar nombre con solo la primera letra mayúscula</span>
-</span><span id="enviar_correo-16"><a href="#enviar_correo-16"><span class="linenos">16</span></a>    <span class="n">nombre_normalizado</span> <span class="o">=</span> <span class="n">nombre_usuario</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
-</span><span id="enviar_correo-17"><a href="#enviar_correo-17"><span class="linenos">17</span></a>
-</span><span id="enviar_correo-18"><a href="#enviar_correo-18"><span class="linenos">18</span></a>    <span class="c1"># Configuración</span>
-</span><span id="enviar_correo-19"><a href="#enviar_correo-19"><span class="linenos">19</span></a>    <span class="n">remitente</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EMAIL_USER&quot;</span><span class="p">)</span>
-</span><span id="enviar_correo-20"><a href="#enviar_correo-20"><span class="linenos">20</span></a>    <span class="n">contraseña</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EMAIL_PASS&quot;</span><span class="p">)</span>
-</span><span id="enviar_correo-21"><a href="#enviar_correo-21"><span class="linenos">21</span></a>    <span class="n">asunto</span> <span class="o">=</span> <span class="s2">&quot;🔐 Recuperación de cuenta - 🚗 ReyBoxes&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="enviar_correo-19"><a href="#enviar_correo-19"><span class="linenos">19</span></a><span class="k">def</span><span class="w"> </span><span class="nf">enviar_correo</span><span class="p">(</span><span class="n">destinatario</span><span class="p">,</span> <span class="n">nombre_usuario</span><span class="p">,</span> <span class="n">codigo</span><span class="p">):</span>
+</span><span id="enviar_correo-20"><a href="#enviar_correo-20"><span class="linenos">20</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="enviar_correo-21"><a href="#enviar_correo-21"><span class="linenos">21</span></a><span class="sd">    Envía un correo electrónico con un código de recuperación de cuenta a un destinatario específico.</span>
 </span><span id="enviar_correo-22"><a href="#enviar_correo-22"><span class="linenos">22</span></a>
-</span><span id="enviar_correo-23"><a href="#enviar_correo-23"><span class="linenos">23</span></a>    <span class="c1"># HTML del correo</span>
-</span><span id="enviar_correo-24"><a href="#enviar_correo-24"><span class="linenos">24</span></a>    <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="enviar_correo-25"><a href="#enviar_correo-25"><span class="linenos">25</span></a><span class="s2">        &lt;div style=&quot;font-family: Arial, sans-serif; max-width: 600px; color: black; margin: auto; background: #f1f1f1; border-radius: 12px; padding: 20px; border: 1px solid #ccc;&quot;&gt;</span>
-</span><span id="enviar_correo-26"><a href="#enviar_correo-26"><span class="linenos">26</span></a><span class="s2">            &lt;div style=&quot;text-align: center;&quot;&gt;</span>
-</span><span id="enviar_correo-27"><a href="#enviar_correo-27"><span class="linenos">27</span></a><span class="s2">                &lt;img src=&quot;https://scontent-mad1-1.xx.fbcdn.net/v/t39.30808-6/415751285_874525538008163_7351325140883369283_n.jpg?_nc_cat=106&amp;ccb=1-7&amp;_nc_sid=6ee11a&amp;_nc_ohc=gUw4mD02ckEQ7kNvgH3L28l&amp;_nc_oc=AdmXIuxkTubdFB4r5ade3UMMMH9Nl8WlDJppLUmqIlhbaS5VLmJvdwbgnNBTMaoWWPdGXx-t16sw04TFPUE-5g1O&amp;_nc_zt=23&amp;_nc_ht=scontent-mad1-1.xx&amp;_nc_gid=hf3BWj-cnV-OFf4f-kIKIQ&amp;oh=00_AYEWAHl6_bh33YPUNsWKf372IpfTdQ5xXm9-icVOzGjfJQ&amp;oe=67ECB23E&quot;</span>
-</span><span id="enviar_correo-28"><a href="#enviar_correo-28"><span class="linenos">28</span></a><span class="s2">                alt=&quot;Logo ReyBoxes&quot; style=&quot;max-width: 150px; border-radius: 10px; margin-bottom: 10px;&quot; /&gt;</span>
-</span><span id="enviar_correo-29"><a href="#enviar_correo-29"><span class="linenos">29</span></a><span class="s2">                &lt;h2 style=&quot;color: #E30613; margin-bottom: 0;&quot;&gt;Código de recuperación&lt;/h2&gt;</span>
-</span><span id="enviar_correo-30"><a href="#enviar_correo-30"><span class="linenos">30</span></a><span class="s2">            &lt;/div&gt;</span>
-</span><span id="enviar_correo-31"><a href="#enviar_correo-31"><span class="linenos">31</span></a>
-</span><span id="enviar_correo-32"><a href="#enviar_correo-32"><span class="linenos">32</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
-</span><span id="enviar_correo-33"><a href="#enviar_correo-33"><span class="linenos">33</span></a><span class="s2">                Hola, &lt;strong style=&quot;color: #E30613;&quot;&gt;</span><span class="si">{</span><span class="n">nombre_normalizado</span><span class="si">}</span><span class="s2">&lt;/strong&gt;,</span>
-</span><span id="enviar_correo-34"><a href="#enviar_correo-34"><span class="linenos">34</span></a><span class="s2">            &lt;/p&gt;</span>
-</span><span id="enviar_correo-35"><a href="#enviar_correo-35"><span class="linenos">35</span></a>
-</span><span id="enviar_correo-36"><a href="#enviar_correo-36"><span class="linenos">36</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
-</span><span id="enviar_correo-37"><a href="#enviar_correo-37"><span class="linenos">37</span></a><span class="s2">                Recibimos una solicitud para restablecer tu contraseña en </span>
-</span><span id="enviar_correo-38"><a href="#enviar_correo-38"><span class="linenos">38</span></a><span class="s2">                &lt;strong style=&quot;color:rgb(115, 132, 150);&quot;&gt;Rey&lt;/strong&gt; </span>
-</span><span id="enviar_correo-39"><a href="#enviar_correo-39"><span class="linenos">39</span></a><span class="s2">                &lt;strong style=&quot;color: #E30613;&quot;&gt;Boxes&lt;/strong&gt;.</span>
-</span><span id="enviar_correo-40"><a href="#enviar_correo-40"><span class="linenos">40</span></a><span class="s2">                Usa el siguiente código para continuar con el proceso:</span>
-</span><span id="enviar_correo-41"><a href="#enviar_correo-41"><span class="linenos">41</span></a><span class="s2">            &lt;/p&gt;</span>
-</span><span id="enviar_correo-42"><a href="#enviar_correo-42"><span class="linenos">42</span></a>
-</span><span id="enviar_correo-43"><a href="#enviar_correo-43"><span class="linenos">43</span></a><span class="s2">            &lt;div style=&quot;text-align: center; margin: 20px 0;&quot;&gt;</span>
-</span><span id="enviar_correo-44"><a href="#enviar_correo-44"><span class="linenos">44</span></a><span class="s2">                &lt;span style=&quot;display: inline-block; font-size: 24px; font-weight: bold; color: #FFC107; border: 2px dashed #E30613; padding: 10px 30px; border-radius: 8px;&quot;&gt;</span>
-</span><span id="enviar_correo-45"><a href="#enviar_correo-45"><span class="linenos">45</span></a><span class="s2">                    </span><span class="si">{</span><span class="n">codigo</span><span class="si">}</span>
-</span><span id="enviar_correo-46"><a href="#enviar_correo-46"><span class="linenos">46</span></a><span class="s2">                &lt;/span&gt;</span>
-</span><span id="enviar_correo-47"><a href="#enviar_correo-47"><span class="linenos">47</span></a><span class="s2">            &lt;/div&gt;</span>
-</span><span id="enviar_correo-48"><a href="#enviar_correo-48"><span class="linenos">48</span></a>
-</span><span id="enviar_correo-49"><a href="#enviar_correo-49"><span class="linenos">49</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
-</span><span id="enviar_correo-50"><a href="#enviar_correo-50"><span class="linenos">50</span></a><span class="s2">                Este código expirará en &lt;strong&gt;5 minutos&lt;/strong&gt;.</span>
-</span><span id="enviar_correo-51"><a href="#enviar_correo-51"><span class="linenos">51</span></a><span class="s2">            &lt;/p&gt;</span>
-</span><span id="enviar_correo-52"><a href="#enviar_correo-52"><span class="linenos">52</span></a>
-</span><span id="enviar_correo-53"><a href="#enviar_correo-53"><span class="linenos">53</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
-</span><span id="enviar_correo-54"><a href="#enviar_correo-54"><span class="linenos">54</span></a><span class="s2">                Si no solicitaste este código, simplemente ignora este mensaje. Tu cuenta sigue segura.</span>
-</span><span id="enviar_correo-55"><a href="#enviar_correo-55"><span class="linenos">55</span></a><span class="s2">            &lt;/p&gt;</span>
-</span><span id="enviar_correo-56"><a href="#enviar_correo-56"><span class="linenos">56</span></a>
-</span><span id="enviar_correo-57"><a href="#enviar_correo-57"><span class="linenos">57</span></a><span class="s2">            &lt;hr style=&quot;border: none; border-top: 1px solid #ccc; margin: 30px 0;&quot; /&gt;</span>
-</span><span id="enviar_correo-58"><a href="#enviar_correo-58"><span class="linenos">58</span></a>
-</span><span id="enviar_correo-59"><a href="#enviar_correo-59"><span class="linenos">59</span></a><span class="s2">            &lt;p style=&quot;text-align: center; font-size: 13px; color: #999;&quot;&gt;</span>
-</span><span id="enviar_correo-60"><a href="#enviar_correo-60"><span class="linenos">60</span></a><span class="s2">                © 2025 &lt;strong style=&quot;color:rgb(115, 132, 150);&quot;&gt;Rey&lt;/strong&gt; &lt;strong style=&quot;color: #E30613;&quot;&gt;Boxes&lt;/strong&gt; | Mecánica y mantenimiento</span>
-</span><span id="enviar_correo-61"><a href="#enviar_correo-61"><span class="linenos">61</span></a><span class="s2">            &lt;/p&gt;</span>
-</span><span id="enviar_correo-62"><a href="#enviar_correo-62"><span class="linenos">62</span></a><span class="s2">        &lt;/div&gt;</span>
-</span><span id="enviar_correo-63"><a href="#enviar_correo-63"><span class="linenos">63</span></a><span class="s2">    &quot;&quot;&quot;</span>
-</span><span id="enviar_correo-64"><a href="#enviar_correo-64"><span class="linenos">64</span></a>
-</span><span id="enviar_correo-65"><a href="#enviar_correo-65"><span class="linenos">65</span></a>    <span class="c1"># Configurar mensaje</span>
-</span><span id="enviar_correo-66"><a href="#enviar_correo-66"><span class="linenos">66</span></a>    <span class="n">mensaje</span> <span class="o">=</span> <span class="n">MIMEMultipart</span><span class="p">(</span><span class="s2">&quot;alternative&quot;</span><span class="p">)</span>
-</span><span id="enviar_correo-67"><a href="#enviar_correo-67"><span class="linenos">67</span></a>    <span class="n">mensaje</span><span class="p">[</span><span class="s2">&quot;From&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">remitente</span>
-</span><span id="enviar_correo-68"><a href="#enviar_correo-68"><span class="linenos">68</span></a>    <span class="n">mensaje</span><span class="p">[</span><span class="s2">&quot;To&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">destinatario</span>
-</span><span id="enviar_correo-69"><a href="#enviar_correo-69"><span class="linenos">69</span></a>    <span class="n">mensaje</span><span class="p">[</span><span class="s2">&quot;Subject&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asunto</span>
-</span><span id="enviar_correo-70"><a href="#enviar_correo-70"><span class="linenos">70</span></a>    <span class="n">mensaje</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">MIMEText</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s2">&quot;html&quot;</span><span class="p">))</span>
+</span><span id="enviar_correo-23"><a href="#enviar_correo-23"><span class="linenos">23</span></a><span class="sd">    El mensaje incluye una plantilla HTML personalizada con el estilo corporativo de ReyBoxes.</span>
+</span><span id="enviar_correo-24"><a href="#enviar_correo-24"><span class="linenos">24</span></a><span class="sd">    Utiliza credenciales definidas en variables de entorno (.env) para autenticar el envío.</span>
+</span><span id="enviar_correo-25"><a href="#enviar_correo-25"><span class="linenos">25</span></a>
+</span><span id="enviar_correo-26"><a href="#enviar_correo-26"><span class="linenos">26</span></a><span class="sd">    Args:</span>
+</span><span id="enviar_correo-27"><a href="#enviar_correo-27"><span class="linenos">27</span></a><span class="sd">        destinatario (str): Dirección de correo del destinatario.</span>
+</span><span id="enviar_correo-28"><a href="#enviar_correo-28"><span class="linenos">28</span></a><span class="sd">        nombre_usuario (str): Nombre del usuario que recibirá el código (se normaliza).</span>
+</span><span id="enviar_correo-29"><a href="#enviar_correo-29"><span class="linenos">29</span></a><span class="sd">        codigo (str): Código de recuperación temporal que se enviará por correo.</span>
+</span><span id="enviar_correo-30"><a href="#enviar_correo-30"><span class="linenos">30</span></a>
+</span><span id="enviar_correo-31"><a href="#enviar_correo-31"><span class="linenos">31</span></a><span class="sd">    Raises:</span>
+</span><span id="enviar_correo-32"><a href="#enviar_correo-32"><span class="linenos">32</span></a><span class="sd">        Exception: Propaga cualquier error relacionado con la conexión o envío del correo.</span>
+</span><span id="enviar_correo-33"><a href="#enviar_correo-33"><span class="linenos">33</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="enviar_correo-34"><a href="#enviar_correo-34"><span class="linenos">34</span></a>    <span class="c1"># Normalizar nombre para mostrar con la primera letra mayúscula</span>
+</span><span id="enviar_correo-35"><a href="#enviar_correo-35"><span class="linenos">35</span></a>    <span class="n">nombre_normalizado</span> <span class="o">=</span> <span class="n">nombre_usuario</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+</span><span id="enviar_correo-36"><a href="#enviar_correo-36"><span class="linenos">36</span></a>
+</span><span id="enviar_correo-37"><a href="#enviar_correo-37"><span class="linenos">37</span></a>    <span class="c1"># Configuración del remitente (desde .env)</span>
+</span><span id="enviar_correo-38"><a href="#enviar_correo-38"><span class="linenos">38</span></a>    <span class="n">remitente</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EMAIL_USER&quot;</span><span class="p">)</span>
+</span><span id="enviar_correo-39"><a href="#enviar_correo-39"><span class="linenos">39</span></a>    <span class="n">contraseña</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EMAIL_PASS&quot;</span><span class="p">)</span>
+</span><span id="enviar_correo-40"><a href="#enviar_correo-40"><span class="linenos">40</span></a>    <span class="n">asunto</span> <span class="o">=</span> <span class="s2">&quot;🔐 Recuperación de cuenta - 🚗 ReyBoxes&quot;</span>
+</span><span id="enviar_correo-41"><a href="#enviar_correo-41"><span class="linenos">41</span></a>
+</span><span id="enviar_correo-42"><a href="#enviar_correo-42"><span class="linenos">42</span></a>    <span class="c1"># Cuerpo HTML del mensaje</span>
+</span><span id="enviar_correo-43"><a href="#enviar_correo-43"><span class="linenos">43</span></a>    <span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="enviar_correo-44"><a href="#enviar_correo-44"><span class="linenos">44</span></a><span class="s2">        &lt;div style=&quot;font-family: Arial, sans-serif; max-width: 600px; color: black; margin: auto; background: #f1f1f1; border-radius: 12px; padding: 20px; border: 1px solid #ccc;&quot;&gt;</span>
+</span><span id="enviar_correo-45"><a href="#enviar_correo-45"><span class="linenos">45</span></a><span class="s2">            &lt;div style=&quot;text-align: center;&quot;&gt;</span>
+</span><span id="enviar_correo-46"><a href="#enviar_correo-46"><span class="linenos">46</span></a><span class="s2">                &lt;img src=&quot;https://scontent-mad1-1.xx.fbcdn.net/v/t39.30808-6/415751285_874525538008163_7351325140883369283_n.jpg?_nc_cat=106&amp;ccb=1-7&amp;_nc_sid=6ee11a&amp;_nc_ohc=gUw4mD02ckEQ7kNvgH3L28l&amp;_nc_oc=AdmXIuxkTubdFB4r5ade3UMMMH9Nl8WlDJppLUmqIlhbaS5VLmJvdwbgnNBTMaoWWPdGXx-t16sw04TFPUE-5g1O&amp;_nc_zt=23&amp;_nc_ht=scontent-mad1-1.xx&amp;_nc_gid=hf3BWj-cnV-OFf4f-kIKIQ&amp;oh=00_AYEWAHl6_bh33YPUNsWKf372IpfTdQ5xXm9-icVOzGjfJQ&amp;oe=67ECB23E&quot;</span>
+</span><span id="enviar_correo-47"><a href="#enviar_correo-47"><span class="linenos">47</span></a><span class="s2">                alt=&quot;Logo ReyBoxes&quot; style=&quot;max-width: 150px; border-radius: 10px; margin-bottom: 10px;&quot; /&gt;</span>
+</span><span id="enviar_correo-48"><a href="#enviar_correo-48"><span class="linenos">48</span></a><span class="s2">                &lt;h2 style=&quot;color: #E30613; margin-bottom: 0;&quot;&gt;Código de recuperación&lt;/h2&gt;</span>
+</span><span id="enviar_correo-49"><a href="#enviar_correo-49"><span class="linenos">49</span></a><span class="s2">            &lt;/div&gt;</span>
+</span><span id="enviar_correo-50"><a href="#enviar_correo-50"><span class="linenos">50</span></a>
+</span><span id="enviar_correo-51"><a href="#enviar_correo-51"><span class="linenos">51</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
+</span><span id="enviar_correo-52"><a href="#enviar_correo-52"><span class="linenos">52</span></a><span class="s2">                Hola, &lt;strong style=&quot;color: #E30613;&quot;&gt;</span><span class="si">{</span><span class="n">nombre_normalizado</span><span class="si">}</span><span class="s2">&lt;/strong&gt;,</span>
+</span><span id="enviar_correo-53"><a href="#enviar_correo-53"><span class="linenos">53</span></a><span class="s2">            &lt;/p&gt;</span>
+</span><span id="enviar_correo-54"><a href="#enviar_correo-54"><span class="linenos">54</span></a>
+</span><span id="enviar_correo-55"><a href="#enviar_correo-55"><span class="linenos">55</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
+</span><span id="enviar_correo-56"><a href="#enviar_correo-56"><span class="linenos">56</span></a><span class="s2">                Recibimos una solicitud para restablecer tu contraseña en </span>
+</span><span id="enviar_correo-57"><a href="#enviar_correo-57"><span class="linenos">57</span></a><span class="s2">                &lt;strong style=&quot;color:rgb(115, 132, 150);&quot;&gt;Rey&lt;/strong&gt; </span>
+</span><span id="enviar_correo-58"><a href="#enviar_correo-58"><span class="linenos">58</span></a><span class="s2">                &lt;strong style=&quot;color: #E30613;&quot;&gt;Boxes&lt;/strong&gt;.</span>
+</span><span id="enviar_correo-59"><a href="#enviar_correo-59"><span class="linenos">59</span></a><span class="s2">                Usa el siguiente código para continuar con el proceso:</span>
+</span><span id="enviar_correo-60"><a href="#enviar_correo-60"><span class="linenos">60</span></a><span class="s2">            &lt;/p&gt;</span>
+</span><span id="enviar_correo-61"><a href="#enviar_correo-61"><span class="linenos">61</span></a>
+</span><span id="enviar_correo-62"><a href="#enviar_correo-62"><span class="linenos">62</span></a><span class="s2">            &lt;div style=&quot;text-align: center; margin: 20px 0;&quot;&gt;</span>
+</span><span id="enviar_correo-63"><a href="#enviar_correo-63"><span class="linenos">63</span></a><span class="s2">                &lt;span style=&quot;display: inline-block; font-size: 24px; font-weight: bold; color: #FFC107; border: 2px dashed #E30613; padding: 10px 30px; border-radius: 8px;&quot;&gt;</span>
+</span><span id="enviar_correo-64"><a href="#enviar_correo-64"><span class="linenos">64</span></a><span class="s2">                    </span><span class="si">{</span><span class="n">codigo</span><span class="si">}</span>
+</span><span id="enviar_correo-65"><a href="#enviar_correo-65"><span class="linenos">65</span></a><span class="s2">                &lt;/span&gt;</span>
+</span><span id="enviar_correo-66"><a href="#enviar_correo-66"><span class="linenos">66</span></a><span class="s2">            &lt;/div&gt;</span>
+</span><span id="enviar_correo-67"><a href="#enviar_correo-67"><span class="linenos">67</span></a>
+</span><span id="enviar_correo-68"><a href="#enviar_correo-68"><span class="linenos">68</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
+</span><span id="enviar_correo-69"><a href="#enviar_correo-69"><span class="linenos">69</span></a><span class="s2">                Este código expirará en &lt;strong&gt;5 minutos&lt;/strong&gt;.</span>
+</span><span id="enviar_correo-70"><a href="#enviar_correo-70"><span class="linenos">70</span></a><span class="s2">            &lt;/p&gt;</span>
 </span><span id="enviar_correo-71"><a href="#enviar_correo-71"><span class="linenos">71</span></a>
-</span><span id="enviar_correo-72"><a href="#enviar_correo-72"><span class="linenos">72</span></a>    <span class="c1"># Enviar mensaje</span>
-</span><span id="enviar_correo-73"><a href="#enviar_correo-73"><span class="linenos">73</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="enviar_correo-74"><a href="#enviar_correo-74"><span class="linenos">74</span></a>        <span class="k">with</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP_SSL</span><span class="p">(</span><span class="s2">&quot;smtp.gmail.com&quot;</span><span class="p">,</span> <span class="mi">465</span><span class="p">)</span> <span class="k">as</span> <span class="n">servidor</span><span class="p">:</span>
-</span><span id="enviar_correo-75"><a href="#enviar_correo-75"><span class="linenos">75</span></a>            <span class="n">servidor</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">remitente</span><span class="p">,</span> <span class="n">contraseña</span><span class="p">)</span>
-</span><span id="enviar_correo-76"><a href="#enviar_correo-76"><span class="linenos">76</span></a>            <span class="n">servidor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>
-</span><span id="enviar_correo-77"><a href="#enviar_correo-77"><span class="linenos">77</span></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;📨 Correo enviado correctamente a&quot;</span><span class="p">,</span> <span class="n">destinatario</span><span class="p">)</span>
-</span><span id="enviar_correo-78"><a href="#enviar_correo-78"><span class="linenos">78</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="enviar_correo-79"><a href="#enviar_correo-79"><span class="linenos">79</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;❌ Error al enviar correo:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-</span><span id="enviar_correo-80"><a href="#enviar_correo-80"><span class="linenos">80</span></a>        <span class="k">raise</span>
+</span><span id="enviar_correo-72"><a href="#enviar_correo-72"><span class="linenos">72</span></a><span class="s2">            &lt;p style=&quot;font-size: 16px; color: black;&quot;&gt;</span>
+</span><span id="enviar_correo-73"><a href="#enviar_correo-73"><span class="linenos">73</span></a><span class="s2">                Si no solicitaste este código, simplemente ignora este mensaje. Tu cuenta sigue segura.</span>
+</span><span id="enviar_correo-74"><a href="#enviar_correo-74"><span class="linenos">74</span></a><span class="s2">            &lt;/p&gt;</span>
+</span><span id="enviar_correo-75"><a href="#enviar_correo-75"><span class="linenos">75</span></a>
+</span><span id="enviar_correo-76"><a href="#enviar_correo-76"><span class="linenos">76</span></a><span class="s2">            &lt;hr style=&quot;border: none; border-top: 1px solid #ccc; margin: 30px 0;&quot; /&gt;</span>
+</span><span id="enviar_correo-77"><a href="#enviar_correo-77"><span class="linenos">77</span></a>
+</span><span id="enviar_correo-78"><a href="#enviar_correo-78"><span class="linenos">78</span></a><span class="s2">            &lt;p style=&quot;text-align: center; font-size: 13px; color: #999;&quot;&gt;</span>
+</span><span id="enviar_correo-79"><a href="#enviar_correo-79"><span class="linenos">79</span></a><span class="s2">                © 2025 &lt;strong style=&quot;color:rgb(115, 132, 150);&quot;&gt;Rey&lt;/strong&gt; &lt;strong style=&quot;color: #E30613;&quot;&gt;Boxes&lt;/strong&gt; | Mecánica y mantenimiento</span>
+</span><span id="enviar_correo-80"><a href="#enviar_correo-80"><span class="linenos">80</span></a><span class="s2">            &lt;/p&gt;</span>
+</span><span id="enviar_correo-81"><a href="#enviar_correo-81"><span class="linenos">81</span></a><span class="s2">        &lt;/div&gt;</span>
+</span><span id="enviar_correo-82"><a href="#enviar_correo-82"><span class="linenos">82</span></a><span class="s2">    &quot;&quot;&quot;</span>
+</span><span id="enviar_correo-83"><a href="#enviar_correo-83"><span class="linenos">83</span></a>
+</span><span id="enviar_correo-84"><a href="#enviar_correo-84"><span class="linenos">84</span></a>    <span class="c1"># Configurar el mensaje MIME</span>
+</span><span id="enviar_correo-85"><a href="#enviar_correo-85"><span class="linenos">85</span></a>    <span class="n">mensaje</span> <span class="o">=</span> <span class="n">MIMEMultipart</span><span class="p">(</span><span class="s2">&quot;alternative&quot;</span><span class="p">)</span>
+</span><span id="enviar_correo-86"><a href="#enviar_correo-86"><span class="linenos">86</span></a>    <span class="n">mensaje</span><span class="p">[</span><span class="s2">&quot;From&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">remitente</span>
+</span><span id="enviar_correo-87"><a href="#enviar_correo-87"><span class="linenos">87</span></a>    <span class="n">mensaje</span><span class="p">[</span><span class="s2">&quot;To&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">destinatario</span>
+</span><span id="enviar_correo-88"><a href="#enviar_correo-88"><span class="linenos">88</span></a>    <span class="n">mensaje</span><span class="p">[</span><span class="s2">&quot;Subject&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asunto</span>
+</span><span id="enviar_correo-89"><a href="#enviar_correo-89"><span class="linenos">89</span></a>    <span class="n">mensaje</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">MIMEText</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s2">&quot;html&quot;</span><span class="p">))</span>
+</span><span id="enviar_correo-90"><a href="#enviar_correo-90"><span class="linenos">90</span></a>
+</span><span id="enviar_correo-91"><a href="#enviar_correo-91"><span class="linenos">91</span></a>    <span class="c1"># Enviar el correo por SMTP con SSL</span>
+</span><span id="enviar_correo-92"><a href="#enviar_correo-92"><span class="linenos">92</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="enviar_correo-93"><a href="#enviar_correo-93"><span class="linenos">93</span></a>        <span class="k">with</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP_SSL</span><span class="p">(</span><span class="s2">&quot;smtp.gmail.com&quot;</span><span class="p">,</span> <span class="mi">465</span><span class="p">)</span> <span class="k">as</span> <span class="n">servidor</span><span class="p">:</span>
+</span><span id="enviar_correo-94"><a href="#enviar_correo-94"><span class="linenos">94</span></a>            <span class="n">servidor</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">remitente</span><span class="p">,</span> <span class="n">contraseña</span><span class="p">)</span>
+</span><span id="enviar_correo-95"><a href="#enviar_correo-95"><span class="linenos">95</span></a>            <span class="n">servidor</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>
+</span><span id="enviar_correo-96"><a href="#enviar_correo-96"><span class="linenos">96</span></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;📨 Correo enviado correctamente a&quot;</span><span class="p">,</span> <span class="n">destinatario</span><span class="p">)</span>
+</span><span id="enviar_correo-97"><a href="#enviar_correo-97"><span class="linenos">97</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="enviar_correo-98"><a href="#enviar_correo-98"><span class="linenos">98</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;❌ Error al enviar correo:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</span><span id="enviar_correo-99"><a href="#enviar_correo-99"><span class="linenos">99</span></a>        <span class="k">raise</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Envía un correo electrónico con el código de recuperación.</p>
+            <div class="docstring"><p>Envía un correo electrónico con un código de recuperación de cuenta a un destinatario específico.</p>
+
+<p>El mensaje incluye una plantilla HTML personalizada con el estilo corporativo de ReyBoxes.
+Utiliza credenciales definidas en variables de entorno (.env) para autenticar el envío.</p>
+
+<p>Args:
+    destinatario (str): Dirección de correo del destinatario.
+    nombre_usuario (str): Nombre del usuario que recibirá el código (se normaliza).
+    codigo (str): Código de recuperación temporal que se enviará por correo.</p>
+
+<p>Raises:
+    Exception: Propaga cualquier error relacionado con la conexión o envío del correo.</p>
 </div>
 
 
