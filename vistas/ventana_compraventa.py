@@ -92,8 +92,8 @@ class VentanaCompraventa(QWidget):
         self.setFixedSize(1000, 720)
         self.setObjectName("ventana_compraventa")
         self.ventana_anterior = ventana_anterior
-        # ...
-        # (todo el contenido del método sigue sin cambios, como ya lo tienes)
+        self.firma_activa_compra = False
+        self.firma_activa_venta = False
 
     def crear_seccion_plegable(self, titulo):
         """
