@@ -5,10 +5,10 @@ Proporciona un widget `CapturadorFirma` que permite al usuario dibujar una firma
 obtenerla como imagen, como bytes PNG o codificada en base64 para incluir en HTML o almacenarla.
 """
 
-from PySide6.QtWidgets import QWidget
-from PySide6.QtGui import QPainter, QPen, QColor, QMouseEvent, QPixmap
-from PySide6.QtCore import Qt, QPoint
 import base64
+from PySide6.QtWidgets import QWidget
+from PySide6.QtCore import Qt, QPoint, Signal
+from PySide6.QtGui import QPainter, QPen, QColor, QMouseEvent, QPixmap
 
 
 class CapturadorFirma(QWidget):
@@ -18,6 +18,8 @@ class CapturadorFirma(QWidget):
     Permite al usuario firmar sobre un área con el ratón, limpiar la firma,
     y exportarla en distintos formatos (QPixmap, bytes PNG, base64).
     """
+
+    firma_finalizada = Signal()
 
     def __init__(self):
         """
@@ -143,3 +145,12 @@ class CapturadorFirma(QWidget):
         if firma_bytes is None:
             return ""
         return base64.b64encode(firma_bytes).decode("utf-8")
+
+    def keyPressEvent(self, event):
+        """
+        Captura la pulsación de teclas. Si se pulsa ENTER, se emite la señal firma_finalizada.
+        """
+        if self.activa and event.key() == Qt.Key_Return:
+            self.firma_finalizada.emit()
+        else:
+            super().keyPressEvent(event)
