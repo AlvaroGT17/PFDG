@@ -1,13 +1,58 @@
 import pytest
-from unittest.mock import patch
-from pruebas import correo_test
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QLineEdit, QRadioButton, QPushButton, QMessageBox
+from vistas.ventana_correo_confirmacion import VentanaCorreoConfirmacion
 
 
-@patch("pruebas.correo_test.enviar_correo")
-def test_envio_correo(mock_enviar):
-    """
-    Verifica que se llama a la función enviar_correo con los parámetros esperados.
-    """
-    correo_test.probar_envio_correo()
-    mock_enviar.assert_called_once_with(
-        "cresnik17021983@gmail.com", "CRESNIK", "123456")
+def test_ventana_visible(qtbot):
+    ventana = VentanaCorreoConfirmacion("cliente@test.com")
+    qtbot.addWidget(ventana)
+    ventana.show()
+    assert ventana.isVisible()
+
+
+def test_radio_defecto_seleccionado(qtbot):
+    ventana = VentanaCorreoConfirmacion("cliente@test.com")
+    qtbot.addWidget(ventana)
+    ventana.show()
+    ventana.radio_defecto.setChecked(True)
+    qtbot.mouseClick(ventana.findChild(QPushButton), Qt.LeftButton)
+    assert ventana.correo_seleccionado == "DEFECTO"
+
+
+def test_radio_personalizado_seleccionado(qtbot):
+    ventana = VentanaCorreoConfirmacion("cliente@test.com")
+    qtbot.addWidget(ventana)
+    ventana.show()
+
+    ventana.radio_personalizado.setChecked(True)
+    ventana.input_personalizado.setText("otro@test.com")
+    qtbot.mouseClick(ventana.findChild(QPushButton), Qt.LeftButton)
+
+    assert ventana.correo_seleccionado == "otro@test.com"
+
+
+def test_radio_personalizado_vacio_muestra_advertencia(qtbot, mocker):
+    ventana = VentanaCorreoConfirmacion("cliente@test.com")
+    qtbot.addWidget(ventana)
+    ventana.show()
+
+    ventana.radio_personalizado.setChecked(True)
+    ventana.input_personalizado.setText("")
+
+    mock_warning = mocker.patch.object(QMessageBox, "warning")
+    qtbot.mouseClick(ventana.findChild(QPushButton), Qt.LeftButton)
+    mock_warning.assert_called_once()
+
+
+def test_no_seleccionado_muestra_advertencia(qtbot, mocker):
+    ventana = VentanaCorreoConfirmacion("cliente@test.com")
+    qtbot.addWidget(ventana)
+    ventana.show()
+
+    ventana.radio_defecto.setChecked(False)
+    ventana.radio_personalizado.setChecked(False)
+
+    mock_warning = mocker.patch.object(QMessageBox, "warning")
+    qtbot.mouseClick(ventana.findChild(QPushButton), Qt.LeftButton)
+    mock_warning.assert_called_once()
