@@ -1,8 +1,27 @@
+"""
+Módulo de gestión de vehículos en compraventa.
+
+Permite realizar operaciones sobre la tabla `coches_venta` y registrar ventas asociadas
+a clientes, incluyendo inserción, recuperación de datos y actualización del estado
+del vehículo.
+
+Funciones incluidas:
+- obtener_vehiculos_disponibles
+- insertar_nuevo_vehiculo
+- obtener_id_cliente
+- registrar_venta
+"""
 from datetime import datetime
 from modelos.conexion_bd import obtener_conexion
 
 
 def obtener_vehiculos_disponibles():
+    """
+    Recupera todos los vehículos que están disponibles o reservados para su venta.
+
+    Returns:
+        list[dict]: Lista de diccionarios con los datos de cada vehículo disponible o reservado.
+    """
     conexion = obtener_conexion()
     cursor = conexion.cursor()
 
@@ -38,6 +57,16 @@ def obtener_vehiculos_disponibles():
 
 
 def insertar_nuevo_vehiculo(datos):
+    """
+    Inserta un nuevo vehículo en la tabla `coches_venta`.
+
+    Args:
+        datos (dict): Diccionario con los datos del vehículo, incluyendo:
+            - marca, modelo, versión, año, matrícula, bastidor, color, etc.
+            - información de compra y estado
+            - cliente_id (opcional)
+            - ruta de contrato y observaciones
+    """
     conexion = obtener_conexion()
     cursor = conexion.cursor()
 
@@ -62,6 +91,15 @@ def insertar_nuevo_vehiculo(datos):
 
 
 def obtener_id_cliente(dni):
+    """
+    Recupera el ID de un cliente a partir de su DNI.
+
+    Args:
+        dni (str): DNI del cliente.
+
+    Returns:
+        int or None: ID del cliente si existe, o None si no se encuentra.
+    """
     if not dni:
         return None
     conexion = obtener_conexion()
@@ -74,6 +112,19 @@ def obtener_id_cliente(dni):
 
 
 def registrar_venta(cliente_id, vehiculo_id, precio_final, ruta_pdf, dir_contrato):
+    """
+    Registra una venta de un vehículo a un cliente y actualiza el estado del vehículo a 'VENDIDO'.
+
+    Args:
+        cliente_id (int): ID del cliente que compra el vehículo.
+        vehiculo_id (int): ID del vehículo vendido.
+        precio_final (float): Precio final acordado de la venta.
+        ruta_pdf (str): Ruta al archivo PDF generado del contrato.
+        dir_contrato (str): Carpeta o directorio donde se encuentra el contrato.
+
+    Raises:
+        Exception: Si ocurre algún error durante la transacción, se revierte y lanza la excepción.
+    """
     conexion = obtener_conexion()
     cursor = conexion.cursor()
 

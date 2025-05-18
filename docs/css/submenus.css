@@ -1,0 +1,35 @@
+nav.pdoc {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: clamp(12rem, 25vw, 20rem);
+    padding: 1.5rem 1rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #f5f5f5;
+    border-right: 1px solid #ccc;
+    font-family: 'Montserrat', sans-serif;
+    scrollbar-width: thin;
+    scrollbar-color: #999 transparent;
+    z-index: 10;
+}
+
+nav.pdoc::-webkit-scrollbar {
+    width: 6px;
+}
+nav.pdoc::-webkit-scrollbar-thumb {
+    background-color: #999;
+    border-radius: 10px;
+}
+
+nav.pdoc > div {
+    max-height: calc(100vh - 4rem); /* para que deje espacio para el buscador y el botón */
+    overflow-y: auto;
+}
+
+main.pdoc {
+    margin-left: clamp(12rem, 25vw, 20rem); /* para evitar que se monte sobre el nav */
+    padding: 2rem;
+    max-width: 100%;
+}

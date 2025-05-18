@@ -1,3 +1,16 @@
+"""
+Controlador del historial de fichajes de empleados.
+
+Este módulo permite:
+- Visualizar los fichajes realizados por el usuario o todos los empleados (modo administrador).
+- Exportar el historial como CSV o como informe PDF.
+- Agrupar los datos por usuario con información del periodo registrado.
+
+Requiere:
+- `reportlab` para la generación de PDFs.
+- `VentanaHistorial` como interfaz gráfica.
+- Funciones del modelo para obtener datos de fichajes.
+"""
 import csv
 import os
 from datetime import datetime
@@ -21,7 +34,21 @@ from utilidades.canvas_con_paginas import NumeroPaginasCanvas
 
 
 class HistorialControlador(QObject):
+    """
+    Controlador de la ventana de historial de fichajes.
+
+    Muestra los fichajes del usuario o de todos los empleados (si es administrador),
+    permitiendo su exportación a CSV o PDF.
+    """
+
     def __init__(self, usuario_id, es_admin=False):
+        """
+        Inicializa el controlador con los parámetros del usuario.
+
+        Args:
+            usuario_id (int): ID del usuario actual.
+            es_admin (bool): Indica si el usuario tiene permisos de administrador.
+        """
         super().__init__()
         self.usuario_id = usuario_id
         self.es_admin = es_admin
@@ -32,9 +59,15 @@ class HistorialControlador(QObject):
         self.cargar_datos()
 
     def mostrar(self):
+        """Muestra la ventana de historial."""
         self.ventana.show()
 
     def cargar_datos(self):
+        """
+        Carga los datos de fichajes desde la base de datos.
+        Si es administrador, obtiene todos los registros.
+        En caso contrario, carga solo los registros del usuario actual.
+        """
         if self.es_admin:
             # Administrador: obtiene todos los fichajes
             self.fichajes = obtener_fichajes_globales()
@@ -50,6 +83,12 @@ class HistorialControlador(QObject):
         self.ventana.cargar_datos(self.fichajes)
 
     def exportar_csv(self):
+        """
+        Exporta los datos visibles en la tabla a un archivo CSV.
+
+        Abre un cuadro de diálogo para seleccionar la ubicación y nombre del archivo.
+        Muestra mensajes de éxito o error mediante QMessageBox.
+        """
         ruta, _ = QFileDialog.getSaveFileName(
             self.ventana,
             "Guardar CSV",
@@ -78,6 +117,15 @@ class HistorialControlador(QObject):
                 self.ventana, "Error", f"❌ Error al exportar CSV:\n{e}")
 
     def exportar_pdf(self):
+        """
+        Genera un informe PDF con los datos de fichajes cargados.
+
+        El informe contiene:
+        - Encabezado con logo y datos de empresa.
+        - Agrupación por usuario (si es administrador).
+        - Tabla con los fichajes.
+        - Pie de página con número de página y datos corporativos.
+        """
         try:
             ruta, _ = QFileDialog.getSaveFileName(
                 self.ventana, "Guardar PDF", "historial_fichajes.pdf", "PDF Files (*.pdf)"
@@ -90,7 +138,7 @@ class HistorialControlador(QObject):
             elementos = []
             estilos = getSampleStyleSheet()
 
-            # 🖼️ Cabecera
+            # Cabecera
             ruta_logo = obtener_ruta_absoluta("img/logo.jpg")
             logo = Image(ruta_logo, width=4*cm, height=4*cm)
 
@@ -163,6 +211,15 @@ class HistorialControlador(QObject):
                 self.ventana, "Error", f"❌ Error al generar PDF:\n{e}")
 
     def crear_tabla_fichajes(self, datos):
+        """
+        Crea una tabla `reportlab` con los datos de fichajes.
+
+        Args:
+            datos (list): Lista de tuplas (fecha, tipo, nombre).
+
+        Returns:
+            Table: Objeto tabla listo para ser insertado en el PDF.
+        """
         estilos = getSampleStyleSheet()
         filas = [["Fecha y hora", "Tipo", "Empleado"]] + [[
             r[0].strftime("%Y-%m-%d %H:%M:%S"), r[1], r[2]
@@ -183,6 +240,15 @@ class HistorialControlador(QObject):
         return tabla
 
     def obtener_periodo(self, datos):
+        """
+        Calcula el periodo mínimo y máximo de fechas de fichajes.
+
+        Args:
+            datos (list): Lista de registros de fichajes.
+
+        Returns:
+            str: Periodo en formato 'de DD/MM/YYYY a DD/MM/YYYY'.
+        """
         if not datos:
             return "-"
         fechas = [r[0] for r in datos]

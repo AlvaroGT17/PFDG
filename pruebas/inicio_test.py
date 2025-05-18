@@ -1,8 +1,15 @@
 """
 Módulo de prueba para lanzar la ventana de inicio (dashboard principal).
 
-Puede ejecutarse manualmente o ser importado en tests automatizados
-sin mostrar la ventana.
+Este archivo permite abrir manualmente la ventana principal (`InicioControlador`)
+con un usuario ficticio (nombre y rol), útil para testeo visual de la interfaz,
+botones y flujos de navegación, sin necesidad de arrancar toda la aplicación.
+
+También puede ser importado desde pruebas unitarias sin mostrar la interfaz,
+gracias a su diseño condicional que detecta si está siendo invocado como test.
+
+Uso manual:
+    python -m pruebas.inicio_test
 """
 
 import sys
@@ -18,7 +25,7 @@ def iniciar_ventana_inicio():
     con un usuario ficticio.
 
     Returns:
-        InicioControlador: Controlador ya inicializado.
+        InicioControlador: Controlador ya inicializado y listo para usar.
     """
     nombre = "CRESNIK"
     rol = "Administrador"

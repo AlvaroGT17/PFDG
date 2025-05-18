@@ -70,69 +70,96 @@
                     <h1 class="modulename">
 <a href="./../vistas.html">vistas</a><wbr>.ventana_carga_gif    </h1>
 
-                
+                        <div class="docstring"><p>Módulo para la ventana de carga animada con GIF en el sistema ReyBoxes.</p>
+
+<p>Esta ventana modal se utiliza para mostrar visualmente que se está ejecutando
+una operación en segundo plano, como la carga de datos, generación de informes
+o procesos largos. Es una interfaz sin bordes, centrada y con fondo transparente.</p>
+</div>
+
                         <input id="mod-ventana_carga_gif-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-ventana_carga_gif-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QIcon</span><span class="p">,</span> <span class="n">QMovie</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QApplication</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">utilidades.rutas</span><span class="w"> </span><span class="kn">import</span> <span class="n">obtener_ruta_absoluta</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">VentanaCargaGif</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">    Ventana modal que muestra un GIF animado de carga centrado en pantalla.</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">    Se utiliza para indicar visualmente procesos en ejecución como carga de datos,</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">    generación de informes, o procesamiento prolongado.</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">    &quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">Módulo para la ventana de carga animada con GIF en el sistema ReyBoxes.</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">Esta ventana modal se utiliza para mostrar visualmente que se está ejecutando</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">una operación en segundo plano, como la carga de datos, generación de informes</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">o procesos largos. Es una interfaz sin bordes, centrada y con fondo transparente.</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QIcon</span><span class="p">,</span> <span class="n">QMovie</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QApplication</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">utilidades.rutas</span><span class="w"> </span><span class="kn">import</span> <span class="n">obtener_ruta_absoluta</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowFlags</span><span class="p">(</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">FramelessWindowHint</span> <span class="o">|</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">WindowStaysOnTopHint</span> <span class="o">|</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">Tool</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="p">)</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_TranslucentBackground</span><span class="p">)</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="k">class</span><span class="w"> </span><span class="nc">VentanaCargaGif</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">    Ventana modal que muestra un GIF animado de carga centrado en pantalla.</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">    Se utiliza para indicar visualmente procesos en ejecución como carga de datos,</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">    generación de informes o procesamiento prolongado. Es transparente, sin bordes</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">    y siempre visible sobre el resto de la interfaz.</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">    Atributos:</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">        label_gif (QLabel): Etiqueta que contiene el GIF animado.</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">        movie (QMovie): Objeto que controla la reproducción del GIF.</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="n">ruta_gif</span> <span class="o">=</span> <span class="n">obtener_ruta_absoluta</span><span class="p">(</span><span class="s2">&quot;img/gif/gifcarga.gif&quot;</span><span class="p">)</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span> <span class="o">=</span> <span class="n">QMovie</span><span class="p">(</span><span class="n">ruta_gif</span><span class="p">)</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="o">.</span><span class="n">setMovie</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="p">)</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="p">)</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ventana_padre</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="sd">        Muestra la ventana de carga centrada en pantalla o sobre una ventana padre.</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="sd">        Parámetros:</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="sd">            ventana_padre (QWidget): Ventana sobre la que se centrará el diálogo (opcional).</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">adjustSize</span><span class="p">()</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>        <span class="k">if</span> <span class="n">ventana_padre</span><span class="p">:</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>            <span class="n">center</span> <span class="o">=</span> <span class="n">ventana_padre</span><span class="o">.</span><span class="n">frameGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>            <span class="n">center</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">primaryScreen</span><span class="p">()</span><span class="o">.</span><span class="n">availableGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">center</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">())</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="sd">        Inicializa la ventana de carga con atributos de transparencia y sin bordes.</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">        Configura el layout con un `QLabel` que reproduce un GIF animado.</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowFlags</span><span class="p">(</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">FramelessWindowHint</span> <span class="o">|</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">WindowStaysOnTopHint</span> <span class="o">|</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">Tool</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="p">)</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_TranslucentBackground</span><span class="p">)</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>        <span class="n">ruta_gif</span> <span class="o">=</span> <span class="n">obtener_ruta_absoluta</span><span class="p">(</span><span class="s2">&quot;img/gif/gifcarga.gif&quot;</span><span class="p">)</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span> <span class="o">=</span> <span class="n">QMovie</span><span class="p">(</span><span class="n">ruta_gif</span><span class="p">)</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="o">.</span><span class="n">setMovie</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="p">)</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a><span class="sd">        Detiene la animación y cierra la ventana.</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="p">)</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ventana_padre</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="sd">        Muestra la ventana de carga centrada en pantalla o sobre una ventana padre.</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="sd">        Inicia la animación del GIF y ajusta el tamaño de la ventana.</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="sd">        Args:</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="sd">            ventana_padre (QWidget, optional): Ventana sobre la que se centrará el diálogo.</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="sd">                                               Si no se especifica, se centra en la pantalla principal.</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">adjustSize</span><span class="p">()</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>        <span class="k">if</span> <span class="n">ventana_padre</span><span class="p">:</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>            <span class="n">center</span> <span class="o">=</span> <span class="n">ventana_padre</span><span class="o">.</span><span class="n">frameGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>            <span class="n">center</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">primaryScreen</span><span class="p">()</span><span class="o">.</span><span class="n">availableGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">center</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">())</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a><span class="sd">        Detiene la animación del GIF y cierra la ventana de carga.</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -148,65 +175,83 @@
 
     </div>
     <a class="headerlink" href="#VentanaCargaGif"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VentanaCargaGif-8"><a href="#VentanaCargaGif-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">VentanaCargaGif</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
-</span><span id="VentanaCargaGif-9"><a href="#VentanaCargaGif-9"><span class="linenos"> 9</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="VentanaCargaGif-10"><a href="#VentanaCargaGif-10"><span class="linenos">10</span></a><span class="sd">    Ventana modal que muestra un GIF animado de carga centrado en pantalla.</span>
-</span><span id="VentanaCargaGif-11"><a href="#VentanaCargaGif-11"><span class="linenos">11</span></a>
-</span><span id="VentanaCargaGif-12"><a href="#VentanaCargaGif-12"><span class="linenos">12</span></a><span class="sd">    Se utiliza para indicar visualmente procesos en ejecución como carga de datos,</span>
-</span><span id="VentanaCargaGif-13"><a href="#VentanaCargaGif-13"><span class="linenos">13</span></a><span class="sd">    generación de informes, o procesamiento prolongado.</span>
-</span><span id="VentanaCargaGif-14"><a href="#VentanaCargaGif-14"><span class="linenos">14</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="VentanaCargaGif-15"><a href="#VentanaCargaGif-15"><span class="linenos">15</span></a>
-</span><span id="VentanaCargaGif-16"><a href="#VentanaCargaGif-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="VentanaCargaGif-17"><a href="#VentanaCargaGif-17"><span class="linenos">17</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="VentanaCargaGif-18"><a href="#VentanaCargaGif-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowFlags</span><span class="p">(</span>
-</span><span id="VentanaCargaGif-19"><a href="#VentanaCargaGif-19"><span class="linenos">19</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">FramelessWindowHint</span> <span class="o">|</span>
-</span><span id="VentanaCargaGif-20"><a href="#VentanaCargaGif-20"><span class="linenos">20</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">WindowStaysOnTopHint</span> <span class="o">|</span>
-</span><span id="VentanaCargaGif-21"><a href="#VentanaCargaGif-21"><span class="linenos">21</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">Tool</span>
-</span><span id="VentanaCargaGif-22"><a href="#VentanaCargaGif-22"><span class="linenos">22</span></a>        <span class="p">)</span>
-</span><span id="VentanaCargaGif-23"><a href="#VentanaCargaGif-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_TranslucentBackground</span><span class="p">)</span>
-</span><span id="VentanaCargaGif-24"><a href="#VentanaCargaGif-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="VentanaCargaGif-25"><a href="#VentanaCargaGif-25"><span class="linenos">25</span></a>
-</span><span id="VentanaCargaGif-26"><a href="#VentanaCargaGif-26"><span class="linenos">26</span></a>        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="VentanaCargaGif-27"><a href="#VentanaCargaGif-27"><span class="linenos">27</span></a>        <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="VentanaCargaGif-16"><a href="#VentanaCargaGif-16"><span class="linenos">16</span></a><span class="k">class</span><span class="w"> </span><span class="nc">VentanaCargaGif</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+</span><span id="VentanaCargaGif-17"><a href="#VentanaCargaGif-17"><span class="linenos">17</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif-18"><a href="#VentanaCargaGif-18"><span class="linenos">18</span></a><span class="sd">    Ventana modal que muestra un GIF animado de carga centrado en pantalla.</span>
+</span><span id="VentanaCargaGif-19"><a href="#VentanaCargaGif-19"><span class="linenos">19</span></a>
+</span><span id="VentanaCargaGif-20"><a href="#VentanaCargaGif-20"><span class="linenos">20</span></a><span class="sd">    Se utiliza para indicar visualmente procesos en ejecución como carga de datos,</span>
+</span><span id="VentanaCargaGif-21"><a href="#VentanaCargaGif-21"><span class="linenos">21</span></a><span class="sd">    generación de informes o procesamiento prolongado. Es transparente, sin bordes</span>
+</span><span id="VentanaCargaGif-22"><a href="#VentanaCargaGif-22"><span class="linenos">22</span></a><span class="sd">    y siempre visible sobre el resto de la interfaz.</span>
+</span><span id="VentanaCargaGif-23"><a href="#VentanaCargaGif-23"><span class="linenos">23</span></a>
+</span><span id="VentanaCargaGif-24"><a href="#VentanaCargaGif-24"><span class="linenos">24</span></a><span class="sd">    Atributos:</span>
+</span><span id="VentanaCargaGif-25"><a href="#VentanaCargaGif-25"><span class="linenos">25</span></a><span class="sd">        label_gif (QLabel): Etiqueta que contiene el GIF animado.</span>
+</span><span id="VentanaCargaGif-26"><a href="#VentanaCargaGif-26"><span class="linenos">26</span></a><span class="sd">        movie (QMovie): Objeto que controla la reproducción del GIF.</span>
+</span><span id="VentanaCargaGif-27"><a href="#VentanaCargaGif-27"><span class="linenos">27</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="VentanaCargaGif-28"><a href="#VentanaCargaGif-28"><span class="linenos">28</span></a>
-</span><span id="VentanaCargaGif-29"><a href="#VentanaCargaGif-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
-</span><span id="VentanaCargaGif-30"><a href="#VentanaCargaGif-30"><span class="linenos">30</span></a>        <span class="n">ruta_gif</span> <span class="o">=</span> <span class="n">obtener_ruta_absoluta</span><span class="p">(</span><span class="s2">&quot;img/gif/gifcarga.gif&quot;</span><span class="p">)</span>
-</span><span id="VentanaCargaGif-31"><a href="#VentanaCargaGif-31"><span class="linenos">31</span></a>
-</span><span id="VentanaCargaGif-32"><a href="#VentanaCargaGif-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span> <span class="o">=</span> <span class="n">QMovie</span><span class="p">(</span><span class="n">ruta_gif</span><span class="p">)</span>
-</span><span id="VentanaCargaGif-33"><a href="#VentanaCargaGif-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="o">.</span><span class="n">setMovie</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="p">)</span>
-</span><span id="VentanaCargaGif-34"><a href="#VentanaCargaGif-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
-</span><span id="VentanaCargaGif-35"><a href="#VentanaCargaGif-35"><span class="linenos">35</span></a>
-</span><span id="VentanaCargaGif-36"><a href="#VentanaCargaGif-36"><span class="linenos">36</span></a>        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="p">)</span>
-</span><span id="VentanaCargaGif-37"><a href="#VentanaCargaGif-37"><span class="linenos">37</span></a>
-</span><span id="VentanaCargaGif-38"><a href="#VentanaCargaGif-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ventana_padre</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="VentanaCargaGif-39"><a href="#VentanaCargaGif-39"><span class="linenos">39</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="VentanaCargaGif-40"><a href="#VentanaCargaGif-40"><span class="linenos">40</span></a><span class="sd">        Muestra la ventana de carga centrada en pantalla o sobre una ventana padre.</span>
-</span><span id="VentanaCargaGif-41"><a href="#VentanaCargaGif-41"><span class="linenos">41</span></a>
-</span><span id="VentanaCargaGif-42"><a href="#VentanaCargaGif-42"><span class="linenos">42</span></a><span class="sd">        Parámetros:</span>
-</span><span id="VentanaCargaGif-43"><a href="#VentanaCargaGif-43"><span class="linenos">43</span></a><span class="sd">            ventana_padre (QWidget): Ventana sobre la que se centrará el diálogo (opcional).</span>
-</span><span id="VentanaCargaGif-44"><a href="#VentanaCargaGif-44"><span class="linenos">44</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="VentanaCargaGif-45"><a href="#VentanaCargaGif-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="VentanaCargaGif-46"><a href="#VentanaCargaGif-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">adjustSize</span><span class="p">()</span>
-</span><span id="VentanaCargaGif-47"><a href="#VentanaCargaGif-47"><span class="linenos">47</span></a>        <span class="k">if</span> <span class="n">ventana_padre</span><span class="p">:</span>
-</span><span id="VentanaCargaGif-48"><a href="#VentanaCargaGif-48"><span class="linenos">48</span></a>            <span class="n">center</span> <span class="o">=</span> <span class="n">ventana_padre</span><span class="o">.</span><span class="n">frameGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
-</span><span id="VentanaCargaGif-49"><a href="#VentanaCargaGif-49"><span class="linenos">49</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="VentanaCargaGif-50"><a href="#VentanaCargaGif-50"><span class="linenos">50</span></a>            <span class="n">center</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">primaryScreen</span><span class="p">()</span><span class="o">.</span><span class="n">availableGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
-</span><span id="VentanaCargaGif-51"><a href="#VentanaCargaGif-51"><span class="linenos">51</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">center</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">())</span>
-</span><span id="VentanaCargaGif-52"><a href="#VentanaCargaGif-52"><span class="linenos">52</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="VentanaCargaGif-29"><a href="#VentanaCargaGif-29"><span class="linenos">29</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="VentanaCargaGif-30"><a href="#VentanaCargaGif-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif-31"><a href="#VentanaCargaGif-31"><span class="linenos">31</span></a><span class="sd">        Inicializa la ventana de carga con atributos de transparencia y sin bordes.</span>
+</span><span id="VentanaCargaGif-32"><a href="#VentanaCargaGif-32"><span class="linenos">32</span></a>
+</span><span id="VentanaCargaGif-33"><a href="#VentanaCargaGif-33"><span class="linenos">33</span></a><span class="sd">        Configura el layout con un `QLabel` que reproduce un GIF animado.</span>
+</span><span id="VentanaCargaGif-34"><a href="#VentanaCargaGif-34"><span class="linenos">34</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif-35"><a href="#VentanaCargaGif-35"><span class="linenos">35</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="VentanaCargaGif-36"><a href="#VentanaCargaGif-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowFlags</span><span class="p">(</span>
+</span><span id="VentanaCargaGif-37"><a href="#VentanaCargaGif-37"><span class="linenos">37</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">FramelessWindowHint</span> <span class="o">|</span>
+</span><span id="VentanaCargaGif-38"><a href="#VentanaCargaGif-38"><span class="linenos">38</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">WindowStaysOnTopHint</span> <span class="o">|</span>
+</span><span id="VentanaCargaGif-39"><a href="#VentanaCargaGif-39"><span class="linenos">39</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">Tool</span>
+</span><span id="VentanaCargaGif-40"><a href="#VentanaCargaGif-40"><span class="linenos">40</span></a>        <span class="p">)</span>
+</span><span id="VentanaCargaGif-41"><a href="#VentanaCargaGif-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_TranslucentBackground</span><span class="p">)</span>
+</span><span id="VentanaCargaGif-42"><a href="#VentanaCargaGif-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="VentanaCargaGif-43"><a href="#VentanaCargaGif-43"><span class="linenos">43</span></a>
+</span><span id="VentanaCargaGif-44"><a href="#VentanaCargaGif-44"><span class="linenos">44</span></a>        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="VentanaCargaGif-45"><a href="#VentanaCargaGif-45"><span class="linenos">45</span></a>        <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="VentanaCargaGif-46"><a href="#VentanaCargaGif-46"><span class="linenos">46</span></a>
+</span><span id="VentanaCargaGif-47"><a href="#VentanaCargaGif-47"><span class="linenos">47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+</span><span id="VentanaCargaGif-48"><a href="#VentanaCargaGif-48"><span class="linenos">48</span></a>        <span class="n">ruta_gif</span> <span class="o">=</span> <span class="n">obtener_ruta_absoluta</span><span class="p">(</span><span class="s2">&quot;img/gif/gifcarga.gif&quot;</span><span class="p">)</span>
+</span><span id="VentanaCargaGif-49"><a href="#VentanaCargaGif-49"><span class="linenos">49</span></a>
+</span><span id="VentanaCargaGif-50"><a href="#VentanaCargaGif-50"><span class="linenos">50</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span> <span class="o">=</span> <span class="n">QMovie</span><span class="p">(</span><span class="n">ruta_gif</span><span class="p">)</span>
+</span><span id="VentanaCargaGif-51"><a href="#VentanaCargaGif-51"><span class="linenos">51</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="o">.</span><span class="n">setMovie</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="p">)</span>
+</span><span id="VentanaCargaGif-52"><a href="#VentanaCargaGif-52"><span class="linenos">52</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
 </span><span id="VentanaCargaGif-53"><a href="#VentanaCargaGif-53"><span class="linenos">53</span></a>
-</span><span id="VentanaCargaGif-54"><a href="#VentanaCargaGif-54"><span class="linenos">54</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="VentanaCargaGif-55"><a href="#VentanaCargaGif-55"><span class="linenos">55</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="VentanaCargaGif-56"><a href="#VentanaCargaGif-56"><span class="linenos">56</span></a><span class="sd">        Detiene la animación y cierra la ventana.</span>
-</span><span id="VentanaCargaGif-57"><a href="#VentanaCargaGif-57"><span class="linenos">57</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="VentanaCargaGif-58"><a href="#VentanaCargaGif-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-</span><span id="VentanaCargaGif-59"><a href="#VentanaCargaGif-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="VentanaCargaGif-54"><a href="#VentanaCargaGif-54"><span class="linenos">54</span></a>        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="p">)</span>
+</span><span id="VentanaCargaGif-55"><a href="#VentanaCargaGif-55"><span class="linenos">55</span></a>
+</span><span id="VentanaCargaGif-56"><a href="#VentanaCargaGif-56"><span class="linenos">56</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ventana_padre</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="VentanaCargaGif-57"><a href="#VentanaCargaGif-57"><span class="linenos">57</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif-58"><a href="#VentanaCargaGif-58"><span class="linenos">58</span></a><span class="sd">        Muestra la ventana de carga centrada en pantalla o sobre una ventana padre.</span>
+</span><span id="VentanaCargaGif-59"><a href="#VentanaCargaGif-59"><span class="linenos">59</span></a>
+</span><span id="VentanaCargaGif-60"><a href="#VentanaCargaGif-60"><span class="linenos">60</span></a><span class="sd">        Inicia la animación del GIF y ajusta el tamaño de la ventana.</span>
+</span><span id="VentanaCargaGif-61"><a href="#VentanaCargaGif-61"><span class="linenos">61</span></a>
+</span><span id="VentanaCargaGif-62"><a href="#VentanaCargaGif-62"><span class="linenos">62</span></a><span class="sd">        Args:</span>
+</span><span id="VentanaCargaGif-63"><a href="#VentanaCargaGif-63"><span class="linenos">63</span></a><span class="sd">            ventana_padre (QWidget, optional): Ventana sobre la que se centrará el diálogo.</span>
+</span><span id="VentanaCargaGif-64"><a href="#VentanaCargaGif-64"><span class="linenos">64</span></a><span class="sd">                                               Si no se especifica, se centra en la pantalla principal.</span>
+</span><span id="VentanaCargaGif-65"><a href="#VentanaCargaGif-65"><span class="linenos">65</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif-66"><a href="#VentanaCargaGif-66"><span class="linenos">66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span id="VentanaCargaGif-67"><a href="#VentanaCargaGif-67"><span class="linenos">67</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">adjustSize</span><span class="p">()</span>
+</span><span id="VentanaCargaGif-68"><a href="#VentanaCargaGif-68"><span class="linenos">68</span></a>        <span class="k">if</span> <span class="n">ventana_padre</span><span class="p">:</span>
+</span><span id="VentanaCargaGif-69"><a href="#VentanaCargaGif-69"><span class="linenos">69</span></a>            <span class="n">center</span> <span class="o">=</span> <span class="n">ventana_padre</span><span class="o">.</span><span class="n">frameGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+</span><span id="VentanaCargaGif-70"><a href="#VentanaCargaGif-70"><span class="linenos">70</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="VentanaCargaGif-71"><a href="#VentanaCargaGif-71"><span class="linenos">71</span></a>            <span class="n">center</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">primaryScreen</span><span class="p">()</span><span class="o">.</span><span class="n">availableGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+</span><span id="VentanaCargaGif-72"><a href="#VentanaCargaGif-72"><span class="linenos">72</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">center</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">())</span>
+</span><span id="VentanaCargaGif-73"><a href="#VentanaCargaGif-73"><span class="linenos">73</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="VentanaCargaGif-74"><a href="#VentanaCargaGif-74"><span class="linenos">74</span></a>
+</span><span id="VentanaCargaGif-75"><a href="#VentanaCargaGif-75"><span class="linenos">75</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="VentanaCargaGif-76"><a href="#VentanaCargaGif-76"><span class="linenos">76</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif-77"><a href="#VentanaCargaGif-77"><span class="linenos">77</span></a><span class="sd">        Detiene la animación del GIF y cierra la ventana de carga.</span>
+</span><span id="VentanaCargaGif-78"><a href="#VentanaCargaGif-78"><span class="linenos">78</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif-79"><a href="#VentanaCargaGif-79"><span class="linenos">79</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</span><span id="VentanaCargaGif-80"><a href="#VentanaCargaGif-80"><span class="linenos">80</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Ventana modal que muestra un GIF animado de carga centrado en pantalla.</p>
 
 <p>Se utiliza para indicar visualmente procesos en ejecución como carga de datos,
-generación de informes, o procesamiento prolongado.</p>
+generación de informes o procesamiento prolongado. Es transparente, sin bordes
+y siempre visible sobre el resto de la interfaz.</p>
+
+<p>Atributos:
+    label_gif (QLabel): Etiqueta que contiene el GIF animado.
+    movie (QMovie): Objeto que controla la reproducción del GIF.</p>
 </div>
 
 
@@ -220,33 +265,38 @@ generación de informes, o procesamiento prolongado.</p>
 
     </div>
     <a class="headerlink" href="#VentanaCargaGif.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VentanaCargaGif.__init__-16"><a href="#VentanaCargaGif.__init__-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="VentanaCargaGif.__init__-17"><a href="#VentanaCargaGif.__init__-17"><span class="linenos">17</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="VentanaCargaGif.__init__-18"><a href="#VentanaCargaGif.__init__-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowFlags</span><span class="p">(</span>
-</span><span id="VentanaCargaGif.__init__-19"><a href="#VentanaCargaGif.__init__-19"><span class="linenos">19</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">FramelessWindowHint</span> <span class="o">|</span>
-</span><span id="VentanaCargaGif.__init__-20"><a href="#VentanaCargaGif.__init__-20"><span class="linenos">20</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">WindowStaysOnTopHint</span> <span class="o">|</span>
-</span><span id="VentanaCargaGif.__init__-21"><a href="#VentanaCargaGif.__init__-21"><span class="linenos">21</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">Tool</span>
-</span><span id="VentanaCargaGif.__init__-22"><a href="#VentanaCargaGif.__init__-22"><span class="linenos">22</span></a>        <span class="p">)</span>
-</span><span id="VentanaCargaGif.__init__-23"><a href="#VentanaCargaGif.__init__-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_TranslucentBackground</span><span class="p">)</span>
-</span><span id="VentanaCargaGif.__init__-24"><a href="#VentanaCargaGif.__init__-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="VentanaCargaGif.__init__-25"><a href="#VentanaCargaGif.__init__-25"><span class="linenos">25</span></a>
-</span><span id="VentanaCargaGif.__init__-26"><a href="#VentanaCargaGif.__init__-26"><span class="linenos">26</span></a>        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="VentanaCargaGif.__init__-27"><a href="#VentanaCargaGif.__init__-27"><span class="linenos">27</span></a>        <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="VentanaCargaGif.__init__-28"><a href="#VentanaCargaGif.__init__-28"><span class="linenos">28</span></a>
-</span><span id="VentanaCargaGif.__init__-29"><a href="#VentanaCargaGif.__init__-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
-</span><span id="VentanaCargaGif.__init__-30"><a href="#VentanaCargaGif.__init__-30"><span class="linenos">30</span></a>        <span class="n">ruta_gif</span> <span class="o">=</span> <span class="n">obtener_ruta_absoluta</span><span class="p">(</span><span class="s2">&quot;img/gif/gifcarga.gif&quot;</span><span class="p">)</span>
-</span><span id="VentanaCargaGif.__init__-31"><a href="#VentanaCargaGif.__init__-31"><span class="linenos">31</span></a>
-</span><span id="VentanaCargaGif.__init__-32"><a href="#VentanaCargaGif.__init__-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span> <span class="o">=</span> <span class="n">QMovie</span><span class="p">(</span><span class="n">ruta_gif</span><span class="p">)</span>
-</span><span id="VentanaCargaGif.__init__-33"><a href="#VentanaCargaGif.__init__-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="o">.</span><span class="n">setMovie</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="p">)</span>
-</span><span id="VentanaCargaGif.__init__-34"><a href="#VentanaCargaGif.__init__-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
-</span><span id="VentanaCargaGif.__init__-35"><a href="#VentanaCargaGif.__init__-35"><span class="linenos">35</span></a>
-</span><span id="VentanaCargaGif.__init__-36"><a href="#VentanaCargaGif.__init__-36"><span class="linenos">36</span></a>        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="VentanaCargaGif.__init__-29"><a href="#VentanaCargaGif.__init__-29"><span class="linenos">29</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="VentanaCargaGif.__init__-30"><a href="#VentanaCargaGif.__init__-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif.__init__-31"><a href="#VentanaCargaGif.__init__-31"><span class="linenos">31</span></a><span class="sd">        Inicializa la ventana de carga con atributos de transparencia y sin bordes.</span>
+</span><span id="VentanaCargaGif.__init__-32"><a href="#VentanaCargaGif.__init__-32"><span class="linenos">32</span></a>
+</span><span id="VentanaCargaGif.__init__-33"><a href="#VentanaCargaGif.__init__-33"><span class="linenos">33</span></a><span class="sd">        Configura el layout con un `QLabel` que reproduce un GIF animado.</span>
+</span><span id="VentanaCargaGif.__init__-34"><a href="#VentanaCargaGif.__init__-34"><span class="linenos">34</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif.__init__-35"><a href="#VentanaCargaGif.__init__-35"><span class="linenos">35</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="VentanaCargaGif.__init__-36"><a href="#VentanaCargaGif.__init__-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowFlags</span><span class="p">(</span>
+</span><span id="VentanaCargaGif.__init__-37"><a href="#VentanaCargaGif.__init__-37"><span class="linenos">37</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">FramelessWindowHint</span> <span class="o">|</span>
+</span><span id="VentanaCargaGif.__init__-38"><a href="#VentanaCargaGif.__init__-38"><span class="linenos">38</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">WindowStaysOnTopHint</span> <span class="o">|</span>
+</span><span id="VentanaCargaGif.__init__-39"><a href="#VentanaCargaGif.__init__-39"><span class="linenos">39</span></a>            <span class="n">Qt</span><span class="o">.</span><span class="n">Tool</span>
+</span><span id="VentanaCargaGif.__init__-40"><a href="#VentanaCargaGif.__init__-40"><span class="linenos">40</span></a>        <span class="p">)</span>
+</span><span id="VentanaCargaGif.__init__-41"><a href="#VentanaCargaGif.__init__-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_TranslucentBackground</span><span class="p">)</span>
+</span><span id="VentanaCargaGif.__init__-42"><a href="#VentanaCargaGif.__init__-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="VentanaCargaGif.__init__-43"><a href="#VentanaCargaGif.__init__-43"><span class="linenos">43</span></a>
+</span><span id="VentanaCargaGif.__init__-44"><a href="#VentanaCargaGif.__init__-44"><span class="linenos">44</span></a>        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="VentanaCargaGif.__init__-45"><a href="#VentanaCargaGif.__init__-45"><span class="linenos">45</span></a>        <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="VentanaCargaGif.__init__-46"><a href="#VentanaCargaGif.__init__-46"><span class="linenos">46</span></a>
+</span><span id="VentanaCargaGif.__init__-47"><a href="#VentanaCargaGif.__init__-47"><span class="linenos">47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+</span><span id="VentanaCargaGif.__init__-48"><a href="#VentanaCargaGif.__init__-48"><span class="linenos">48</span></a>        <span class="n">ruta_gif</span> <span class="o">=</span> <span class="n">obtener_ruta_absoluta</span><span class="p">(</span><span class="s2">&quot;img/gif/gifcarga.gif&quot;</span><span class="p">)</span>
+</span><span id="VentanaCargaGif.__init__-49"><a href="#VentanaCargaGif.__init__-49"><span class="linenos">49</span></a>
+</span><span id="VentanaCargaGif.__init__-50"><a href="#VentanaCargaGif.__init__-50"><span class="linenos">50</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span> <span class="o">=</span> <span class="n">QMovie</span><span class="p">(</span><span class="n">ruta_gif</span><span class="p">)</span>
+</span><span id="VentanaCargaGif.__init__-51"><a href="#VentanaCargaGif.__init__-51"><span class="linenos">51</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="o">.</span><span class="n">setMovie</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="p">)</span>
+</span><span id="VentanaCargaGif.__init__-52"><a href="#VentanaCargaGif.__init__-52"><span class="linenos">52</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+</span><span id="VentanaCargaGif.__init__-53"><a href="#VentanaCargaGif.__init__-53"><span class="linenos">53</span></a>
+</span><span id="VentanaCargaGif.__init__-54"><a href="#VentanaCargaGif.__init__-54"><span class="linenos">54</span></a>        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_gif</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>__init__(self, /, parent: PySide6.QtWidgets.QWidget | None = None, f: PySide6.QtCore.Qt.WindowType = Default(Qt.WindowFlags), *, sizeGripEnabled: bool | None = None, modal: bool | None = None) -> None</p>
+            <div class="docstring"><p>Inicializa la ventana de carga con atributos de transparencia y sin bordes.</p>
 
-<p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<p>Configura el layout con un <code>QLabel</code> que reproduce un GIF animado.</p>
 </div>
 
 
@@ -284,28 +334,34 @@ generación de informes, o procesamiento prolongado.</p>
 
     </div>
     <a class="headerlink" href="#VentanaCargaGif.mostrar"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VentanaCargaGif.mostrar-38"><a href="#VentanaCargaGif.mostrar-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ventana_padre</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="VentanaCargaGif.mostrar-39"><a href="#VentanaCargaGif.mostrar-39"><span class="linenos">39</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="VentanaCargaGif.mostrar-40"><a href="#VentanaCargaGif.mostrar-40"><span class="linenos">40</span></a><span class="sd">        Muestra la ventana de carga centrada en pantalla o sobre una ventana padre.</span>
-</span><span id="VentanaCargaGif.mostrar-41"><a href="#VentanaCargaGif.mostrar-41"><span class="linenos">41</span></a>
-</span><span id="VentanaCargaGif.mostrar-42"><a href="#VentanaCargaGif.mostrar-42"><span class="linenos">42</span></a><span class="sd">        Parámetros:</span>
-</span><span id="VentanaCargaGif.mostrar-43"><a href="#VentanaCargaGif.mostrar-43"><span class="linenos">43</span></a><span class="sd">            ventana_padre (QWidget): Ventana sobre la que se centrará el diálogo (opcional).</span>
-</span><span id="VentanaCargaGif.mostrar-44"><a href="#VentanaCargaGif.mostrar-44"><span class="linenos">44</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="VentanaCargaGif.mostrar-45"><a href="#VentanaCargaGif.mostrar-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="VentanaCargaGif.mostrar-46"><a href="#VentanaCargaGif.mostrar-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">adjustSize</span><span class="p">()</span>
-</span><span id="VentanaCargaGif.mostrar-47"><a href="#VentanaCargaGif.mostrar-47"><span class="linenos">47</span></a>        <span class="k">if</span> <span class="n">ventana_padre</span><span class="p">:</span>
-</span><span id="VentanaCargaGif.mostrar-48"><a href="#VentanaCargaGif.mostrar-48"><span class="linenos">48</span></a>            <span class="n">center</span> <span class="o">=</span> <span class="n">ventana_padre</span><span class="o">.</span><span class="n">frameGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
-</span><span id="VentanaCargaGif.mostrar-49"><a href="#VentanaCargaGif.mostrar-49"><span class="linenos">49</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="VentanaCargaGif.mostrar-50"><a href="#VentanaCargaGif.mostrar-50"><span class="linenos">50</span></a>            <span class="n">center</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">primaryScreen</span><span class="p">()</span><span class="o">.</span><span class="n">availableGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
-</span><span id="VentanaCargaGif.mostrar-51"><a href="#VentanaCargaGif.mostrar-51"><span class="linenos">51</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">center</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">())</span>
-</span><span id="VentanaCargaGif.mostrar-52"><a href="#VentanaCargaGif.mostrar-52"><span class="linenos">52</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="VentanaCargaGif.mostrar-56"><a href="#VentanaCargaGif.mostrar-56"><span class="linenos">56</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ventana_padre</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="VentanaCargaGif.mostrar-57"><a href="#VentanaCargaGif.mostrar-57"><span class="linenos">57</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif.mostrar-58"><a href="#VentanaCargaGif.mostrar-58"><span class="linenos">58</span></a><span class="sd">        Muestra la ventana de carga centrada en pantalla o sobre una ventana padre.</span>
+</span><span id="VentanaCargaGif.mostrar-59"><a href="#VentanaCargaGif.mostrar-59"><span class="linenos">59</span></a>
+</span><span id="VentanaCargaGif.mostrar-60"><a href="#VentanaCargaGif.mostrar-60"><span class="linenos">60</span></a><span class="sd">        Inicia la animación del GIF y ajusta el tamaño de la ventana.</span>
+</span><span id="VentanaCargaGif.mostrar-61"><a href="#VentanaCargaGif.mostrar-61"><span class="linenos">61</span></a>
+</span><span id="VentanaCargaGif.mostrar-62"><a href="#VentanaCargaGif.mostrar-62"><span class="linenos">62</span></a><span class="sd">        Args:</span>
+</span><span id="VentanaCargaGif.mostrar-63"><a href="#VentanaCargaGif.mostrar-63"><span class="linenos">63</span></a><span class="sd">            ventana_padre (QWidget, optional): Ventana sobre la que se centrará el diálogo.</span>
+</span><span id="VentanaCargaGif.mostrar-64"><a href="#VentanaCargaGif.mostrar-64"><span class="linenos">64</span></a><span class="sd">                                               Si no se especifica, se centra en la pantalla principal.</span>
+</span><span id="VentanaCargaGif.mostrar-65"><a href="#VentanaCargaGif.mostrar-65"><span class="linenos">65</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif.mostrar-66"><a href="#VentanaCargaGif.mostrar-66"><span class="linenos">66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span id="VentanaCargaGif.mostrar-67"><a href="#VentanaCargaGif.mostrar-67"><span class="linenos">67</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">adjustSize</span><span class="p">()</span>
+</span><span id="VentanaCargaGif.mostrar-68"><a href="#VentanaCargaGif.mostrar-68"><span class="linenos">68</span></a>        <span class="k">if</span> <span class="n">ventana_padre</span><span class="p">:</span>
+</span><span id="VentanaCargaGif.mostrar-69"><a href="#VentanaCargaGif.mostrar-69"><span class="linenos">69</span></a>            <span class="n">center</span> <span class="o">=</span> <span class="n">ventana_padre</span><span class="o">.</span><span class="n">frameGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+</span><span id="VentanaCargaGif.mostrar-70"><a href="#VentanaCargaGif.mostrar-70"><span class="linenos">70</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="VentanaCargaGif.mostrar-71"><a href="#VentanaCargaGif.mostrar-71"><span class="linenos">71</span></a>            <span class="n">center</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">primaryScreen</span><span class="p">()</span><span class="o">.</span><span class="n">availableGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+</span><span id="VentanaCargaGif.mostrar-72"><a href="#VentanaCargaGif.mostrar-72"><span class="linenos">72</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">center</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">())</span>
+</span><span id="VentanaCargaGif.mostrar-73"><a href="#VentanaCargaGif.mostrar-73"><span class="linenos">73</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Muestra la ventana de carga centrada en pantalla o sobre una ventana padre.</p>
 
-<p>Parámetros:
-    ventana_padre (QWidget): Ventana sobre la que se centrará el diálogo (opcional).</p>
+<p>Inicia la animación del GIF y ajusta el tamaño de la ventana.</p>
+
+<p>Args:
+    ventana_padre (QWidget, optional): Ventana sobre la que se centrará el diálogo.
+                                       Si no se especifica, se centra en la pantalla principal.</p>
 </div>
 
 
@@ -321,16 +377,16 @@ generación de informes, o procesamiento prolongado.</p>
 
     </div>
     <a class="headerlink" href="#VentanaCargaGif.cerrar"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VentanaCargaGif.cerrar-54"><a href="#VentanaCargaGif.cerrar-54"><span class="linenos">54</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="VentanaCargaGif.cerrar-55"><a href="#VentanaCargaGif.cerrar-55"><span class="linenos">55</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="VentanaCargaGif.cerrar-56"><a href="#VentanaCargaGif.cerrar-56"><span class="linenos">56</span></a><span class="sd">        Detiene la animación y cierra la ventana.</span>
-</span><span id="VentanaCargaGif.cerrar-57"><a href="#VentanaCargaGif.cerrar-57"><span class="linenos">57</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="VentanaCargaGif.cerrar-58"><a href="#VentanaCargaGif.cerrar-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-</span><span id="VentanaCargaGif.cerrar-59"><a href="#VentanaCargaGif.cerrar-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="VentanaCargaGif.cerrar-75"><a href="#VentanaCargaGif.cerrar-75"><span class="linenos">75</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="VentanaCargaGif.cerrar-76"><a href="#VentanaCargaGif.cerrar-76"><span class="linenos">76</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif.cerrar-77"><a href="#VentanaCargaGif.cerrar-77"><span class="linenos">77</span></a><span class="sd">        Detiene la animación del GIF y cierra la ventana de carga.</span>
+</span><span id="VentanaCargaGif.cerrar-78"><a href="#VentanaCargaGif.cerrar-78"><span class="linenos">78</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="VentanaCargaGif.cerrar-79"><a href="#VentanaCargaGif.cerrar-79"><span class="linenos">79</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</span><span id="VentanaCargaGif.cerrar-80"><a href="#VentanaCargaGif.cerrar-80"><span class="linenos">80</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Detiene la animación y cierra la ventana.</p>
+            <div class="docstring"><p>Detiene la animación del GIF y cierra la ventana de carga.</p>
 </div>
 
 

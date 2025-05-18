@@ -1,3 +1,19 @@
+"""
+Controlador para la creación rápida de un nuevo cliente.
+
+Este módulo proporciona una ventana simplificada para registrar clientes
+usando únicamente los campos esenciales (nombre, primer apellido, DNI y teléfono).
+
+Permite:
+- Validar el formato del DNI antes de guardar.
+- Evitar duplicados por DNI existente.
+- Emitir una señal con los datos del nuevo cliente al crearse.
+
+Utiliza:
+- `VentanaCrearClienteRapido` como interfaz de entrada rápida.
+- `DNIUtils` para la validación del DNI.
+- Funciones del modelo para guardar el cliente en la base de datos.
+"""
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 from vistas.ventana_crear_cliente_rapido import VentanaCrearClienteRapido
@@ -6,9 +22,21 @@ from utilidades.comprobar_dni import DNIUtils
 
 
 class CrearClienteRapidoControlador(QObject):
+    """
+    Controlador que gestiona la creación rápida de clientes desde un formulario reducido.
+
+    Señales:
+        cliente_creado (dict): Emitida al crear correctamente un cliente.
+    """
     cliente_creado = Signal(dict)
 
     def __init__(self, ventana_padre=None):
+        """
+        Inicializa la ventana de creación rápida y conecta los eventos de la interfaz.
+
+        Args:
+            ventana_padre: (opcional) Ventana desde la que se abre el diálogo.
+        """
         super().__init__()
         self.ventana = VentanaCrearClienteRapido()
 
@@ -18,6 +46,14 @@ class CrearClienteRapidoControlador(QObject):
         self.ventana.show()
 
     def crear_cliente(self):
+        """
+        Valida el formulario, verifica duplicados y registra al cliente si es válido.
+
+        - Se valida el DNI.
+        - Se comprueba si el cliente ya existe por DNI.
+        - Se crea el cliente con valores por defecto para campos no rellenados.
+        - Se emite la señal `cliente_creado` con los datos del nuevo cliente.
+        """
         nombre = self.ventana.input_nombre.text().strip().upper()
         apellido1 = self.ventana.input_apellido1.text().strip().upper()
         apellido2 = ""
@@ -58,6 +94,14 @@ class CrearClienteRapidoControlador(QObject):
                 "No se pudo crear el cliente.", "Error", exito=False)
 
     def mostrar_mensaje(self, texto, titulo, exito=True):
+        """
+        Muestra un cuadro de mensaje estilizado para confirmar o advertir al usuario.
+
+        Args:
+            texto (str): Texto a mostrar en el mensaje.
+            titulo (str): Título de la ventana del mensaje.
+            exito (bool): Determina si se muestra como información o error.
+        """
         msg = QMessageBox(self.ventana)
         msg.setIcon(QMessageBox.Information if exito else QMessageBox.Critical)
         msg.setText(texto)

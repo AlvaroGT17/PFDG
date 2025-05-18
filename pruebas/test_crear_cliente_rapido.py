@@ -8,8 +8,6 @@ Estas pruebas validan:
 
 Todas las interacciones se realizan usando `pytest-qt` para simular el entorno gráfico.
 
-Autor: Cresnik  
-Proyecto: ReyBoxes - Gestión de Taller Mecánico
 """
 
 from PySide6.QtWidgets import QLineEdit

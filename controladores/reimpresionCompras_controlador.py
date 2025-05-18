@@ -1,3 +1,16 @@
+"""
+Controlador para la reimpresión de documentos de compras.
+
+Permite al usuario:
+- Visualizar documentos PDF generados al registrar compras.
+- Imprimir el documento seleccionado mediante el visor predeterminado del sistema.
+- Enviar el documento por correo electrónico a un destinatario.
+
+Utiliza:
+- `VentanaReimpresionCompras`: Vista principal.
+- `VentanaCorreoConfirmacion`: Diálogo para introducir el correo destino.
+- `enviar_correo_reimpresion_compra`: Función para envío del documento PDF adjunto.
+"""
 from vistas.ventana_reimpresionCompras import VentanaReimpresionCompras
 from vistas.ventana_correo_confirmacion import VentanaCorreoConfirmacion
 from utilidades.rutas import obtener_ruta_absoluta
@@ -9,7 +22,22 @@ import os
 
 
 class ReimpresionComprasControlador:
+    """
+    Controlador encargado de gestionar la reimpresión de documentos de compras.
+
+    Proporciona opciones para reenviar documentos PDF por correo electrónico
+    o enviarlos a impresión mediante la aplicación predeterminada del sistema.
+    """
+
     def __init__(self, main_app, nombre_usuario, rol_usuario):
+        """
+        Inicializa la vista de reimpresión de compras y conecta los botones de acción.
+
+        Args:
+            main_app: Instancia principal de la aplicación.
+            nombre_usuario (str): Nombre del usuario activo.
+            rol_usuario (str): Rol del usuario activo.
+        """
         self.main_app = main_app
         self.nombre_usuario = nombre_usuario
         self.rol_usuario = rol_usuario
@@ -26,11 +54,21 @@ class ReimpresionComprasControlador:
         self.ventana.show()
 
     def volver_a_inicio(self):
+        """
+        Cierra la ventana actual y retorna al menú principal.
+        """
         self.ventana.close()
         self.main_app.mostrar_ventana_inicio(
             self.nombre_usuario, self.rol_usuario)
 
     def obtener_documento_seleccionado(self):
+        """
+        Obtiene la ruta del documento PDF actualmente seleccionado en la tabla.
+
+        Returns:
+            str or None: Ruta del archivo si se ha seleccionado una fila válida y existe,
+                         o None en caso contrario.
+        """
         fila = self.ventana.tabla.currentRow()
         if fila == -1:
             QMessageBox.warning(self.ventana, "Sin selección",
@@ -44,6 +82,9 @@ class ReimpresionComprasControlador:
         return ruta_item.text()
 
     def imprimir_documento(self):
+        """
+        Envía el documento seleccionado a impresión abriéndolo con el visor de PDF del sistema.
+        """
         ruta = self.obtener_documento_seleccionado()
         if not ruta:
             return
@@ -60,6 +101,10 @@ class ReimpresionComprasControlador:
                                  f"No se pudo imprimir el documento:\n{str(e)}")
 
     def enviar_documento(self):
+        """
+        Abre un cuadro de diálogo para introducir el correo destino y,
+        si se confirma, envía el documento PDF por correo electrónico.
+        """
         ruta = self.obtener_documento_seleccionado()
         if not ruta:
             return

@@ -1,10 +1,27 @@
+"""
+Módulo de gestión de fichajes de usuarios.
+
+Incluye funciones para:
+- Obtener el historial de fichajes personales de un usuario.
+- Consultar todos los fichajes del sistema (modo administrador).
+- Recuperar el nombre de un usuario a partir de su ID.
+
+Todas las funciones acceden a la base de datos mediante `obtener_conexion`.
+"""
 from datetime import datetime
 from modelos.conexion_bd import obtener_conexion
 
 
 def obtener_fichajes_personales(usuario_id):
     """
-    Devuelve una lista de fichajes del usuario actual.
+    Recupera el historial de fichajes realizados por un usuario específico.
+
+    Args:
+        usuario_id (int): ID del usuario del que se desean obtener los fichajes.
+
+    Returns:
+        list[tuple]: Lista de tuplas con fecha/hora y tipo de fichaje ('Entrada' o 'Salida'),
+        ordenadas de más reciente a más antigua.
     """
     try:
         conexion = obtener_conexion()
@@ -25,8 +42,12 @@ def obtener_fichajes_personales(usuario_id):
 
 def obtener_fichajes_globales():
     """
-    Devuelve una lista de todos los fichajes, incluyendo nombre del usuario.
-    Solo para administrador.
+    Recupera el historial completo de fichajes de todos los usuarios.
+
+    Esta función está pensada para su uso por administradores del sistema.
+
+    Returns:
+        list[tuple]: Lista de tuplas con fecha/hora, tipo de fichaje y nombre del usuario.
     """
     try:
         conexion = obtener_conexion()
@@ -47,7 +68,13 @@ def obtener_fichajes_globales():
 
 def obtener_nombre_usuario(usuario_id):
     """
-    Devuelve el nombre de un usuario dado su ID.
+    Obtiene el nombre del usuario a partir de su ID.
+
+    Args:
+        usuario_id (int): Identificador del usuario.
+
+    Returns:
+        str: Nombre del usuario si existe, "Desconocido" si no se encuentra.
     """
     try:
         conexion = obtener_conexion()

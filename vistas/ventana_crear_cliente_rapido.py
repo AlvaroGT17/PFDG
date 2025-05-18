@@ -1,5 +1,16 @@
-from PySide6.QtCore import Qt
+"""
+Módulo para la creación rápida de clientes en el sistema ReyBoxes.
+
+Esta ventana modal permite registrar un nuevo cliente introduciendo únicamente
+los datos mínimos obligatorios: nombre, primer apellido, DNI y teléfono.
+
+Está diseñada para flujos en los que se requiere rapidez, como procesos de venta directa,
+evitando formularios largos. El botón "Crear" solo se habilita cuando todos los
+campos requeridos están completados.
+"""
+
 from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QHBoxLayout, QPushButton
 from utilidades.rutas import obtener_ruta_absoluta
 
@@ -13,6 +24,14 @@ class VentanaCrearClienteRapido(QWidget):
     en flujos donde se requiere agilidad sin registrar todos los datos del cliente.
 
     El botón de creación solo se activa cuando todos los campos requeridos están completos.
+
+    Atributos:
+        input_nombre (QLineEdit): Campo para el nombre del cliente.
+        input_apellido1 (QLineEdit): Campo para el primer apellido.
+        input_dni (QLineEdit): Campo para el DNI.
+        input_telefono (QLineEdit): Campo para el teléfono.
+        boton_crear (QPushButton): Botón para crear el cliente.
+        boton_cancelar (QPushButton): Botón para cancelar y cerrar la ventana.
     """
 
     def __init__(self):
@@ -35,8 +54,11 @@ class VentanaCrearClienteRapido(QWidget):
     def setup_ui(self):
         """
         Crea y organiza los widgets de entrada y botones de la ventana.
-        Incluye campos para nombre, apellido, DNI y teléfono,
-        y botones para confirmar o cancelar la operación.
+
+        Incluye:
+        - Campos de entrada para: nombre, primer apellido, DNI, y teléfono.
+        - Botón "Crear" (deshabilitado por defecto).
+        - Botón "Cancelar".
         """
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -81,6 +103,7 @@ class VentanaCrearClienteRapido(QWidget):
     def aplicar_estilos(self):
         """
         Aplica los estilos CSS definidos en el archivo correspondiente.
+
         Si el archivo no se encuentra, muestra una advertencia por consola.
         """
         ruta_css = obtener_ruta_absoluta("css/crear_cliente_rapido.css")
@@ -92,8 +115,9 @@ class VentanaCrearClienteRapido(QWidget):
 
     def conectar_eventos(self):
         """
-        Conecta los eventos de texto cambiado en los campos obligatorios
-        para habilitar el botón de crear cuando estén todos rellenados.
+        Conecta los eventos de texto cambiado en los campos obligatorios.
+
+        Habilita el botón "Crear" únicamente cuando todos los campos están rellenos.
         """
         for campo in [
             self.input_nombre,
@@ -106,7 +130,9 @@ class VentanaCrearClienteRapido(QWidget):
     def verificar_campos(self):
         """
         Verifica si todos los campos obligatorios están completos.
-        Si es así, habilita el botón de crear.
+
+        Si todos los campos tienen contenido, se habilita el botón "Crear";
+        de lo contrario, permanece deshabilitado.
         """
         campos = [
             self.input_nombre.text().strip(),

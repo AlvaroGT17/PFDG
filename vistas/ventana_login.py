@@ -1,3 +1,15 @@
+"""
+Módulo para la ventana de inicio de sesión de la aplicación ReyBoxes.
+
+Esta interfaz permite al usuario:
+- Iniciar sesión con nombre de usuario y contraseña.
+- Acceder al sistema de recuperación de cuenta.
+- Salir de la aplicación mediante un botón controlado.
+
+Incluye validación visual, iconografía y un diseño centrado, con estilos
+personalizados mediante archivo CSS.
+"""
+
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox
 from PySide6.QtGui import QPixmap, QCursor, QIcon
 from PySide6.QtCore import Qt, QCoreApplication
@@ -68,11 +80,13 @@ class VentanaLogin(QWidget):
         titulo.setAlignment(Qt.AlignCenter)
         layout_panel.addWidget(titulo)
 
+        # Campos de usuario y contraseña
         layout_panel.addLayout(self.crear_campo(
             "img/usuario.png", "Inserte su nombre", es_password=False))
         layout_panel.addLayout(self.crear_campo(
             "img/candado.png", "Contraseña", es_password=True))
 
+        # Botón Entrar
         self.btn_entrar = QPushButton("  Entrar")
         icono_llave = QPixmap(obtener_ruta_absoluta(
             "img/llave.png")).scaled(20, 20, Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -81,12 +95,14 @@ class VentanaLogin(QWidget):
         self.btn_entrar.setFixedWidth(200)
         layout_panel.addWidget(self.btn_entrar, alignment=Qt.AlignCenter)
 
+        # Botón Salir
         self.btn_salir = QPushButton("  Salir")
         self.btn_salir.setCursor(QCursor(Qt.PointingHandCursor))
         self.btn_salir.setIcon(QIcon(obtener_ruta_absoluta("img/salir.png")))
         self.btn_salir.clicked.connect(self.salir_aplicacion)
         layout_panel.addWidget(self.btn_salir, alignment=Qt.AlignCenter)
 
+        # Enlace recuperación
         self.enlace_recuperar = QLabel(
             '<a href="#">¿Olvidaste tu contraseña?</a>')
         self.enlace_recuperar.setProperty("enlace", True)
@@ -102,12 +118,12 @@ class VentanaLogin(QWidget):
         """
         Crea un campo de entrada compuesto por un icono y un QLineEdit.
 
-        Parámetros:
+        Args:
             ruta_icono (str): Ruta relativa del icono a mostrar.
             placeholder (str): Texto que se mostrará como sugerencia.
             es_password (bool): Indica si el campo es de contraseña (oculta los caracteres).
 
-        Retorna:
+        Returns:
             QHBoxLayout: Layout horizontal con el icono y el campo de entrada.
         """
         layout = QHBoxLayout()
@@ -139,7 +155,7 @@ class VentanaLogin(QWidget):
         Solo permite cerrar si la variable "cierre_autorizado" está activada (True).
         En caso contrario, muestra un mensaje informativo.
 
-        Parámetros:
+        Args:
             event (QCloseEvent): Evento de cierre de la ventana.
         """
         if not self.cierre_autorizado:
@@ -156,7 +172,8 @@ class VentanaLogin(QWidget):
     def salir_aplicacion(self):
         """
         Permite cerrar la aplicación de forma controlada mediante el botón "Salir".
-        Establece la variable "cierre_autorizado" como True y cierra la ventana.
+
+        Establece la variable "cierre_autorizado" como True y procede al cierre de la ventana.
         """
         self.cierre_autorizado = True
         self.close()

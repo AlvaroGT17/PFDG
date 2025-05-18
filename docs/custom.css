@@ -1,0 +1,80 @@
+/* custom.css — Tema ReyBoxes */
+
+:root {
+  --pdoc-background: #f2f2f2;
+  --text: #333;
+  --muted: #888;
+  --link: #E30613; /* Rojo ReyBoxes */
+  --link-hover: #a8000f;
+  --code: #f5f5f5;
+  --active: #fff598;
+  --accent: #ddd;
+  --accent2: #bbb;
+  --nav-hover: rgba(255, 0, 0, 0.1);
+  --name: #005577;
+  --def: #006600;
+  --annotation: #5b5b5b;
+  font-family: "Segoe UI", "Montserrat", sans-serif;
+}
+
+/* Personaliza el nav */
+nav.pdoc {
+  background-color: #fff;
+  border-right: 2px solid #E30613;
+}
+
+nav.pdoc .module-list-button {
+  background: #E30613;
+  color: white;
+  border-radius: 5px;
+  padding: 0.4rem 1rem;
+}
+
+nav.pdoc .module-list-button:hover {
+  background: #a8000f;
+}
+
+/* Botones de búsqueda */
+.pdoc-button {
+  background: #E30613;
+  color: white;
+  border-radius: 5px;
+}
+
+/* Títulos */
+.pdoc h1, .pdoc h2, .pdoc h3 {
+  font-family: "Montserrat", sans-serif;
+  color: #1a1a1a;
+}
+
+/* Código */
+.pdoc pre {
+  background-color: #fff;
+  border-left: 4px solid #E30613;
+  padding-left: 1rem;
+}
+
+.pdoc .name {
+  color: #E30613;
+  font-weight: bold;
+}
+
+/* Footer attribution */
+.attribution {
+  filter: grayscale(100%);
+  opacity: 0.4;
+}
+.attribution:hover {
+  filter: none;
+  opacity: 1;
+}
+
+/* Encabezado general */
+header::before {
+  content: "🚗 ReyBoxes - Documentación Técnica";
+  display: block;
+  font-size: 1.5rem;
+  color: #E30613;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}

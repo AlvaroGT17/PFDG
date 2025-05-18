@@ -6,8 +6,6 @@ su estructura visual básica, los campos de búsqueda y la presencia de
 botones funcionales, sin conectar con la lógica del controlador ni con
 la base de datos.
 
-Autor: Cresnik
-Proyecto: ReyBoxes - Gestión de Taller Mecánico
 """
 
 from PySide6.QtWidgets import QToolButton, QLineEdit, QLabel

@@ -1,3 +1,11 @@
+"""
+Módulo para la ventana de carga animada con GIF en el sistema ReyBoxes.
+
+Esta ventana modal se utiliza para mostrar visualmente que se está ejecutando
+una operación en segundo plano, como la carga de datos, generación de informes
+o procesos largos. Es una interfaz sin bordes, centrada y con fondo transparente.
+"""
+
 from PySide6.QtGui import QIcon, QMovie
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QLabel, QVBoxLayout, QApplication
@@ -9,10 +17,20 @@ class VentanaCargaGif(QDialog):
     Ventana modal que muestra un GIF animado de carga centrado en pantalla.
 
     Se utiliza para indicar visualmente procesos en ejecución como carga de datos,
-    generación de informes, o procesamiento prolongado.
+    generación de informes o procesamiento prolongado. Es transparente, sin bordes
+    y siempre visible sobre el resto de la interfaz.
+
+    Atributos:
+        label_gif (QLabel): Etiqueta que contiene el GIF animado.
+        movie (QMovie): Objeto que controla la reproducción del GIF.
     """
 
     def __init__(self):
+        """
+        Inicializa la ventana de carga con atributos de transparencia y sin bordes.
+
+        Configura el layout con un `QLabel` que reproduce un GIF animado.
+        """
         super().__init__()
         self.setWindowFlags(
             Qt.FramelessWindowHint |
@@ -38,8 +56,11 @@ class VentanaCargaGif(QDialog):
         """
         Muestra la ventana de carga centrada en pantalla o sobre una ventana padre.
 
-        Parámetros:
-            ventana_padre (QWidget): Ventana sobre la que se centrará el diálogo (opcional).
+        Inicia la animación del GIF y ajusta el tamaño de la ventana.
+
+        Args:
+            ventana_padre (QWidget, optional): Ventana sobre la que se centrará el diálogo.
+                                               Si no se especifica, se centra en la pantalla principal.
         """
         self.movie.start()
         self.adjustSize()
@@ -52,7 +73,7 @@ class VentanaCargaGif(QDialog):
 
     def cerrar(self):
         """
-        Detiene la animación y cierra la ventana.
+        Detiene la animación del GIF y cierra la ventana de carga.
         """
         self.movie.stop()
         self.close()

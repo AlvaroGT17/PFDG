@@ -8,8 +8,6 @@ Se prueban dos escenarios clave:
 Todas las llamadas a red, lectura de variables de entorno y uso de SMTP son
 simuladas mediante mocks para evitar efectos secundarios reales.
 
-Autor: Cresnik
-Proyecto: ReyBoxes - Gestión de Taller Mecánico
 """
 
 import pytest

@@ -2,7 +2,10 @@
 Módulo de interfaz gráfica para restablecer la contraseña en el sistema ReyBoxes.
 
 Contiene la clase VentanaRestaurar, que permite al usuario introducir una nueva
-contraseña tras el proceso de recuperación, con una interfaz clara y segura.
+contraseña tras el proceso de recuperación, con una interfaz clara, estética y segura.
+
+Incluye campos para la nueva contraseña, su confirmación, y botones para guardar los cambios
+o volver a la pantalla anterior. También se aplica una hoja de estilos CSS personalizada.
 """
 
 from PySide6.QtCore import Qt
@@ -15,20 +18,29 @@ class VentanaRestaurar(QWidget):
     """
     Ventana gráfica para establecer una nueva contraseña del usuario.
 
-    Permite ingresar una nueva contraseña y repetirla para confirmación.
-    Se acompaña de botones para guardar los cambios o volver atrás.
+    Esta interfaz se utiliza como parte del flujo de recuperación de cuenta.
+    El usuario debe introducir y confirmar su nueva contraseña.
+
+    Atributos:
+        input_nueva (QLineEdit): Campo para escribir la nueva contraseña.
+        input_repetir (QLineEdit): Campo para repetir y confirmar la contraseña.
+        btn_guardar (QPushButton): Botón para confirmar y guardar la nueva contraseña.
+        btn_volver (QPushButton): Botón para regresar a la ventana anterior.
     """
 
     def __init__(self):
         """
-        Inicializa la ventana, carga estilos y configura la interfaz.
+        Constructor de la ventana.
+
+        Configura el tamaño, título e icono de la ventana. 
+        Carga el archivo de estilos CSS y construye la interfaz visual.
         """
         super().__init__()
         self.setWindowTitle("ReyBoxes - Nueva contraseña")
         self.setFixedSize(400, 360)
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
 
-        # Estilo visual
+        # Estilo visual desde archivo CSS
         ruta_css = obtener_ruta_absoluta("css/restaurar.css")
         with open(ruta_css, "r", encoding="utf-8") as f:
             self.setStyleSheet(f.read())
@@ -37,7 +49,12 @@ class VentanaRestaurar(QWidget):
 
     def inicializar_ui(self):
         """
-        Crea y organiza los elementos visuales de la interfaz de restablecimiento.
+        Crea y organiza los elementos visuales de la ventana.
+
+        Incluye:
+        - Título estilizado.
+        - Dos campos para la nueva contraseña y su confirmación.
+        - Botones con icono para guardar o volver atrás.
         """
         layout = QVBoxLayout(self)
         layout.setContentsMargins(30, 25, 30, 20)

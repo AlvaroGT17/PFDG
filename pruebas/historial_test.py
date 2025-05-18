@@ -1,8 +1,14 @@
-# historial_test.py
-# ──────────────────────────────
-# Lanzador manual para abrir la ventana de historial de fichajes.
-# Este archivo NO debe incluir funciones de test.
-# Para pruebas automáticas, usar: test_historial.py
+"""
+Script manual para lanzar la ventana de historial de fichajes.
+
+Este archivo permite abrir visualmente `HistorialControlador` con un usuario
+específico, para comprobar el funcionamiento, diseño y datos mostrados
+en la ventana de historial.
+
+
+Uso:
+    python -m pruebas.historial_test
+"""
 
 import sys
 from PySide6.QtWidgets import QApplication

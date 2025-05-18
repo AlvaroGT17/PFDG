@@ -61,165 +61,220 @@
                     <h1 class="modulename">
 <a href="./../modelos.html">modelos</a><wbr>.nuevoCliente_compraventa_consulta    </h1>
 
-                
+                        <div class="docstring"><p>Módulo de operaciones relacionadas con la gestión de clientes.</p>
+
+<p>Proporciona funciones para:</p>
+
+<ul>
+<li>Comprobar si un cliente ya existe por su DNI.</li>
+<li>Crear un nuevo cliente y obtener su ID.</li>
+<li>Buscar clientes por nombre completo, ID o DNI.</li>
+<li>Recuperar los datos completos de un cliente en forma de diccionario.</li>
+</ul>
+</div>
+
                         <input id="mod-nuevoCliente_compraventa_consulta-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-nuevoCliente_compraventa_consulta-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">modelos.conexion_bd</span><span class="w"> </span><span class="kn">import</span> <span class="n">obtener_conexion</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">psycopg2</span><span class="w"> </span><span class="kn">import</span> <span class="n">sql</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="k">def</span><span class="w"> </span><span class="nf">dni_ya_existe</span><span class="p">(</span><span class="n">dni</span><span class="p">):</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="sd">    Comprueba si ya existe un cliente con el mismo DNI.</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT 1 FROM clientes WHERE dni = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">dni</span><span class="p">,))</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>        <span class="n">existe</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>        <span class="k">return</span> <span class="n">existe</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error comprobando DNI existente: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>        <span class="k">return</span> <span class="kc">False</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">Módulo de operaciones relacionadas con la gestión de clientes.</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">Proporciona funciones para:</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">- Comprobar si un cliente ya existe por su DNI.</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="sd">- Crear un nuevo cliente y obtener su ID.</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="sd">- Buscar clientes por nombre completo, ID o DNI.</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="sd">- Recuperar los datos completos de un cliente en forma de diccionario.</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">modelos.conexion_bd</span><span class="w"> </span><span class="kn">import</span> <span class="n">obtener_conexion</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">psycopg2</span><span class="w"> </span><span class="kn">import</span> <span class="n">sql</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="k">def</span><span class="w"> </span><span class="nf">dni_ya_existe</span><span class="p">(</span><span class="n">dni</span><span class="p">):</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="sd">    Crea un nuevo cliente en la base de datos y devuelve su ID.</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="sd">    Los campos nombre y apellidos se normalizan (mayúsculas y capitalización).</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">    También se registran las fechas de creación y actualización.</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="k">def</span><span class="w"> </span><span class="nf">crear_cliente_y_devolver_id</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">primer_apellido</span><span class="p">,</span> <span class="n">segundo_apellido</span><span class="p">,</span> <span class="n">dni</span><span class="p">,</span> <span class="n">telefono</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>                                <span class="n">direccion</span><span class="p">,</span> <span class="n">codigo_postal</span><span class="p">,</span> <span class="n">localidad</span><span class="p">,</span> <span class="n">provincia</span><span class="p">,</span> <span class="n">observaciones</span><span class="p">):</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">    Crea un nuevo cliente y devuelve su ID.</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>
-</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">    Retorna:</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">        int | None</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">    Args:</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">        nombre (str): Nombre del cliente.</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">        primer_apellido (str): Primer apellido.</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">        segundo_apellido (str): Segundo apellido.</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">        dni (str): DNI del cliente.</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">        telefono (str): Teléfono de contacto.</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">        email (str): Correo electrónico.</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">        direccion (str): Dirección completa.</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="sd">        codigo_postal (str): Código postal.</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">        localidad (str): Ciudad o localidad.</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="sd">        provincia (str): Provincia.</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="sd">        observaciones (str): Comentarios u observaciones adicionales.</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>        <span class="n">consulta</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="s2">            INSERT INTO clientes (</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="s2">                nombre, primer_apellido, segundo_apellido, dni, telefono, email,</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="s2">                direccion, codigo_postal, localidad, provincia, observaciones,</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="s2">                created_at, updated_at</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="s2">            )</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="s2">            VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="s2">            RETURNING id</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>        <span class="n">ahora</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">consulta</span><span class="p">,</span> <span class="p">(</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>            <span class="n">nombre</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>            <span class="n">primer_apellido</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>            <span class="n">segundo_apellido</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>            <span class="n">dni</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>            <span class="n">telefono</span><span class="p">,</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>            <span class="n">email</span><span class="p">,</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>            <span class="n">direccion</span><span class="p">,</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>            <span class="n">codigo_postal</span><span class="p">,</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>            <span class="n">localidad</span><span class="p">,</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>            <span class="n">provincia</span><span class="p">,</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>            <span class="n">observaciones</span><span class="p">,</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>            <span class="n">ahora</span><span class="p">,</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>            <span class="n">ahora</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>        <span class="p">))</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>        <span class="n">nuevo_id</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>        <span class="k">return</span> <span class="n">nuevo_id</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al crear cliente y devolver ID: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>        <span class="k">return</span> <span class="kc">None</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="k">def</span><span class="w"> </span><span class="nf">obtener_datos_cliente_por_nombre</span><span class="p">(</span><span class="n">nombre_completo</span><span class="p">):</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">    Busca un cliente por su nombre completo (nombre + apellidos).</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">    Retorna una tupla si se encuentra, None si no.</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>        <span class="n">consulta</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="s2">            SELECT * FROM clientes</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="s2">            WHERE UPPER(nombre || &#39; &#39; || primer_apellido || &#39; &#39; || segundo_apellido) = </span><span class="si">%s</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="s2">            LIMIT 1</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">consulta</span><span class="p">,</span> <span class="p">(</span><span class="n">nombre_completo</span><span class="o">.</span><span class="n">upper</span><span class="p">(),))</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>        <span class="n">cliente</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>        <span class="k">return</span> <span class="n">cliente</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al obtener cliente por nombre: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>        <span class="k">return</span> <span class="kc">None</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="k">def</span><span class="w"> </span><span class="nf">obtener_cliente_por_id</span><span class="p">(</span><span class="n">cliente_id</span><span class="p">):</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">    Devuelve un diccionario con los datos del cliente según su ID.</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="sd">    Returns:</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">        int or None: ID del nuevo cliente si se creó correctamente, None si hubo un error.</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT 1 FROM clientes WHERE dni = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">dni</span><span class="p">,))</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>        <span class="n">existe</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>        <span class="k">return</span> <span class="n">existe</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error comprobando DNI existente: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>        <span class="k">return</span> <span class="kc">False</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="k">def</span><span class="w"> </span><span class="nf">crear_cliente_y_devolver_id</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">primer_apellido</span><span class="p">,</span> <span class="n">segundo_apellido</span><span class="p">,</span> <span class="n">dni</span><span class="p">,</span> <span class="n">telefono</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>                                <span class="n">direccion</span><span class="p">,</span> <span class="n">codigo_postal</span><span class="p">,</span> <span class="n">localidad</span><span class="p">,</span> <span class="n">provincia</span><span class="p">,</span> <span class="n">observaciones</span><span class="p">):</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">    Busca un cliente por su nombre completo (nombre + apellidos).</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">    La búsqueda se hace en mayúsculas y concatenando nombre, primer y segundo apellido.</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">    Args:</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">        nombre_completo (str): Nombre completo del cliente (sin acentos ni diferencias de mayúsculas/minúsculas).</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">    Returns:</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">        tuple or None: Tupla con los datos del cliente si se encuentra, None si no existe o hay error.</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="n">consulta</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="s2">            INSERT INTO clientes (</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="s2">                nombre, primer_apellido, segundo_apellido, dni, telefono, email,</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="s2">                direccion, codigo_postal, localidad, provincia, observaciones,</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="s2">                created_at, updated_at</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="s2">            )</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="s2">            VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="s2">            RETURNING id</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>        <span class="n">ahora</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">consulta</span><span class="p">,</span> <span class="p">(</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>            <span class="n">nombre</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>            <span class="n">primer_apellido</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>            <span class="n">segundo_apellido</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>            <span class="n">dni</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>            <span class="n">telefono</span><span class="p">,</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>            <span class="n">email</span><span class="p">,</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>            <span class="n">direccion</span><span class="p">,</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>            <span class="n">codigo_postal</span><span class="p">,</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>            <span class="n">localidad</span><span class="p">,</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>            <span class="n">provincia</span><span class="p">,</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>            <span class="n">observaciones</span><span class="p">,</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>            <span class="n">ahora</span><span class="p">,</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>            <span class="n">ahora</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="p">))</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="n">nuevo_id</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>        <span class="k">return</span> <span class="n">nuevo_id</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al crear cliente y devolver ID: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>        <span class="k">return</span> <span class="kc">None</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>        <span class="n">consulta</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="s2">            SELECT id, nombre, primer_apellido, segundo_apellido, dni, telefono,</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="s2">                   email, direccion, codigo_postal, localidad, provincia, observaciones</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="s2">            FROM clientes</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="s2">            WHERE id = </span><span class="si">%s</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">consulta</span><span class="p">,</span> <span class="p">(</span><span class="n">cliente_id</span><span class="p">,))</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>        <span class="n">fila</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>        <span class="k">if</span> <span class="n">fila</span><span class="p">:</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>            <span class="n">claves</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;nombre&quot;</span><span class="p">,</span> <span class="s2">&quot;primer_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;segundo_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;dni&quot;</span><span class="p">,</span> <span class="s2">&quot;telefono&quot;</span><span class="p">,</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>                      <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;direccion&quot;</span><span class="p">,</span> <span class="s2">&quot;codigo_postal&quot;</span><span class="p">,</span> <span class="s2">&quot;localidad&quot;</span><span class="p">,</span> <span class="s2">&quot;provincia&quot;</span><span class="p">,</span> <span class="s2">&quot;observaciones&quot;</span><span class="p">]</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">claves</span><span class="p">,</span> <span class="n">fila</span><span class="p">))</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>            <span class="k">return</span> <span class="kc">None</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al obtener cliente por ID: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="kc">None</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="k">def</span><span class="w"> </span><span class="nf">obtener_datos_cliente_por_nombre</span><span class="p">(</span><span class="n">nombre_completo</span><span class="p">):</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">    Obtiene los datos completos de un cliente a partir de su ID.</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">    Args:</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">        cliente_id (int): ID del cliente a buscar.</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">    Returns:</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">        dict or None: Diccionario con los datos del cliente si se encuentra, None si no existe.</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>        <span class="n">consulta</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="s2">            SELECT * FROM clientes</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="s2">            WHERE UPPER(nombre || &#39; &#39; || primer_apellido || &#39; &#39; || segundo_apellido) = </span><span class="si">%s</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="s2">            LIMIT 1</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">consulta</span><span class="p">,</span> <span class="p">(</span><span class="n">nombre_completo</span><span class="o">.</span><span class="n">upper</span><span class="p">(),))</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>        <span class="n">cliente</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
 </span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="k">def</span><span class="w"> </span><span class="nf">obtener_cliente_por_id_por_dni</span><span class="p">(</span><span class="n">dni</span><span class="p">):</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">    Devuelve un diccionario con los datos del cliente según su DNI.</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
-</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="s2">            SELECT id, nombre, primer_apellido, segundo_apellido, dni, telefono,</span>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a><span class="s2">                   email, direccion, codigo_postal, localidad, provincia, observaciones</span>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a><span class="s2">            FROM clientes</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="s2">            WHERE dni = </span><span class="si">%s</span>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="s2">            LIMIT 1</span>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">dni</span><span class="p">,))</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>        <span class="n">fila</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>        <span class="k">if</span> <span class="n">fila</span><span class="p">:</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>            <span class="n">claves</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;nombre&quot;</span><span class="p">,</span> <span class="s2">&quot;primer_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;segundo_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;dni&quot;</span><span class="p">,</span> <span class="s2">&quot;telefono&quot;</span><span class="p">,</span>
-</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>                      <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;direccion&quot;</span><span class="p">,</span> <span class="s2">&quot;codigo_postal&quot;</span><span class="p">,</span> <span class="s2">&quot;localidad&quot;</span><span class="p">,</span> <span class="s2">&quot;provincia&quot;</span><span class="p">,</span> <span class="s2">&quot;observaciones&quot;</span><span class="p">]</span>
-</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">claves</span><span class="p">,</span> <span class="n">fila</span><span class="p">))</span>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>            <span class="k">return</span> <span class="kc">None</span>
-</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al obtener cliente por DNI: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>        <span class="k">return</span> <span class="kc">None</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>        <span class="k">return</span> <span class="n">cliente</span>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al obtener cliente por nombre: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="kc">None</span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a><span class="k">def</span><span class="w"> </span><span class="nf">obtener_cliente_por_id</span><span class="p">(</span><span class="n">cliente_id</span><span class="p">):</span>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a><span class="sd">    Obtiene los datos completos de un cliente a partir de su DNI.</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="sd">    Args:</span>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="sd">        dni (str): DNI del cliente a buscar.</span>
+</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="sd">    Returns:</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a><span class="sd">        dict or None: Diccionario con los datos del cliente si se encuentra, None si no existe.</span>
+</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
+</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>
+</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>        <span class="n">consulta</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a><span class="s2">            SELECT id, nombre, primer_apellido, segundo_apellido, dni, telefono,</span>
+</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a><span class="s2">                   email, direccion, codigo_postal, localidad, provincia, observaciones</span>
+</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a><span class="s2">            FROM clientes</span>
+</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a><span class="s2">            WHERE id = </span><span class="si">%s</span>
+</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">consulta</span><span class="p">,</span> <span class="p">(</span><span class="n">cliente_id</span><span class="p">,))</span>
+</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>        <span class="n">fila</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>
+</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>
+</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>        <span class="k">if</span> <span class="n">fila</span><span class="p">:</span>
+</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>            <span class="n">claves</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;nombre&quot;</span><span class="p">,</span> <span class="s2">&quot;primer_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;segundo_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;dni&quot;</span><span class="p">,</span> <span class="s2">&quot;telefono&quot;</span><span class="p">,</span>
+</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>                      <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;direccion&quot;</span><span class="p">,</span> <span class="s2">&quot;codigo_postal&quot;</span><span class="p">,</span> <span class="s2">&quot;localidad&quot;</span><span class="p">,</span> <span class="s2">&quot;provincia&quot;</span><span class="p">,</span> <span class="s2">&quot;observaciones&quot;</span><span class="p">]</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">claves</span><span class="p">,</span> <span class="n">fila</span><span class="p">))</span>
+</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>            <span class="k">return</span> <span class="kc">None</span>
+</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al obtener cliente por ID: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>        <span class="k">return</span> <span class="kc">None</span>
+</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>
+</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>
+</span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a><span class="k">def</span><span class="w"> </span><span class="nf">obtener_cliente_por_id_por_dni</span><span class="p">(</span><span class="n">dni</span><span class="p">):</span>
+</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a><span class="sd">    Devuelve un diccionario con los datos del cliente según su DNI.</span>
+</span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
+</span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a><span class="s2">            SELECT id, nombre, primer_apellido, segundo_apellido, dni, telefono,</span>
+</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a><span class="s2">                   email, direccion, codigo_postal, localidad, provincia, observaciones</span>
+</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a><span class="s2">            FROM clientes</span>
+</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a><span class="s2">            WHERE dni = </span><span class="si">%s</span>
+</span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a><span class="s2">            LIMIT 1</span>
+</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">dni</span><span class="p">,))</span>
+</span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a>        <span class="n">fila</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>
+</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>        <span class="k">if</span> <span class="n">fila</span><span class="p">:</span>
+</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>            <span class="n">claves</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;nombre&quot;</span><span class="p">,</span> <span class="s2">&quot;primer_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;segundo_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;dni&quot;</span><span class="p">,</span> <span class="s2">&quot;telefono&quot;</span><span class="p">,</span>
+</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>                      <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;direccion&quot;</span><span class="p">,</span> <span class="s2">&quot;codigo_postal&quot;</span><span class="p">,</span> <span class="s2">&quot;localidad&quot;</span><span class="p">,</span> <span class="s2">&quot;provincia&quot;</span><span class="p">,</span> <span class="s2">&quot;observaciones&quot;</span><span class="p">]</span>
+</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">claves</span><span class="p">,</span> <span class="n">fila</span><span class="p">))</span>
+</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a>            <span class="k">return</span> <span class="kc">None</span>
+</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al obtener cliente por DNI: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>        <span class="k">return</span> <span class="kc">None</span>
 </span></pre></div>
 
 
@@ -235,25 +290,63 @@
 
     </div>
     <a class="headerlink" href="#dni_ya_existe"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="dni_ya_existe-7"><a href="#dni_ya_existe-7"><span class="linenos"> 7</span></a><span class="k">def</span><span class="w"> </span><span class="nf">dni_ya_existe</span><span class="p">(</span><span class="n">dni</span><span class="p">):</span>
-</span><span id="dni_ya_existe-8"><a href="#dni_ya_existe-8"><span class="linenos"> 8</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="dni_ya_existe-9"><a href="#dni_ya_existe-9"><span class="linenos"> 9</span></a><span class="sd">    Comprueba si ya existe un cliente con el mismo DNI.</span>
-</span><span id="dni_ya_existe-10"><a href="#dni_ya_existe-10"><span class="linenos">10</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="dni_ya_existe-11"><a href="#dni_ya_existe-11"><span class="linenos">11</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="dni_ya_existe-12"><a href="#dni_ya_existe-12"><span class="linenos">12</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
-</span><span id="dni_ya_existe-13"><a href="#dni_ya_existe-13"><span class="linenos">13</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-</span><span id="dni_ya_existe-14"><a href="#dni_ya_existe-14"><span class="linenos">14</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT 1 FROM clientes WHERE dni = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">dni</span><span class="p">,))</span>
-</span><span id="dni_ya_existe-15"><a href="#dni_ya_existe-15"><span class="linenos">15</span></a>        <span class="n">existe</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="dni_ya_existe-16"><a href="#dni_ya_existe-16"><span class="linenos">16</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="dni_ya_existe-17"><a href="#dni_ya_existe-17"><span class="linenos">17</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="dni_ya_existe-18"><a href="#dni_ya_existe-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="n">existe</span>
-</span><span id="dni_ya_existe-19"><a href="#dni_ya_existe-19"><span class="linenos">19</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="dni_ya_existe-20"><a href="#dni_ya_existe-20"><span class="linenos">20</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error comprobando DNI existente: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="dni_ya_existe-21"><a href="#dni_ya_existe-21"><span class="linenos">21</span></a>        <span class="k">return</span> <span class="kc">False</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="dni_ya_existe-16"><a href="#dni_ya_existe-16"><span class="linenos">16</span></a><span class="k">def</span><span class="w"> </span><span class="nf">dni_ya_existe</span><span class="p">(</span><span class="n">dni</span><span class="p">):</span>
+</span><span id="dni_ya_existe-17"><a href="#dni_ya_existe-17"><span class="linenos">17</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="dni_ya_existe-18"><a href="#dni_ya_existe-18"><span class="linenos">18</span></a><span class="sd">    Crea un nuevo cliente en la base de datos y devuelve su ID.</span>
+</span><span id="dni_ya_existe-19"><a href="#dni_ya_existe-19"><span class="linenos">19</span></a>
+</span><span id="dni_ya_existe-20"><a href="#dni_ya_existe-20"><span class="linenos">20</span></a><span class="sd">    Los campos nombre y apellidos se normalizan (mayúsculas y capitalización).</span>
+</span><span id="dni_ya_existe-21"><a href="#dni_ya_existe-21"><span class="linenos">21</span></a><span class="sd">    También se registran las fechas de creación y actualización.</span>
+</span><span id="dni_ya_existe-22"><a href="#dni_ya_existe-22"><span class="linenos">22</span></a>
+</span><span id="dni_ya_existe-23"><a href="#dni_ya_existe-23"><span class="linenos">23</span></a><span class="sd">    Args:</span>
+</span><span id="dni_ya_existe-24"><a href="#dni_ya_existe-24"><span class="linenos">24</span></a><span class="sd">        nombre (str): Nombre del cliente.</span>
+</span><span id="dni_ya_existe-25"><a href="#dni_ya_existe-25"><span class="linenos">25</span></a><span class="sd">        primer_apellido (str): Primer apellido.</span>
+</span><span id="dni_ya_existe-26"><a href="#dni_ya_existe-26"><span class="linenos">26</span></a><span class="sd">        segundo_apellido (str): Segundo apellido.</span>
+</span><span id="dni_ya_existe-27"><a href="#dni_ya_existe-27"><span class="linenos">27</span></a><span class="sd">        dni (str): DNI del cliente.</span>
+</span><span id="dni_ya_existe-28"><a href="#dni_ya_existe-28"><span class="linenos">28</span></a><span class="sd">        telefono (str): Teléfono de contacto.</span>
+</span><span id="dni_ya_existe-29"><a href="#dni_ya_existe-29"><span class="linenos">29</span></a><span class="sd">        email (str): Correo electrónico.</span>
+</span><span id="dni_ya_existe-30"><a href="#dni_ya_existe-30"><span class="linenos">30</span></a><span class="sd">        direccion (str): Dirección completa.</span>
+</span><span id="dni_ya_existe-31"><a href="#dni_ya_existe-31"><span class="linenos">31</span></a><span class="sd">        codigo_postal (str): Código postal.</span>
+</span><span id="dni_ya_existe-32"><a href="#dni_ya_existe-32"><span class="linenos">32</span></a><span class="sd">        localidad (str): Ciudad o localidad.</span>
+</span><span id="dni_ya_existe-33"><a href="#dni_ya_existe-33"><span class="linenos">33</span></a><span class="sd">        provincia (str): Provincia.</span>
+</span><span id="dni_ya_existe-34"><a href="#dni_ya_existe-34"><span class="linenos">34</span></a><span class="sd">        observaciones (str): Comentarios u observaciones adicionales.</span>
+</span><span id="dni_ya_existe-35"><a href="#dni_ya_existe-35"><span class="linenos">35</span></a>
+</span><span id="dni_ya_existe-36"><a href="#dni_ya_existe-36"><span class="linenos">36</span></a><span class="sd">    Returns:</span>
+</span><span id="dni_ya_existe-37"><a href="#dni_ya_existe-37"><span class="linenos">37</span></a><span class="sd">        int or None: ID del nuevo cliente si se creó correctamente, None si hubo un error.</span>
+</span><span id="dni_ya_existe-38"><a href="#dni_ya_existe-38"><span class="linenos">38</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="dni_ya_existe-39"><a href="#dni_ya_existe-39"><span class="linenos">39</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="dni_ya_existe-40"><a href="#dni_ya_existe-40"><span class="linenos">40</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
+</span><span id="dni_ya_existe-41"><a href="#dni_ya_existe-41"><span class="linenos">41</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span><span id="dni_ya_existe-42"><a href="#dni_ya_existe-42"><span class="linenos">42</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT 1 FROM clientes WHERE dni = </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">dni</span><span class="p">,))</span>
+</span><span id="dni_ya_existe-43"><a href="#dni_ya_existe-43"><span class="linenos">43</span></a>        <span class="n">existe</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="dni_ya_existe-44"><a href="#dni_ya_existe-44"><span class="linenos">44</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="dni_ya_existe-45"><a href="#dni_ya_existe-45"><span class="linenos">45</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="dni_ya_existe-46"><a href="#dni_ya_existe-46"><span class="linenos">46</span></a>        <span class="k">return</span> <span class="n">existe</span>
+</span><span id="dni_ya_existe-47"><a href="#dni_ya_existe-47"><span class="linenos">47</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="dni_ya_existe-48"><a href="#dni_ya_existe-48"><span class="linenos">48</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error comprobando DNI existente: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="dni_ya_existe-49"><a href="#dni_ya_existe-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="kc">False</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Comprueba si ya existe un cliente con el mismo DNI.</p>
+            <div class="docstring"><p>Crea un nuevo cliente en la base de datos y devuelve su ID.</p>
+
+<p>Los campos nombre y apellidos se normalizan (mayúsculas y capitalización).
+También se registran las fechas de creación y actualización.</p>
+
+<p>Args:
+    nombre (str): Nombre del cliente.
+    primer_apellido (str): Primer apellido.
+    segundo_apellido (str): Segundo apellido.
+    dni (str): DNI del cliente.
+    telefono (str): Teléfono de contacto.
+    email (str): Correo electrónico.
+    direccion (str): Dirección completa.
+    codigo_postal (str): Código postal.
+    localidad (str): Ciudad o localidad.
+    provincia (str): Provincia.
+    observaciones (str): Comentarios u observaciones adicionales.</p>
+
+<p>Returns:
+    int or None: ID del nuevo cliente si se creó correctamente, None si hubo un error.</p>
 </div>
 
 
@@ -269,60 +362,70 @@
 
     </div>
     <a class="headerlink" href="#crear_cliente_y_devolver_id"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="crear_cliente_y_devolver_id-24"><a href="#crear_cliente_y_devolver_id-24"><span class="linenos">24</span></a><span class="k">def</span><span class="w"> </span><span class="nf">crear_cliente_y_devolver_id</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">primer_apellido</span><span class="p">,</span> <span class="n">segundo_apellido</span><span class="p">,</span> <span class="n">dni</span><span class="p">,</span> <span class="n">telefono</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span>
-</span><span id="crear_cliente_y_devolver_id-25"><a href="#crear_cliente_y_devolver_id-25"><span class="linenos">25</span></a>                                <span class="n">direccion</span><span class="p">,</span> <span class="n">codigo_postal</span><span class="p">,</span> <span class="n">localidad</span><span class="p">,</span> <span class="n">provincia</span><span class="p">,</span> <span class="n">observaciones</span><span class="p">):</span>
-</span><span id="crear_cliente_y_devolver_id-26"><a href="#crear_cliente_y_devolver_id-26"><span class="linenos">26</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="crear_cliente_y_devolver_id-27"><a href="#crear_cliente_y_devolver_id-27"><span class="linenos">27</span></a><span class="sd">    Crea un nuevo cliente y devuelve su ID.</span>
-</span><span id="crear_cliente_y_devolver_id-28"><a href="#crear_cliente_y_devolver_id-28"><span class="linenos">28</span></a>
-</span><span id="crear_cliente_y_devolver_id-29"><a href="#crear_cliente_y_devolver_id-29"><span class="linenos">29</span></a><span class="sd">    Retorna:</span>
-</span><span id="crear_cliente_y_devolver_id-30"><a href="#crear_cliente_y_devolver_id-30"><span class="linenos">30</span></a><span class="sd">        int | None</span>
-</span><span id="crear_cliente_y_devolver_id-31"><a href="#crear_cliente_y_devolver_id-31"><span class="linenos">31</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="crear_cliente_y_devolver_id-32"><a href="#crear_cliente_y_devolver_id-32"><span class="linenos">32</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="crear_cliente_y_devolver_id-33"><a href="#crear_cliente_y_devolver_id-33"><span class="linenos">33</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
-</span><span id="crear_cliente_y_devolver_id-34"><a href="#crear_cliente_y_devolver_id-34"><span class="linenos">34</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-</span><span id="crear_cliente_y_devolver_id-35"><a href="#crear_cliente_y_devolver_id-35"><span class="linenos">35</span></a>
-</span><span id="crear_cliente_y_devolver_id-36"><a href="#crear_cliente_y_devolver_id-36"><span class="linenos">36</span></a>        <span class="n">consulta</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="crear_cliente_y_devolver_id-37"><a href="#crear_cliente_y_devolver_id-37"><span class="linenos">37</span></a><span class="s2">            INSERT INTO clientes (</span>
-</span><span id="crear_cliente_y_devolver_id-38"><a href="#crear_cliente_y_devolver_id-38"><span class="linenos">38</span></a><span class="s2">                nombre, primer_apellido, segundo_apellido, dni, telefono, email,</span>
-</span><span id="crear_cliente_y_devolver_id-39"><a href="#crear_cliente_y_devolver_id-39"><span class="linenos">39</span></a><span class="s2">                direccion, codigo_postal, localidad, provincia, observaciones,</span>
-</span><span id="crear_cliente_y_devolver_id-40"><a href="#crear_cliente_y_devolver_id-40"><span class="linenos">40</span></a><span class="s2">                created_at, updated_at</span>
-</span><span id="crear_cliente_y_devolver_id-41"><a href="#crear_cliente_y_devolver_id-41"><span class="linenos">41</span></a><span class="s2">            )</span>
-</span><span id="crear_cliente_y_devolver_id-42"><a href="#crear_cliente_y_devolver_id-42"><span class="linenos">42</span></a><span class="s2">            VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)</span>
-</span><span id="crear_cliente_y_devolver_id-43"><a href="#crear_cliente_y_devolver_id-43"><span class="linenos">43</span></a><span class="s2">            RETURNING id</span>
-</span><span id="crear_cliente_y_devolver_id-44"><a href="#crear_cliente_y_devolver_id-44"><span class="linenos">44</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
-</span><span id="crear_cliente_y_devolver_id-45"><a href="#crear_cliente_y_devolver_id-45"><span class="linenos">45</span></a>
-</span><span id="crear_cliente_y_devolver_id-46"><a href="#crear_cliente_y_devolver_id-46"><span class="linenos">46</span></a>        <span class="n">ahora</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-</span><span id="crear_cliente_y_devolver_id-47"><a href="#crear_cliente_y_devolver_id-47"><span class="linenos">47</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">consulta</span><span class="p">,</span> <span class="p">(</span>
-</span><span id="crear_cliente_y_devolver_id-48"><a href="#crear_cliente_y_devolver_id-48"><span class="linenos">48</span></a>            <span class="n">nombre</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
-</span><span id="crear_cliente_y_devolver_id-49"><a href="#crear_cliente_y_devolver_id-49"><span class="linenos">49</span></a>            <span class="n">primer_apellido</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span>
-</span><span id="crear_cliente_y_devolver_id-50"><a href="#crear_cliente_y_devolver_id-50"><span class="linenos">50</span></a>            <span class="n">segundo_apellido</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span>
-</span><span id="crear_cliente_y_devolver_id-51"><a href="#crear_cliente_y_devolver_id-51"><span class="linenos">51</span></a>            <span class="n">dni</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
-</span><span id="crear_cliente_y_devolver_id-52"><a href="#crear_cliente_y_devolver_id-52"><span class="linenos">52</span></a>            <span class="n">telefono</span><span class="p">,</span>
-</span><span id="crear_cliente_y_devolver_id-53"><a href="#crear_cliente_y_devolver_id-53"><span class="linenos">53</span></a>            <span class="n">email</span><span class="p">,</span>
-</span><span id="crear_cliente_y_devolver_id-54"><a href="#crear_cliente_y_devolver_id-54"><span class="linenos">54</span></a>            <span class="n">direccion</span><span class="p">,</span>
-</span><span id="crear_cliente_y_devolver_id-55"><a href="#crear_cliente_y_devolver_id-55"><span class="linenos">55</span></a>            <span class="n">codigo_postal</span><span class="p">,</span>
-</span><span id="crear_cliente_y_devolver_id-56"><a href="#crear_cliente_y_devolver_id-56"><span class="linenos">56</span></a>            <span class="n">localidad</span><span class="p">,</span>
-</span><span id="crear_cliente_y_devolver_id-57"><a href="#crear_cliente_y_devolver_id-57"><span class="linenos">57</span></a>            <span class="n">provincia</span><span class="p">,</span>
-</span><span id="crear_cliente_y_devolver_id-58"><a href="#crear_cliente_y_devolver_id-58"><span class="linenos">58</span></a>            <span class="n">observaciones</span><span class="p">,</span>
-</span><span id="crear_cliente_y_devolver_id-59"><a href="#crear_cliente_y_devolver_id-59"><span class="linenos">59</span></a>            <span class="n">ahora</span><span class="p">,</span>
-</span><span id="crear_cliente_y_devolver_id-60"><a href="#crear_cliente_y_devolver_id-60"><span class="linenos">60</span></a>            <span class="n">ahora</span>
-</span><span id="crear_cliente_y_devolver_id-61"><a href="#crear_cliente_y_devolver_id-61"><span class="linenos">61</span></a>        <span class="p">))</span>
-</span><span id="crear_cliente_y_devolver_id-62"><a href="#crear_cliente_y_devolver_id-62"><span class="linenos">62</span></a>
-</span><span id="crear_cliente_y_devolver_id-63"><a href="#crear_cliente_y_devolver_id-63"><span class="linenos">63</span></a>        <span class="n">nuevo_id</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="crear_cliente_y_devolver_id-64"><a href="#crear_cliente_y_devolver_id-64"><span class="linenos">64</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-</span><span id="crear_cliente_y_devolver_id-65"><a href="#crear_cliente_y_devolver_id-65"><span class="linenos">65</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="crear_cliente_y_devolver_id-66"><a href="#crear_cliente_y_devolver_id-66"><span class="linenos">66</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="crear_cliente_y_devolver_id-67"><a href="#crear_cliente_y_devolver_id-67"><span class="linenos">67</span></a>        <span class="k">return</span> <span class="n">nuevo_id</span>
-</span><span id="crear_cliente_y_devolver_id-68"><a href="#crear_cliente_y_devolver_id-68"><span class="linenos">68</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="crear_cliente_y_devolver_id-69"><a href="#crear_cliente_y_devolver_id-69"><span class="linenos">69</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al crear cliente y devolver ID: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="crear_cliente_y_devolver_id-70"><a href="#crear_cliente_y_devolver_id-70"><span class="linenos">70</span></a>        <span class="k">return</span> <span class="kc">None</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="crear_cliente_y_devolver_id-52"><a href="#crear_cliente_y_devolver_id-52"><span class="linenos"> 52</span></a><span class="k">def</span><span class="w"> </span><span class="nf">crear_cliente_y_devolver_id</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">primer_apellido</span><span class="p">,</span> <span class="n">segundo_apellido</span><span class="p">,</span> <span class="n">dni</span><span class="p">,</span> <span class="n">telefono</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span>
+</span><span id="crear_cliente_y_devolver_id-53"><a href="#crear_cliente_y_devolver_id-53"><span class="linenos"> 53</span></a>                                <span class="n">direccion</span><span class="p">,</span> <span class="n">codigo_postal</span><span class="p">,</span> <span class="n">localidad</span><span class="p">,</span> <span class="n">provincia</span><span class="p">,</span> <span class="n">observaciones</span><span class="p">):</span>
+</span><span id="crear_cliente_y_devolver_id-54"><a href="#crear_cliente_y_devolver_id-54"><span class="linenos"> 54</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="crear_cliente_y_devolver_id-55"><a href="#crear_cliente_y_devolver_id-55"><span class="linenos"> 55</span></a><span class="sd">    Busca un cliente por su nombre completo (nombre + apellidos).</span>
+</span><span id="crear_cliente_y_devolver_id-56"><a href="#crear_cliente_y_devolver_id-56"><span class="linenos"> 56</span></a>
+</span><span id="crear_cliente_y_devolver_id-57"><a href="#crear_cliente_y_devolver_id-57"><span class="linenos"> 57</span></a><span class="sd">    La búsqueda se hace en mayúsculas y concatenando nombre, primer y segundo apellido.</span>
+</span><span id="crear_cliente_y_devolver_id-58"><a href="#crear_cliente_y_devolver_id-58"><span class="linenos"> 58</span></a>
+</span><span id="crear_cliente_y_devolver_id-59"><a href="#crear_cliente_y_devolver_id-59"><span class="linenos"> 59</span></a><span class="sd">    Args:</span>
+</span><span id="crear_cliente_y_devolver_id-60"><a href="#crear_cliente_y_devolver_id-60"><span class="linenos"> 60</span></a><span class="sd">        nombre_completo (str): Nombre completo del cliente (sin acentos ni diferencias de mayúsculas/minúsculas).</span>
+</span><span id="crear_cliente_y_devolver_id-61"><a href="#crear_cliente_y_devolver_id-61"><span class="linenos"> 61</span></a>
+</span><span id="crear_cliente_y_devolver_id-62"><a href="#crear_cliente_y_devolver_id-62"><span class="linenos"> 62</span></a><span class="sd">    Returns:</span>
+</span><span id="crear_cliente_y_devolver_id-63"><a href="#crear_cliente_y_devolver_id-63"><span class="linenos"> 63</span></a><span class="sd">        tuple or None: Tupla con los datos del cliente si se encuentra, None si no existe o hay error.</span>
+</span><span id="crear_cliente_y_devolver_id-64"><a href="#crear_cliente_y_devolver_id-64"><span class="linenos"> 64</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="crear_cliente_y_devolver_id-65"><a href="#crear_cliente_y_devolver_id-65"><span class="linenos"> 65</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="crear_cliente_y_devolver_id-66"><a href="#crear_cliente_y_devolver_id-66"><span class="linenos"> 66</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
+</span><span id="crear_cliente_y_devolver_id-67"><a href="#crear_cliente_y_devolver_id-67"><span class="linenos"> 67</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span><span id="crear_cliente_y_devolver_id-68"><a href="#crear_cliente_y_devolver_id-68"><span class="linenos"> 68</span></a>
+</span><span id="crear_cliente_y_devolver_id-69"><a href="#crear_cliente_y_devolver_id-69"><span class="linenos"> 69</span></a>        <span class="n">consulta</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="crear_cliente_y_devolver_id-70"><a href="#crear_cliente_y_devolver_id-70"><span class="linenos"> 70</span></a><span class="s2">            INSERT INTO clientes (</span>
+</span><span id="crear_cliente_y_devolver_id-71"><a href="#crear_cliente_y_devolver_id-71"><span class="linenos"> 71</span></a><span class="s2">                nombre, primer_apellido, segundo_apellido, dni, telefono, email,</span>
+</span><span id="crear_cliente_y_devolver_id-72"><a href="#crear_cliente_y_devolver_id-72"><span class="linenos"> 72</span></a><span class="s2">                direccion, codigo_postal, localidad, provincia, observaciones,</span>
+</span><span id="crear_cliente_y_devolver_id-73"><a href="#crear_cliente_y_devolver_id-73"><span class="linenos"> 73</span></a><span class="s2">                created_at, updated_at</span>
+</span><span id="crear_cliente_y_devolver_id-74"><a href="#crear_cliente_y_devolver_id-74"><span class="linenos"> 74</span></a><span class="s2">            )</span>
+</span><span id="crear_cliente_y_devolver_id-75"><a href="#crear_cliente_y_devolver_id-75"><span class="linenos"> 75</span></a><span class="s2">            VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)</span>
+</span><span id="crear_cliente_y_devolver_id-76"><a href="#crear_cliente_y_devolver_id-76"><span class="linenos"> 76</span></a><span class="s2">            RETURNING id</span>
+</span><span id="crear_cliente_y_devolver_id-77"><a href="#crear_cliente_y_devolver_id-77"><span class="linenos"> 77</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="crear_cliente_y_devolver_id-78"><a href="#crear_cliente_y_devolver_id-78"><span class="linenos"> 78</span></a>
+</span><span id="crear_cliente_y_devolver_id-79"><a href="#crear_cliente_y_devolver_id-79"><span class="linenos"> 79</span></a>        <span class="n">ahora</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+</span><span id="crear_cliente_y_devolver_id-80"><a href="#crear_cliente_y_devolver_id-80"><span class="linenos"> 80</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">consulta</span><span class="p">,</span> <span class="p">(</span>
+</span><span id="crear_cliente_y_devolver_id-81"><a href="#crear_cliente_y_devolver_id-81"><span class="linenos"> 81</span></a>            <span class="n">nombre</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+</span><span id="crear_cliente_y_devolver_id-82"><a href="#crear_cliente_y_devolver_id-82"><span class="linenos"> 82</span></a>            <span class="n">primer_apellido</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span>
+</span><span id="crear_cliente_y_devolver_id-83"><a href="#crear_cliente_y_devolver_id-83"><span class="linenos"> 83</span></a>            <span class="n">segundo_apellido</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span>
+</span><span id="crear_cliente_y_devolver_id-84"><a href="#crear_cliente_y_devolver_id-84"><span class="linenos"> 84</span></a>            <span class="n">dni</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+</span><span id="crear_cliente_y_devolver_id-85"><a href="#crear_cliente_y_devolver_id-85"><span class="linenos"> 85</span></a>            <span class="n">telefono</span><span class="p">,</span>
+</span><span id="crear_cliente_y_devolver_id-86"><a href="#crear_cliente_y_devolver_id-86"><span class="linenos"> 86</span></a>            <span class="n">email</span><span class="p">,</span>
+</span><span id="crear_cliente_y_devolver_id-87"><a href="#crear_cliente_y_devolver_id-87"><span class="linenos"> 87</span></a>            <span class="n">direccion</span><span class="p">,</span>
+</span><span id="crear_cliente_y_devolver_id-88"><a href="#crear_cliente_y_devolver_id-88"><span class="linenos"> 88</span></a>            <span class="n">codigo_postal</span><span class="p">,</span>
+</span><span id="crear_cliente_y_devolver_id-89"><a href="#crear_cliente_y_devolver_id-89"><span class="linenos"> 89</span></a>            <span class="n">localidad</span><span class="p">,</span>
+</span><span id="crear_cliente_y_devolver_id-90"><a href="#crear_cliente_y_devolver_id-90"><span class="linenos"> 90</span></a>            <span class="n">provincia</span><span class="p">,</span>
+</span><span id="crear_cliente_y_devolver_id-91"><a href="#crear_cliente_y_devolver_id-91"><span class="linenos"> 91</span></a>            <span class="n">observaciones</span><span class="p">,</span>
+</span><span id="crear_cliente_y_devolver_id-92"><a href="#crear_cliente_y_devolver_id-92"><span class="linenos"> 92</span></a>            <span class="n">ahora</span><span class="p">,</span>
+</span><span id="crear_cliente_y_devolver_id-93"><a href="#crear_cliente_y_devolver_id-93"><span class="linenos"> 93</span></a>            <span class="n">ahora</span>
+</span><span id="crear_cliente_y_devolver_id-94"><a href="#crear_cliente_y_devolver_id-94"><span class="linenos"> 94</span></a>        <span class="p">))</span>
+</span><span id="crear_cliente_y_devolver_id-95"><a href="#crear_cliente_y_devolver_id-95"><span class="linenos"> 95</span></a>
+</span><span id="crear_cliente_y_devolver_id-96"><a href="#crear_cliente_y_devolver_id-96"><span class="linenos"> 96</span></a>        <span class="n">nuevo_id</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="crear_cliente_y_devolver_id-97"><a href="#crear_cliente_y_devolver_id-97"><span class="linenos"> 97</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span><span id="crear_cliente_y_devolver_id-98"><a href="#crear_cliente_y_devolver_id-98"><span class="linenos"> 98</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="crear_cliente_y_devolver_id-99"><a href="#crear_cliente_y_devolver_id-99"><span class="linenos"> 99</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="crear_cliente_y_devolver_id-100"><a href="#crear_cliente_y_devolver_id-100"><span class="linenos">100</span></a>        <span class="k">return</span> <span class="n">nuevo_id</span>
+</span><span id="crear_cliente_y_devolver_id-101"><a href="#crear_cliente_y_devolver_id-101"><span class="linenos">101</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="crear_cliente_y_devolver_id-102"><a href="#crear_cliente_y_devolver_id-102"><span class="linenos">102</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al crear cliente y devolver ID: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="crear_cliente_y_devolver_id-103"><a href="#crear_cliente_y_devolver_id-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="kc">None</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Crea un nuevo cliente y devuelve su ID.</p>
+            <div class="docstring"><p>Busca un cliente por su nombre completo (nombre + apellidos).</p>
 
-<p>Retorna:
-    int | None</p>
+<p>La búsqueda se hace en mayúsculas y concatenando nombre, primer y segundo apellido.</p>
+
+<p>Args:
+    nombre_completo (str): Nombre completo del cliente (sin acentos ni diferencias de mayúsculas/minúsculas).</p>
+
+<p>Returns:
+    tuple or None: Tupla con los datos del cliente si se encuentra, None si no existe o hay error.</p>
 </div>
 
 
@@ -338,34 +441,44 @@
 
     </div>
     <a class="headerlink" href="#obtener_datos_cliente_por_nombre"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="obtener_datos_cliente_por_nombre-73"><a href="#obtener_datos_cliente_por_nombre-73"><span class="linenos">73</span></a><span class="k">def</span><span class="w"> </span><span class="nf">obtener_datos_cliente_por_nombre</span><span class="p">(</span><span class="n">nombre_completo</span><span class="p">):</span>
-</span><span id="obtener_datos_cliente_por_nombre-74"><a href="#obtener_datos_cliente_por_nombre-74"><span class="linenos">74</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="obtener_datos_cliente_por_nombre-75"><a href="#obtener_datos_cliente_por_nombre-75"><span class="linenos">75</span></a><span class="sd">    Busca un cliente por su nombre completo (nombre + apellidos).</span>
-</span><span id="obtener_datos_cliente_por_nombre-76"><a href="#obtener_datos_cliente_por_nombre-76"><span class="linenos">76</span></a><span class="sd">    Retorna una tupla si se encuentra, None si no.</span>
-</span><span id="obtener_datos_cliente_por_nombre-77"><a href="#obtener_datos_cliente_por_nombre-77"><span class="linenos">77</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="obtener_datos_cliente_por_nombre-78"><a href="#obtener_datos_cliente_por_nombre-78"><span class="linenos">78</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="obtener_datos_cliente_por_nombre-79"><a href="#obtener_datos_cliente_por_nombre-79"><span class="linenos">79</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
-</span><span id="obtener_datos_cliente_por_nombre-80"><a href="#obtener_datos_cliente_por_nombre-80"><span class="linenos">80</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-</span><span id="obtener_datos_cliente_por_nombre-81"><a href="#obtener_datos_cliente_por_nombre-81"><span class="linenos">81</span></a>
-</span><span id="obtener_datos_cliente_por_nombre-82"><a href="#obtener_datos_cliente_por_nombre-82"><span class="linenos">82</span></a>        <span class="n">consulta</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="obtener_datos_cliente_por_nombre-83"><a href="#obtener_datos_cliente_por_nombre-83"><span class="linenos">83</span></a><span class="s2">            SELECT * FROM clientes</span>
-</span><span id="obtener_datos_cliente_por_nombre-84"><a href="#obtener_datos_cliente_por_nombre-84"><span class="linenos">84</span></a><span class="s2">            WHERE UPPER(nombre || &#39; &#39; || primer_apellido || &#39; &#39; || segundo_apellido) = </span><span class="si">%s</span>
-</span><span id="obtener_datos_cliente_por_nombre-85"><a href="#obtener_datos_cliente_por_nombre-85"><span class="linenos">85</span></a><span class="s2">            LIMIT 1</span>
-</span><span id="obtener_datos_cliente_por_nombre-86"><a href="#obtener_datos_cliente_por_nombre-86"><span class="linenos">86</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
-</span><span id="obtener_datos_cliente_por_nombre-87"><a href="#obtener_datos_cliente_por_nombre-87"><span class="linenos">87</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">consulta</span><span class="p">,</span> <span class="p">(</span><span class="n">nombre_completo</span><span class="o">.</span><span class="n">upper</span><span class="p">(),))</span>
-</span><span id="obtener_datos_cliente_por_nombre-88"><a href="#obtener_datos_cliente_por_nombre-88"><span class="linenos">88</span></a>        <span class="n">cliente</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-</span><span id="obtener_datos_cliente_por_nombre-89"><a href="#obtener_datos_cliente_por_nombre-89"><span class="linenos">89</span></a>
-</span><span id="obtener_datos_cliente_por_nombre-90"><a href="#obtener_datos_cliente_por_nombre-90"><span class="linenos">90</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="obtener_datos_cliente_por_nombre-91"><a href="#obtener_datos_cliente_por_nombre-91"><span class="linenos">91</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="obtener_datos_cliente_por_nombre-92"><a href="#obtener_datos_cliente_por_nombre-92"><span class="linenos">92</span></a>        <span class="k">return</span> <span class="n">cliente</span>
-</span><span id="obtener_datos_cliente_por_nombre-93"><a href="#obtener_datos_cliente_por_nombre-93"><span class="linenos">93</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="obtener_datos_cliente_por_nombre-94"><a href="#obtener_datos_cliente_por_nombre-94"><span class="linenos">94</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al obtener cliente por nombre: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="obtener_datos_cliente_por_nombre-95"><a href="#obtener_datos_cliente_por_nombre-95"><span class="linenos">95</span></a>        <span class="k">return</span> <span class="kc">None</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="obtener_datos_cliente_por_nombre-106"><a href="#obtener_datos_cliente_por_nombre-106"><span class="linenos">106</span></a><span class="k">def</span><span class="w"> </span><span class="nf">obtener_datos_cliente_por_nombre</span><span class="p">(</span><span class="n">nombre_completo</span><span class="p">):</span>
+</span><span id="obtener_datos_cliente_por_nombre-107"><a href="#obtener_datos_cliente_por_nombre-107"><span class="linenos">107</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="obtener_datos_cliente_por_nombre-108"><a href="#obtener_datos_cliente_por_nombre-108"><span class="linenos">108</span></a><span class="sd">    Obtiene los datos completos de un cliente a partir de su ID.</span>
+</span><span id="obtener_datos_cliente_por_nombre-109"><a href="#obtener_datos_cliente_por_nombre-109"><span class="linenos">109</span></a>
+</span><span id="obtener_datos_cliente_por_nombre-110"><a href="#obtener_datos_cliente_por_nombre-110"><span class="linenos">110</span></a><span class="sd">    Args:</span>
+</span><span id="obtener_datos_cliente_por_nombre-111"><a href="#obtener_datos_cliente_por_nombre-111"><span class="linenos">111</span></a><span class="sd">        cliente_id (int): ID del cliente a buscar.</span>
+</span><span id="obtener_datos_cliente_por_nombre-112"><a href="#obtener_datos_cliente_por_nombre-112"><span class="linenos">112</span></a>
+</span><span id="obtener_datos_cliente_por_nombre-113"><a href="#obtener_datos_cliente_por_nombre-113"><span class="linenos">113</span></a><span class="sd">    Returns:</span>
+</span><span id="obtener_datos_cliente_por_nombre-114"><a href="#obtener_datos_cliente_por_nombre-114"><span class="linenos">114</span></a><span class="sd">        dict or None: Diccionario con los datos del cliente si se encuentra, None si no existe.</span>
+</span><span id="obtener_datos_cliente_por_nombre-115"><a href="#obtener_datos_cliente_por_nombre-115"><span class="linenos">115</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="obtener_datos_cliente_por_nombre-116"><a href="#obtener_datos_cliente_por_nombre-116"><span class="linenos">116</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="obtener_datos_cliente_por_nombre-117"><a href="#obtener_datos_cliente_por_nombre-117"><span class="linenos">117</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
+</span><span id="obtener_datos_cliente_por_nombre-118"><a href="#obtener_datos_cliente_por_nombre-118"><span class="linenos">118</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span><span id="obtener_datos_cliente_por_nombre-119"><a href="#obtener_datos_cliente_por_nombre-119"><span class="linenos">119</span></a>
+</span><span id="obtener_datos_cliente_por_nombre-120"><a href="#obtener_datos_cliente_por_nombre-120"><span class="linenos">120</span></a>        <span class="n">consulta</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="obtener_datos_cliente_por_nombre-121"><a href="#obtener_datos_cliente_por_nombre-121"><span class="linenos">121</span></a><span class="s2">            SELECT * FROM clientes</span>
+</span><span id="obtener_datos_cliente_por_nombre-122"><a href="#obtener_datos_cliente_por_nombre-122"><span class="linenos">122</span></a><span class="s2">            WHERE UPPER(nombre || &#39; &#39; || primer_apellido || &#39; &#39; || segundo_apellido) = </span><span class="si">%s</span>
+</span><span id="obtener_datos_cliente_por_nombre-123"><a href="#obtener_datos_cliente_por_nombre-123"><span class="linenos">123</span></a><span class="s2">            LIMIT 1</span>
+</span><span id="obtener_datos_cliente_por_nombre-124"><a href="#obtener_datos_cliente_por_nombre-124"><span class="linenos">124</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="obtener_datos_cliente_por_nombre-125"><a href="#obtener_datos_cliente_por_nombre-125"><span class="linenos">125</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">consulta</span><span class="p">,</span> <span class="p">(</span><span class="n">nombre_completo</span><span class="o">.</span><span class="n">upper</span><span class="p">(),))</span>
+</span><span id="obtener_datos_cliente_por_nombre-126"><a href="#obtener_datos_cliente_por_nombre-126"><span class="linenos">126</span></a>        <span class="n">cliente</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+</span><span id="obtener_datos_cliente_por_nombre-127"><a href="#obtener_datos_cliente_por_nombre-127"><span class="linenos">127</span></a>
+</span><span id="obtener_datos_cliente_por_nombre-128"><a href="#obtener_datos_cliente_por_nombre-128"><span class="linenos">128</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="obtener_datos_cliente_por_nombre-129"><a href="#obtener_datos_cliente_por_nombre-129"><span class="linenos">129</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="obtener_datos_cliente_por_nombre-130"><a href="#obtener_datos_cliente_por_nombre-130"><span class="linenos">130</span></a>        <span class="k">return</span> <span class="n">cliente</span>
+</span><span id="obtener_datos_cliente_por_nombre-131"><a href="#obtener_datos_cliente_por_nombre-131"><span class="linenos">131</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="obtener_datos_cliente_por_nombre-132"><a href="#obtener_datos_cliente_por_nombre-132"><span class="linenos">132</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al obtener cliente por nombre: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="obtener_datos_cliente_por_nombre-133"><a href="#obtener_datos_cliente_por_nombre-133"><span class="linenos">133</span></a>        <span class="k">return</span> <span class="kc">None</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Busca un cliente por su nombre completo (nombre + apellidos).
-Retorna una tupla si se encuentra, None si no.</p>
+            <div class="docstring"><p>Obtiene los datos completos de un cliente a partir de su ID.</p>
+
+<p>Args:
+    cliente_id (int): ID del cliente a buscar.</p>
+
+<p>Returns:
+    dict or None: Diccionario con los datos del cliente si se encuentra, None si no existe.</p>
 </div>
 
 
@@ -381,39 +494,51 @@ Retorna una tupla si se encuentra, None si no.</p>
 
     </div>
     <a class="headerlink" href="#obtener_cliente_por_id"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="obtener_cliente_por_id-98"><a href="#obtener_cliente_por_id-98"><span class="linenos"> 98</span></a><span class="k">def</span><span class="w"> </span><span class="nf">obtener_cliente_por_id</span><span class="p">(</span><span class="n">cliente_id</span><span class="p">):</span>
-</span><span id="obtener_cliente_por_id-99"><a href="#obtener_cliente_por_id-99"><span class="linenos"> 99</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="obtener_cliente_por_id-100"><a href="#obtener_cliente_por_id-100"><span class="linenos">100</span></a><span class="sd">    Devuelve un diccionario con los datos del cliente según su ID.</span>
-</span><span id="obtener_cliente_por_id-101"><a href="#obtener_cliente_por_id-101"><span class="linenos">101</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="obtener_cliente_por_id-102"><a href="#obtener_cliente_por_id-102"><span class="linenos">102</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="obtener_cliente_por_id-103"><a href="#obtener_cliente_por_id-103"><span class="linenos">103</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
-</span><span id="obtener_cliente_por_id-104"><a href="#obtener_cliente_por_id-104"><span class="linenos">104</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-</span><span id="obtener_cliente_por_id-105"><a href="#obtener_cliente_por_id-105"><span class="linenos">105</span></a>
-</span><span id="obtener_cliente_por_id-106"><a href="#obtener_cliente_por_id-106"><span class="linenos">106</span></a>        <span class="n">consulta</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="obtener_cliente_por_id-107"><a href="#obtener_cliente_por_id-107"><span class="linenos">107</span></a><span class="s2">            SELECT id, nombre, primer_apellido, segundo_apellido, dni, telefono,</span>
-</span><span id="obtener_cliente_por_id-108"><a href="#obtener_cliente_por_id-108"><span class="linenos">108</span></a><span class="s2">                   email, direccion, codigo_postal, localidad, provincia, observaciones</span>
-</span><span id="obtener_cliente_por_id-109"><a href="#obtener_cliente_por_id-109"><span class="linenos">109</span></a><span class="s2">            FROM clientes</span>
-</span><span id="obtener_cliente_por_id-110"><a href="#obtener_cliente_por_id-110"><span class="linenos">110</span></a><span class="s2">            WHERE id = </span><span class="si">%s</span>
-</span><span id="obtener_cliente_por_id-111"><a href="#obtener_cliente_por_id-111"><span class="linenos">111</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
-</span><span id="obtener_cliente_por_id-112"><a href="#obtener_cliente_por_id-112"><span class="linenos">112</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">consulta</span><span class="p">,</span> <span class="p">(</span><span class="n">cliente_id</span><span class="p">,))</span>
-</span><span id="obtener_cliente_por_id-113"><a href="#obtener_cliente_por_id-113"><span class="linenos">113</span></a>        <span class="n">fila</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-</span><span id="obtener_cliente_por_id-114"><a href="#obtener_cliente_por_id-114"><span class="linenos">114</span></a>
-</span><span id="obtener_cliente_por_id-115"><a href="#obtener_cliente_por_id-115"><span class="linenos">115</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="obtener_cliente_por_id-116"><a href="#obtener_cliente_por_id-116"><span class="linenos">116</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="obtener_cliente_por_id-117"><a href="#obtener_cliente_por_id-117"><span class="linenos">117</span></a>
-</span><span id="obtener_cliente_por_id-118"><a href="#obtener_cliente_por_id-118"><span class="linenos">118</span></a>        <span class="k">if</span> <span class="n">fila</span><span class="p">:</span>
-</span><span id="obtener_cliente_por_id-119"><a href="#obtener_cliente_por_id-119"><span class="linenos">119</span></a>            <span class="n">claves</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;nombre&quot;</span><span class="p">,</span> <span class="s2">&quot;primer_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;segundo_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;dni&quot;</span><span class="p">,</span> <span class="s2">&quot;telefono&quot;</span><span class="p">,</span>
-</span><span id="obtener_cliente_por_id-120"><a href="#obtener_cliente_por_id-120"><span class="linenos">120</span></a>                      <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;direccion&quot;</span><span class="p">,</span> <span class="s2">&quot;codigo_postal&quot;</span><span class="p">,</span> <span class="s2">&quot;localidad&quot;</span><span class="p">,</span> <span class="s2">&quot;provincia&quot;</span><span class="p">,</span> <span class="s2">&quot;observaciones&quot;</span><span class="p">]</span>
-</span><span id="obtener_cliente_por_id-121"><a href="#obtener_cliente_por_id-121"><span class="linenos">121</span></a>            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">claves</span><span class="p">,</span> <span class="n">fila</span><span class="p">))</span>
-</span><span id="obtener_cliente_por_id-122"><a href="#obtener_cliente_por_id-122"><span class="linenos">122</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="obtener_cliente_por_id-123"><a href="#obtener_cliente_por_id-123"><span class="linenos">123</span></a>            <span class="k">return</span> <span class="kc">None</span>
-</span><span id="obtener_cliente_por_id-124"><a href="#obtener_cliente_por_id-124"><span class="linenos">124</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="obtener_cliente_por_id-125"><a href="#obtener_cliente_por_id-125"><span class="linenos">125</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al obtener cliente por ID: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="obtener_cliente_por_id-126"><a href="#obtener_cliente_por_id-126"><span class="linenos">126</span></a>        <span class="k">return</span> <span class="kc">None</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="obtener_cliente_por_id-136"><a href="#obtener_cliente_por_id-136"><span class="linenos">136</span></a><span class="k">def</span><span class="w"> </span><span class="nf">obtener_cliente_por_id</span><span class="p">(</span><span class="n">cliente_id</span><span class="p">):</span>
+</span><span id="obtener_cliente_por_id-137"><a href="#obtener_cliente_por_id-137"><span class="linenos">137</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="obtener_cliente_por_id-138"><a href="#obtener_cliente_por_id-138"><span class="linenos">138</span></a><span class="sd">    Obtiene los datos completos de un cliente a partir de su DNI.</span>
+</span><span id="obtener_cliente_por_id-139"><a href="#obtener_cliente_por_id-139"><span class="linenos">139</span></a>
+</span><span id="obtener_cliente_por_id-140"><a href="#obtener_cliente_por_id-140"><span class="linenos">140</span></a><span class="sd">    Args:</span>
+</span><span id="obtener_cliente_por_id-141"><a href="#obtener_cliente_por_id-141"><span class="linenos">141</span></a><span class="sd">        dni (str): DNI del cliente a buscar.</span>
+</span><span id="obtener_cliente_por_id-142"><a href="#obtener_cliente_por_id-142"><span class="linenos">142</span></a>
+</span><span id="obtener_cliente_por_id-143"><a href="#obtener_cliente_por_id-143"><span class="linenos">143</span></a><span class="sd">    Returns:</span>
+</span><span id="obtener_cliente_por_id-144"><a href="#obtener_cliente_por_id-144"><span class="linenos">144</span></a><span class="sd">        dict or None: Diccionario con los datos del cliente si se encuentra, None si no existe.</span>
+</span><span id="obtener_cliente_por_id-145"><a href="#obtener_cliente_por_id-145"><span class="linenos">145</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="obtener_cliente_por_id-146"><a href="#obtener_cliente_por_id-146"><span class="linenos">146</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="obtener_cliente_por_id-147"><a href="#obtener_cliente_por_id-147"><span class="linenos">147</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
+</span><span id="obtener_cliente_por_id-148"><a href="#obtener_cliente_por_id-148"><span class="linenos">148</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span><span id="obtener_cliente_por_id-149"><a href="#obtener_cliente_por_id-149"><span class="linenos">149</span></a>
+</span><span id="obtener_cliente_por_id-150"><a href="#obtener_cliente_por_id-150"><span class="linenos">150</span></a>        <span class="n">consulta</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="obtener_cliente_por_id-151"><a href="#obtener_cliente_por_id-151"><span class="linenos">151</span></a><span class="s2">            SELECT id, nombre, primer_apellido, segundo_apellido, dni, telefono,</span>
+</span><span id="obtener_cliente_por_id-152"><a href="#obtener_cliente_por_id-152"><span class="linenos">152</span></a><span class="s2">                   email, direccion, codigo_postal, localidad, provincia, observaciones</span>
+</span><span id="obtener_cliente_por_id-153"><a href="#obtener_cliente_por_id-153"><span class="linenos">153</span></a><span class="s2">            FROM clientes</span>
+</span><span id="obtener_cliente_por_id-154"><a href="#obtener_cliente_por_id-154"><span class="linenos">154</span></a><span class="s2">            WHERE id = </span><span class="si">%s</span>
+</span><span id="obtener_cliente_por_id-155"><a href="#obtener_cliente_por_id-155"><span class="linenos">155</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="obtener_cliente_por_id-156"><a href="#obtener_cliente_por_id-156"><span class="linenos">156</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">consulta</span><span class="p">,</span> <span class="p">(</span><span class="n">cliente_id</span><span class="p">,))</span>
+</span><span id="obtener_cliente_por_id-157"><a href="#obtener_cliente_por_id-157"><span class="linenos">157</span></a>        <span class="n">fila</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+</span><span id="obtener_cliente_por_id-158"><a href="#obtener_cliente_por_id-158"><span class="linenos">158</span></a>
+</span><span id="obtener_cliente_por_id-159"><a href="#obtener_cliente_por_id-159"><span class="linenos">159</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="obtener_cliente_por_id-160"><a href="#obtener_cliente_por_id-160"><span class="linenos">160</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="obtener_cliente_por_id-161"><a href="#obtener_cliente_por_id-161"><span class="linenos">161</span></a>
+</span><span id="obtener_cliente_por_id-162"><a href="#obtener_cliente_por_id-162"><span class="linenos">162</span></a>        <span class="k">if</span> <span class="n">fila</span><span class="p">:</span>
+</span><span id="obtener_cliente_por_id-163"><a href="#obtener_cliente_por_id-163"><span class="linenos">163</span></a>            <span class="n">claves</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;nombre&quot;</span><span class="p">,</span> <span class="s2">&quot;primer_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;segundo_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;dni&quot;</span><span class="p">,</span> <span class="s2">&quot;telefono&quot;</span><span class="p">,</span>
+</span><span id="obtener_cliente_por_id-164"><a href="#obtener_cliente_por_id-164"><span class="linenos">164</span></a>                      <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;direccion&quot;</span><span class="p">,</span> <span class="s2">&quot;codigo_postal&quot;</span><span class="p">,</span> <span class="s2">&quot;localidad&quot;</span><span class="p">,</span> <span class="s2">&quot;provincia&quot;</span><span class="p">,</span> <span class="s2">&quot;observaciones&quot;</span><span class="p">]</span>
+</span><span id="obtener_cliente_por_id-165"><a href="#obtener_cliente_por_id-165"><span class="linenos">165</span></a>            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">claves</span><span class="p">,</span> <span class="n">fila</span><span class="p">))</span>
+</span><span id="obtener_cliente_por_id-166"><a href="#obtener_cliente_por_id-166"><span class="linenos">166</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="obtener_cliente_por_id-167"><a href="#obtener_cliente_por_id-167"><span class="linenos">167</span></a>            <span class="k">return</span> <span class="kc">None</span>
+</span><span id="obtener_cliente_por_id-168"><a href="#obtener_cliente_por_id-168"><span class="linenos">168</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="obtener_cliente_por_id-169"><a href="#obtener_cliente_por_id-169"><span class="linenos">169</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al obtener cliente por ID: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="obtener_cliente_por_id-170"><a href="#obtener_cliente_por_id-170"><span class="linenos">170</span></a>        <span class="k">return</span> <span class="kc">None</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Devuelve un diccionario con los datos del cliente según su ID.</p>
+            <div class="docstring"><p>Obtiene los datos completos de un cliente a partir de su DNI.</p>
+
+<p>Args:
+    dni (str): DNI del cliente a buscar.</p>
+
+<p>Returns:
+    dict or None: Diccionario con los datos del cliente si se encuentra, None si no existe.</p>
 </div>
 
 
@@ -429,33 +554,33 @@ Retorna una tupla si se encuentra, None si no.</p>
 
     </div>
     <a class="headerlink" href="#obtener_cliente_por_id_por_dni"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="obtener_cliente_por_id_por_dni-129"><a href="#obtener_cliente_por_id_por_dni-129"><span class="linenos">129</span></a><span class="k">def</span><span class="w"> </span><span class="nf">obtener_cliente_por_id_por_dni</span><span class="p">(</span><span class="n">dni</span><span class="p">):</span>
-</span><span id="obtener_cliente_por_id_por_dni-130"><a href="#obtener_cliente_por_id_por_dni-130"><span class="linenos">130</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="obtener_cliente_por_id_por_dni-131"><a href="#obtener_cliente_por_id_por_dni-131"><span class="linenos">131</span></a><span class="sd">    Devuelve un diccionario con los datos del cliente según su DNI.</span>
-</span><span id="obtener_cliente_por_id_por_dni-132"><a href="#obtener_cliente_por_id_por_dni-132"><span class="linenos">132</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="obtener_cliente_por_id_por_dni-133"><a href="#obtener_cliente_por_id_por_dni-133"><span class="linenos">133</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="obtener_cliente_por_id_por_dni-134"><a href="#obtener_cliente_por_id_por_dni-134"><span class="linenos">134</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
-</span><span id="obtener_cliente_por_id_por_dni-135"><a href="#obtener_cliente_por_id_por_dni-135"><span class="linenos">135</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-</span><span id="obtener_cliente_por_id_por_dni-136"><a href="#obtener_cliente_por_id_por_dni-136"><span class="linenos">136</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="obtener_cliente_por_id_por_dni-137"><a href="#obtener_cliente_por_id_por_dni-137"><span class="linenos">137</span></a><span class="s2">            SELECT id, nombre, primer_apellido, segundo_apellido, dni, telefono,</span>
-</span><span id="obtener_cliente_por_id_por_dni-138"><a href="#obtener_cliente_por_id_por_dni-138"><span class="linenos">138</span></a><span class="s2">                   email, direccion, codigo_postal, localidad, provincia, observaciones</span>
-</span><span id="obtener_cliente_por_id_por_dni-139"><a href="#obtener_cliente_por_id_por_dni-139"><span class="linenos">139</span></a><span class="s2">            FROM clientes</span>
-</span><span id="obtener_cliente_por_id_por_dni-140"><a href="#obtener_cliente_por_id_por_dni-140"><span class="linenos">140</span></a><span class="s2">            WHERE dni = </span><span class="si">%s</span>
-</span><span id="obtener_cliente_por_id_por_dni-141"><a href="#obtener_cliente_por_id_por_dni-141"><span class="linenos">141</span></a><span class="s2">            LIMIT 1</span>
-</span><span id="obtener_cliente_por_id_por_dni-142"><a href="#obtener_cliente_por_id_por_dni-142"><span class="linenos">142</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">dni</span><span class="p">,))</span>
-</span><span id="obtener_cliente_por_id_por_dni-143"><a href="#obtener_cliente_por_id_por_dni-143"><span class="linenos">143</span></a>        <span class="n">fila</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-</span><span id="obtener_cliente_por_id_por_dni-144"><a href="#obtener_cliente_por_id_por_dni-144"><span class="linenos">144</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="obtener_cliente_por_id_por_dni-145"><a href="#obtener_cliente_por_id_por_dni-145"><span class="linenos">145</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="obtener_cliente_por_id_por_dni-146"><a href="#obtener_cliente_por_id_por_dni-146"><span class="linenos">146</span></a>
-</span><span id="obtener_cliente_por_id_por_dni-147"><a href="#obtener_cliente_por_id_por_dni-147"><span class="linenos">147</span></a>        <span class="k">if</span> <span class="n">fila</span><span class="p">:</span>
-</span><span id="obtener_cliente_por_id_por_dni-148"><a href="#obtener_cliente_por_id_por_dni-148"><span class="linenos">148</span></a>            <span class="n">claves</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;nombre&quot;</span><span class="p">,</span> <span class="s2">&quot;primer_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;segundo_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;dni&quot;</span><span class="p">,</span> <span class="s2">&quot;telefono&quot;</span><span class="p">,</span>
-</span><span id="obtener_cliente_por_id_por_dni-149"><a href="#obtener_cliente_por_id_por_dni-149"><span class="linenos">149</span></a>                      <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;direccion&quot;</span><span class="p">,</span> <span class="s2">&quot;codigo_postal&quot;</span><span class="p">,</span> <span class="s2">&quot;localidad&quot;</span><span class="p">,</span> <span class="s2">&quot;provincia&quot;</span><span class="p">,</span> <span class="s2">&quot;observaciones&quot;</span><span class="p">]</span>
-</span><span id="obtener_cliente_por_id_por_dni-150"><a href="#obtener_cliente_por_id_por_dni-150"><span class="linenos">150</span></a>            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">claves</span><span class="p">,</span> <span class="n">fila</span><span class="p">))</span>
-</span><span id="obtener_cliente_por_id_por_dni-151"><a href="#obtener_cliente_por_id_por_dni-151"><span class="linenos">151</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="obtener_cliente_por_id_por_dni-152"><a href="#obtener_cliente_por_id_por_dni-152"><span class="linenos">152</span></a>            <span class="k">return</span> <span class="kc">None</span>
-</span><span id="obtener_cliente_por_id_por_dni-153"><a href="#obtener_cliente_por_id_por_dni-153"><span class="linenos">153</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="obtener_cliente_por_id_por_dni-154"><a href="#obtener_cliente_por_id_por_dni-154"><span class="linenos">154</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al obtener cliente por DNI: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="obtener_cliente_por_id_por_dni-155"><a href="#obtener_cliente_por_id_por_dni-155"><span class="linenos">155</span></a>        <span class="k">return</span> <span class="kc">None</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="obtener_cliente_por_id_por_dni-173"><a href="#obtener_cliente_por_id_por_dni-173"><span class="linenos">173</span></a><span class="k">def</span><span class="w"> </span><span class="nf">obtener_cliente_por_id_por_dni</span><span class="p">(</span><span class="n">dni</span><span class="p">):</span>
+</span><span id="obtener_cliente_por_id_por_dni-174"><a href="#obtener_cliente_por_id_por_dni-174"><span class="linenos">174</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="obtener_cliente_por_id_por_dni-175"><a href="#obtener_cliente_por_id_por_dni-175"><span class="linenos">175</span></a><span class="sd">    Devuelve un diccionario con los datos del cliente según su DNI.</span>
+</span><span id="obtener_cliente_por_id_por_dni-176"><a href="#obtener_cliente_por_id_por_dni-176"><span class="linenos">176</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="obtener_cliente_por_id_por_dni-177"><a href="#obtener_cliente_por_id_por_dni-177"><span class="linenos">177</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="obtener_cliente_por_id_por_dni-178"><a href="#obtener_cliente_por_id_por_dni-178"><span class="linenos">178</span></a>        <span class="n">conexion</span> <span class="o">=</span> <span class="n">obtener_conexion</span><span class="p">()</span>
+</span><span id="obtener_cliente_por_id_por_dni-179"><a href="#obtener_cliente_por_id_por_dni-179"><span class="linenos">179</span></a>        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span><span id="obtener_cliente_por_id_por_dni-180"><a href="#obtener_cliente_por_id_por_dni-180"><span class="linenos">180</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="obtener_cliente_por_id_por_dni-181"><a href="#obtener_cliente_por_id_por_dni-181"><span class="linenos">181</span></a><span class="s2">            SELECT id, nombre, primer_apellido, segundo_apellido, dni, telefono,</span>
+</span><span id="obtener_cliente_por_id_por_dni-182"><a href="#obtener_cliente_por_id_por_dni-182"><span class="linenos">182</span></a><span class="s2">                   email, direccion, codigo_postal, localidad, provincia, observaciones</span>
+</span><span id="obtener_cliente_por_id_por_dni-183"><a href="#obtener_cliente_por_id_por_dni-183"><span class="linenos">183</span></a><span class="s2">            FROM clientes</span>
+</span><span id="obtener_cliente_por_id_por_dni-184"><a href="#obtener_cliente_por_id_por_dni-184"><span class="linenos">184</span></a><span class="s2">            WHERE dni = </span><span class="si">%s</span>
+</span><span id="obtener_cliente_por_id_por_dni-185"><a href="#obtener_cliente_por_id_por_dni-185"><span class="linenos">185</span></a><span class="s2">            LIMIT 1</span>
+</span><span id="obtener_cliente_por_id_por_dni-186"><a href="#obtener_cliente_por_id_por_dni-186"><span class="linenos">186</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">dni</span><span class="p">,))</span>
+</span><span id="obtener_cliente_por_id_por_dni-187"><a href="#obtener_cliente_por_id_por_dni-187"><span class="linenos">187</span></a>        <span class="n">fila</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+</span><span id="obtener_cliente_por_id_por_dni-188"><a href="#obtener_cliente_por_id_por_dni-188"><span class="linenos">188</span></a>        <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="obtener_cliente_por_id_por_dni-189"><a href="#obtener_cliente_por_id_por_dni-189"><span class="linenos">189</span></a>        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="obtener_cliente_por_id_por_dni-190"><a href="#obtener_cliente_por_id_por_dni-190"><span class="linenos">190</span></a>
+</span><span id="obtener_cliente_por_id_por_dni-191"><a href="#obtener_cliente_por_id_por_dni-191"><span class="linenos">191</span></a>        <span class="k">if</span> <span class="n">fila</span><span class="p">:</span>
+</span><span id="obtener_cliente_por_id_por_dni-192"><a href="#obtener_cliente_por_id_por_dni-192"><span class="linenos">192</span></a>            <span class="n">claves</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;nombre&quot;</span><span class="p">,</span> <span class="s2">&quot;primer_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;segundo_apellido&quot;</span><span class="p">,</span> <span class="s2">&quot;dni&quot;</span><span class="p">,</span> <span class="s2">&quot;telefono&quot;</span><span class="p">,</span>
+</span><span id="obtener_cliente_por_id_por_dni-193"><a href="#obtener_cliente_por_id_por_dni-193"><span class="linenos">193</span></a>                      <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;direccion&quot;</span><span class="p">,</span> <span class="s2">&quot;codigo_postal&quot;</span><span class="p">,</span> <span class="s2">&quot;localidad&quot;</span><span class="p">,</span> <span class="s2">&quot;provincia&quot;</span><span class="p">,</span> <span class="s2">&quot;observaciones&quot;</span><span class="p">]</span>
+</span><span id="obtener_cliente_por_id_por_dni-194"><a href="#obtener_cliente_por_id_por_dni-194"><span class="linenos">194</span></a>            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">claves</span><span class="p">,</span> <span class="n">fila</span><span class="p">))</span>
+</span><span id="obtener_cliente_por_id_por_dni-195"><a href="#obtener_cliente_por_id_por_dni-195"><span class="linenos">195</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="obtener_cliente_por_id_por_dni-196"><a href="#obtener_cliente_por_id_por_dni-196"><span class="linenos">196</span></a>            <span class="k">return</span> <span class="kc">None</span>
+</span><span id="obtener_cliente_por_id_por_dni-197"><a href="#obtener_cliente_por_id_por_dni-197"><span class="linenos">197</span></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="obtener_cliente_por_id_por_dni-198"><a href="#obtener_cliente_por_id_por_dni-198"><span class="linenos">198</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Error al obtener cliente por DNI: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="obtener_cliente_por_id_por_dni-199"><a href="#obtener_cliente_por_id_por_dni-199"><span class="linenos">199</span></a>        <span class="k">return</span> <span class="kc">None</span>
 </span></pre></div>
 
 

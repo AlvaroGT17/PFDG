@@ -43,6 +43,12 @@
                                 <a class="variable" href="#VentanaCompraventa.ventana_anterior">ventana_anterior</a>
                         </li>
                         <li>
+                                <a class="variable" href="#VentanaCompraventa.firma_activa_compra">firma_activa_compra</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#VentanaCompraventa.firma_activa_venta">firma_activa_venta</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#VentanaCompraventa.crear_seccion_plegable">crear_seccion_plegable</a>
                         </li>
                         <li>
@@ -187,8 +193,8 @@
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">720</span><span class="p">)</span>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;ventana_compraventa&quot;</span><span class="p">)</span>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_anterior</span> <span class="o">=</span> <span class="n">ventana_anterior</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="c1"># ...</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="c1"># (todo el contenido del método sigue sin cambios, como ya lo tienes)</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">firma_activa_compra</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">firma_activa_venta</span> <span class="o">=</span> <span class="kc">False</span>
 </span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>
 </span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">crear_seccion_plegable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">titulo</span><span class="p">):</span>
 </span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1056,8 +1062,8 @@
 </span><span id="VentanaCompraventa-93"><a href="#VentanaCompraventa-93"><span class="linenos"> 93</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">720</span><span class="p">)</span>
 </span><span id="VentanaCompraventa-94"><a href="#VentanaCompraventa-94"><span class="linenos"> 94</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;ventana_compraventa&quot;</span><span class="p">)</span>
 </span><span id="VentanaCompraventa-95"><a href="#VentanaCompraventa-95"><span class="linenos"> 95</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_anterior</span> <span class="o">=</span> <span class="n">ventana_anterior</span>
-</span><span id="VentanaCompraventa-96"><a href="#VentanaCompraventa-96"><span class="linenos"> 96</span></a>        <span class="c1"># ...</span>
-</span><span id="VentanaCompraventa-97"><a href="#VentanaCompraventa-97"><span class="linenos"> 97</span></a>        <span class="c1"># (todo el contenido del método sigue sin cambios, como ya lo tienes)</span>
+</span><span id="VentanaCompraventa-96"><a href="#VentanaCompraventa-96"><span class="linenos"> 96</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">firma_activa_compra</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="VentanaCompraventa-97"><a href="#VentanaCompraventa-97"><span class="linenos"> 97</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">firma_activa_venta</span> <span class="o">=</span> <span class="kc">False</span>
 </span><span id="VentanaCompraventa-98"><a href="#VentanaCompraventa-98"><span class="linenos"> 98</span></a>
 </span><span id="VentanaCompraventa-99"><a href="#VentanaCompraventa-99"><span class="linenos"> 99</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">crear_seccion_plegable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">titulo</span><span class="p">):</span>
 </span><span id="VentanaCompraventa-100"><a href="#VentanaCompraventa-100"><span class="linenos">100</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1876,8 +1882,8 @@
 </span><span id="VentanaCompraventa.__init__-93"><a href="#VentanaCompraventa.__init__-93"><span class="linenos">93</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">720</span><span class="p">)</span>
 </span><span id="VentanaCompraventa.__init__-94"><a href="#VentanaCompraventa.__init__-94"><span class="linenos">94</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;ventana_compraventa&quot;</span><span class="p">)</span>
 </span><span id="VentanaCompraventa.__init__-95"><a href="#VentanaCompraventa.__init__-95"><span class="linenos">95</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_anterior</span> <span class="o">=</span> <span class="n">ventana_anterior</span>
-</span><span id="VentanaCompraventa.__init__-96"><a href="#VentanaCompraventa.__init__-96"><span class="linenos">96</span></a>        <span class="c1"># ...</span>
-</span><span id="VentanaCompraventa.__init__-97"><a href="#VentanaCompraventa.__init__-97"><span class="linenos">97</span></a>        <span class="c1"># (todo el contenido del método sigue sin cambios, como ya lo tienes)</span>
+</span><span id="VentanaCompraventa.__init__-96"><a href="#VentanaCompraventa.__init__-96"><span class="linenos">96</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">firma_activa_compra</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="VentanaCompraventa.__init__-97"><a href="#VentanaCompraventa.__init__-97"><span class="linenos">97</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">firma_activa_venta</span> <span class="o">=</span> <span class="kc">False</span>
 </span></pre></div>
 
 
@@ -1991,6 +1997,28 @@ Este método gestiona la visibilidad, habilitación y expansión de las seccione
         
     </div>
     <a class="headerlink" href="#VentanaCompraventa.ventana_anterior"></a>
+    
+    
+
+                            </div>
+                            <div id="VentanaCompraventa.firma_activa_compra" class="classattr">
+                                <div class="attr variable">
+            <span class="name">firma_activa_compra</span>
+
+        
+    </div>
+    <a class="headerlink" href="#VentanaCompraventa.firma_activa_compra"></a>
+    
+    
+
+                            </div>
+                            <div id="VentanaCompraventa.firma_activa_venta" class="classattr">
+                                <div class="attr variable">
+            <span class="name">firma_activa_venta</span>
+
+        
+    </div>
+    <a class="headerlink" href="#VentanaCompraventa.firma_activa_venta"></a>
     
     
 

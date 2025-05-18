@@ -1,3 +1,13 @@
+"""
+Módulo para la ventana de fichaje del personal en el sistema ReyBoxes.
+
+Permite a los usuarios registrar su entrada o salida del trabajo mediante una interfaz gráfica,
+que incluye un reloj en tiempo real, selección de tipo de fichaje y botones de acción.
+
+La ventana se comporta como modal, deshabilitando el cierre con el botón (❌) para forzar
+el uso del botón "Volver".
+"""
+
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import QTimer, QTime, Qt, QSize
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QRadioButton, QHBoxLayout, QMessageBox, QButtonGroup, QToolButton
@@ -11,6 +21,13 @@ class VentanaFichar(QWidget):
     Esta interfaz muestra un reloj en tiempo real, permite seleccionar el tipo de fichaje
     (Entrada o Salida), y dispone de botones para confirmar la acción o volver al menú principal.
     El botón de cierre (❌) está deshabilitado para obligar al usuario a usar "Volver".
+
+    Atributos:
+        reloj_label (QLabel): Etiqueta que muestra la hora actual.
+        radio_entrada (QRadioButton): Botón para fichaje de entrada.
+        radio_salida (QRadioButton): Botón para fichaje de salida.
+        btn_confirmar (QToolButton): Botón para confirmar el fichaje.
+        btn_volver (QToolButton): Botón para volver al menú principal.
     """
 
     def __init__(self):
@@ -109,16 +126,18 @@ class VentanaFichar(QWidget):
         self.actualizar_reloj()
 
     def actualizar_reloj(self):
-        """Actualiza el texto del reloj con la hora actual del sistema."""
+        """
+        Actualiza el texto del reloj con la hora actual del sistema.
+        """
         hora_actual = QTime.currentTime().toString("HH:mm:ss")
         self.reloj_label.setText(hora_actual)
 
     def obtener_tipo_fichaje(self):
         """
-        Devuelve el tipo de fichaje seleccionado.
+        Devuelve el tipo de fichaje seleccionado por el usuario.
 
-        Retorna:
-            str | None: "ENTRADA", "SALIDA" o None si no se ha seleccionado nada.
+        Returns:
+            str | None: "ENTRADA", "SALIDA" o None si no se ha seleccionado ninguna opción.
         """
         if self.radio_entrada.isChecked():
             return "ENTRADA"
@@ -130,7 +149,7 @@ class VentanaFichar(QWidget):
         """
         Muestra un cuadro de advertencia con el mensaje proporcionado.
 
-        Parámetros:
+        Args:
             mensaje (str): Mensaje a mostrar en el cuadro de diálogo.
         """
         QMessageBox.warning(self, "Fichaje inválido", mensaje)
@@ -139,7 +158,7 @@ class VentanaFichar(QWidget):
         """
         Muestra un cuadro de información indicando que el fichaje fue registrado correctamente.
 
-        Parámetros:
+        Args:
             mensaje (str): Mensaje a mostrar en el cuadro de diálogo.
         """
         QMessageBox.information(self, "Fichaje registrado", mensaje)

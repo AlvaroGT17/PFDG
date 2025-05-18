@@ -3,6 +3,9 @@ Módulo para la ventana de reimpresión de contratos de compra.
 
 Permite al usuario visualizar, reenviar o imprimir contratos PDF
 almacenados previamente, clasificados por carpetas mensuales.
+
+La interfaz presenta una tabla interactiva y botones de acción
+para la gestión de los documentos desde la propia aplicación.
 """
 
 import os
@@ -19,18 +22,28 @@ from utilidades.rutas import obtener_ruta_absoluta
 
 class VentanaReimpresionCompras(QWidget):
     """
-    Ventana gráfica que permite consultar y gestionar documentos
-    de compra generados previamente en el sistema.
+    Ventana gráfica para consultar, abrir, reenviar o imprimir
+    documentos PDF correspondientes a contratos de compra.
+
+    Atributos:
+        nombre_usuario (str): Nombre del usuario activo.
+        rol_usuario (str): Rol actual del usuario.
+        volver_callback (function): Función que se ejecuta al pulsar "Volver".
+        tabla (QTableWidget): Tabla donde se listan los documentos PDF.
+        btn_enviar (QToolButton): Botón para reenviar documentos.
+        btn_imprimir (QToolButton): Botón para imprimir documentos.
+        btn_volver (QToolButton): Botón para volver a la pantalla anterior.
     """
 
     def __init__(self, nombre_usuario, rol_usuario, volver_callback, parent=None):
         """
         Inicializa la ventana de reimpresión de compras.
 
-        :param nombre_usuario: Nombre del usuario actual.
-        :param rol_usuario: Rol del usuario actual.
-        :param volver_callback: Función a ejecutar al pulsar "Volver".
-        :param parent: Widget padre opcional.
+        Args:
+            nombre_usuario (str): Nombre del usuario actual.
+            rol_usuario (str): Rol del usuario actual.
+            volver_callback (function): Función a ejecutar al pulsar "Volver".
+            parent (QWidget, optional): Widget padre si se usa desde otra ventana.
         """
         super().__init__(parent)
         self.nombre_usuario = nombre_usuario
@@ -51,6 +64,11 @@ class VentanaReimpresionCompras(QWidget):
     def init_ui(self):
         """
         Construye y organiza los elementos gráficos de la interfaz.
+
+        La interfaz incluye:
+        - Título superior.
+        - Tabla para mostrar documentos PDF por mes.
+        - Botones con iconos para reenviar, imprimir o volver.
         """
         layout_principal = QVBoxLayout()
 
@@ -106,8 +124,10 @@ class VentanaReimpresionCompras(QWidget):
 
     def cargar_documentos(self):
         """
-        Escanea la carpeta de documentos de compras y carga en la tabla
-        todos los archivos PDF detectados, organizados por mes.
+        Carga los archivos PDF ubicados en la carpeta `documentos/compras`.
+
+        Recorre las carpetas mensuales, identifica documentos PDF y los
+        muestra en la tabla junto a su carpeta (mes) de origen.
         """
         print("🔄 Cargando documentos de compras...")
         ruta_base = obtener_ruta_absoluta("documentos/compras")
@@ -134,10 +154,11 @@ class VentanaReimpresionCompras(QWidget):
 
     def abrir_documento_seleccionado(self, fila, columna):
         """
-        Abre el documento PDF correspondiente a la fila seleccionada en el visor por defecto.
+        Abre el documento PDF de la fila seleccionada con la aplicación por defecto del sistema.
 
-        :param fila: Índice de la fila seleccionada.
-        :param columna: Índice de la columna seleccionada (no se usa).
+        Args:
+            fila (int): Fila seleccionada en la tabla.
+            columna (int): Columna seleccionada (no se utiliza).
         """
         ruta_item = self.tabla.item(fila, 2)
         if ruta_item:

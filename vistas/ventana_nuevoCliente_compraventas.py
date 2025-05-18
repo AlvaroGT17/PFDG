@@ -1,3 +1,16 @@
+"""
+Módulo para la ventana de alta de nuevos clientes en el área de compraventas.
+
+Esta interfaz permite introducir los datos de un cliente (nombre, apellidos,
+DNI, contacto, dirección, etc.) y guardarlos en la base de datos tras validación.
+
+Características:
+- Validación de campos obligatorios.
+- Comprobación de DNI duplicado.
+- Inserción directa en la base de datos.
+- Estilo gráfico personalizado y botones de acción.
+"""
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QTextEdit, QPushButton, QVBoxLayout, QHBoxLayout, QFormLayout, QMessageBox
@@ -7,20 +20,25 @@ from utilidades.rutas import obtener_ruta_absoluta
 
 class VentanaNuevoClienteCompraventas(QWidget):
     """
-    Ventana para registrar un nuevo cliente en el contexto de compraventas.
+    Ventana gráfica para registrar un nuevo cliente en el módulo de compraventas.
 
-    Esta ventana permite al usuario introducir los datos personales y de contacto de un nuevo cliente,
-    validar campos obligatorios, comprobar duplicidad de DNI, y guardar la información en la base de datos.
-    Dispone de dos botones principales: "Crear cliente" y "Cancelar".
+    Permite introducir datos personales y de contacto, validar campos obligatorios,
+    verificar que el DNI no esté duplicado y guardar el registro en la base de datos.
+
+    Atributos:
+        callback_guardar (function | None): Función a ejecutar tras guardar correctamente,
+            recibe como argumento el ID del nuevo cliente.
+        boton_guardar (QPushButton): Botón para crear al nuevo cliente.
+        boton_cancelar (QPushButton): Botón para cerrar la ventana sin guardar.
     """
 
     def __init__(self, callback_guardar=None):
         """
         Inicializa la interfaz gráfica de la ventana para crear un nuevo cliente.
 
-        Parámetros:
-            callback_guardar (función, opcional): Función de retorno que se ejecuta al guardar el cliente,
-            recibiendo como argumento el ID del cliente creado.
+        Args:
+            callback_guardar (function, optional): Función de retorno que se ejecuta al guardar
+            el cliente, recibiendo como argumento el ID del cliente creado.
         """
         super().__init__()
         self.setWindowTitle("Nuevo Cliente - ReyBoxes")
@@ -41,6 +59,7 @@ class VentanaNuevoClienteCompraventas(QWidget):
 
         formulario = QFormLayout()
 
+        # Campos de entrada
         self.nombre = QLineEdit()
         self.primer_apellido = QLineEdit()
         self.segundo_apellido = QLineEdit()
@@ -54,6 +73,7 @@ class VentanaNuevoClienteCompraventas(QWidget):
         self.observaciones = QTextEdit()
         self.observaciones.setFixedHeight(60)
 
+        # Agregar campos al formulario
         formulario.addRow("Nombre:", self.nombre)
         formulario.addRow("Primer apellido:", self.primer_apellido)
         formulario.addRow("Segundo apellido:", self.segundo_apellido)
@@ -68,6 +88,7 @@ class VentanaNuevoClienteCompraventas(QWidget):
 
         layout.addLayout(formulario)
 
+        # Botones de acción
         botones = QHBoxLayout()
         self.boton_guardar = QPushButton("Crear cliente")
         self.boton_guardar.setObjectName("boton_compraventa")
@@ -86,12 +107,12 @@ class VentanaNuevoClienteCompraventas(QWidget):
         """
         Procesa los datos introducidos por el usuario para crear un nuevo cliente.
 
-        Realiza las siguientes validaciones y acciones:
+        Realiza las siguientes acciones:
         - Verifica que los campos obligatorios (nombre, primer apellido, DNI y teléfono) estén completos.
-        - Comprueba si el DNI ya existe en la base de datos.
-        - Si todo es correcto, registra al nuevo cliente usando la función `crear_cliente_y_devolver_id()`.
-        - Si se pasa un callback, lo ejecuta con el ID del nuevo cliente.
-        - Muestra mensajes de información o error mediante cuadros de diálogo.
+        - Comprueba si el DNI ya existe en la base de datos para evitar duplicados.
+        - Si la validación es correcta, registra el cliente mediante `crear_cliente_y_devolver_id()`.
+        - Muestra mensajes informativos o de error mediante QMessageBox.
+        - Si se ha proporcionado un callback, lo ejecuta pasándole el ID del nuevo cliente.
         """
         nombre = self.nombre.text().strip().upper()
         apellido1 = self.primer_apellido.text().strip().upper()

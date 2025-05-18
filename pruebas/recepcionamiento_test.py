@@ -1,11 +1,15 @@
 # pruebas/recepcionamiento_test.py
-
 """
 Script visual para lanzar la ventana de recepción de vehículos con datos de prueba.
 
-Uso:
-  - Ejecutar directamente con: `python -m pruebas.recepcionamiento_test`
-  - Importar `iniciar_ventana_recepcionamiento` en test unitarios.
+Este archivo permite ejecutar `VentanaRecepcionamiento` de forma independiente
+para realizar pruebas visuales, comprobar estilos, disposición de campos y 
+funcionalidades básicas, sin necesidad de levantar la aplicación completa.
+
+Puede utilizarse también como función auxiliar en tests unitarios.
+
+Uso recomendado:
+    python -m pruebas.recepcionamiento_test
 """
 
 import sys
@@ -20,7 +24,10 @@ from controladores.recepcionamiento_controlador import RecepcionamientoControlad
 
 def simular_firma(path):
     """
-    Genera una firma de prueba como imagen PNG.
+    Genera una imagen PNG de firma de prueba y la guarda en el path especificado.
+
+    Args:
+        path (str): Ruta de archivo donde se guardará la imagen simulada.
     """
     pixmap = QPixmap(400, 100)
     pixmap.fill(Qt.white)
@@ -36,8 +43,11 @@ def simular_firma(path):
 
 def iniciar_ventana_recepcionamiento():
     """
-    Prepara la ventana de recepción con datos simulados para pruebas.
-    No ejecuta `show()` ni `app.exec()` (solo para tests).
+    Prepara una instancia de la ventana de recepción de vehículos con datos pre-cargados
+    para pruebas visuales o funcionales.
+
+    Returns:
+        VentanaRecepcionamiento: Ventana completamente configurada con datos simulados.
     """
     ventana = VentanaRecepcionamiento()
 

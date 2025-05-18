@@ -1,9 +1,13 @@
 """
 Módulo de interfaz para la creación de usuarios en el sistema ReyBoxes.
 
-Contiene la clase VentanaUsuarios, que representa una ventana con campos
-para introducir datos de un nuevo usuario, como nombre, correo y rol.
-Se incluye un sistema de estilo visual y control del cierre autorizado.
+Contiene la clase VentanaUsuarios, que representa una ventana gráfica 
+destinada a la introducción de datos de un nuevo usuario, incluyendo 
+nombre, apellidos, correo, contraseña y rol.
+
+La ventana incorpora botones para crear el usuario, limpiar los campos 
+y volver al menú anterior. También se aplica una hoja de estilo visual 
+y se controla el cierre de la ventana mediante un indicador booleano.
 """
 
 from PySide6.QtGui import QIcon
@@ -14,15 +18,28 @@ from utilidades.rutas import obtener_ruta_absoluta
 
 class VentanaUsuarios(QWidget):
     """
-    Ventana gráfica para crear un nuevo usuario del sistema.
+    Ventana gráfica para la creación de nuevos usuarios en el sistema ReyBoxes.
 
-    Incluye campos de entrada para nombre, apellido, correo electrónico, 
-    contraseña, rol, y botones para crear, limpiar y volver.
+    Esta interfaz permite introducir la información de un usuario, como:
+    - Nombre
+    - Apellido
+    - Correo electrónico
+    - Contraseña (y su confirmación)
+    - Rol asignado (desde un combo desplegable)
+
+    También incluye botones gráficos para confirmar la creación, limpiar los 
+    datos del formulario o volver a la pantalla anterior.
+
+    Atributos:
+        cierre_autorizado (bool): Determina si se permite cerrar la ventana manualmente.
     """
 
     def __init__(self):
         """
-        Inicializa la ventana con todos los componentes visuales.
+        Constructor de la ventana.
+
+        Inicializa la interfaz, configurando el título, icono, tamaño, 
+        y cargando los componentes gráficos y estilos definidos.
         """
         super().__init__()
         self.setWindowTitle("ReyBoxes - Crear usuario")
@@ -37,6 +54,12 @@ class VentanaUsuarios(QWidget):
     def setup_ui(self):
         """
         Crea y configura todos los elementos visuales de la interfaz.
+
+        Este método incluye:
+        - Campos de texto para datos del usuario.
+        - ComboBox para selección de rol.
+        - Botones gráficos (crear, limpiar, volver).
+        - Contenedor principal con márgenes y espaciado.
         """
         layout_principal = QVBoxLayout(self)
         layout_principal.setContentsMargins(40, 40, 40, 40)
@@ -112,7 +135,9 @@ class VentanaUsuarios(QWidget):
 
     def aplicar_estilos(self):
         """
-        Aplica la hoja de estilo CSS personalizada a la ventana.
+        Aplica la hoja de estilo personalizada (usuarios.css) a la ventana.
+
+        Se carga desde la ruta absoluta proporcionada por el módulo `rutas`.
         """
         ruta_css = obtener_ruta_absoluta("css/usuarios.css")
         with open(ruta_css, "r", encoding="utf-8") as f:
@@ -122,7 +147,11 @@ class VentanaUsuarios(QWidget):
         """
         Actualiza dinámicamente el título superior con el nombre introducido.
 
-        :param texto: Texto del nombre de usuario actual (en el QLineEdit).
+        El título refleja el nombre ingresado en el campo correspondiente, 
+        aplicando formato en mayúsculas y color personalizado.
+
+        Args:
+            texto (str): Nombre introducido por el usuario.
         """
         nombre = texto.strip().upper()
         if nombre:
@@ -136,9 +165,13 @@ class VentanaUsuarios(QWidget):
 
     def closeEvent(self, event):
         """
-        Controla el cierre de la ventana.
+        Evento de cierre de la ventana.
 
-        Solo permite cerrar si `cierre_autorizado` es True.
+        Si `cierre_autorizado` es True, se permite el cierre.
+        En caso contrario, se ignora el intento de cerrar la ventana.
+
+        Args:
+            event (QCloseEvent): Evento generado al intentar cerrar la ventana.
         """
         if self.cierre_autorizado:
             event.accept()

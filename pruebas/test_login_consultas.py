@@ -2,17 +2,17 @@
 """
 Pruebas unitarias para el módulo `login_consultas`.
 
-Incluye tests para:
-- Obtener usuario por nombre o email.
-- Guardar código de recuperación.
-- Verificar contraseña con bcrypt.
-- Verificar código de recuperación válido.
-- Actualizar contraseña.
+Este conjunto de tests verifica las funciones clave del proceso de autenticación
+y recuperación de cuenta del sistema, incluyendo:
 
-Se utilizan mocks para evitar accesos reales a la base de datos.
+- Obtener usuario por nombre o por email.
+- Guardar códigos de recuperación.
+- Verificar contraseñas con bcrypt.
+- Validar códigos de recuperación (con control de expiración).
+- Actualizar contraseñas cifradas.
 
-Autor: Cresnik  
-Proyecto: ReyBoxes - Gestión de Taller Mecánico
+Se utilizan mocks para evitar conexiones reales a la base de datos.
+
 """
 
 import pytest
@@ -25,6 +25,10 @@ import modelos.login_consultas as login_consultas
 # 🔧 Fixture reutilizable que simula una conexión y cursor
 @pytest.fixture
 def mock_conexion():
+    """
+    Devuelve una tupla con objetos simulados para conexión y cursor,
+    utilizados en la mayoría de los tests que requieren acceso a BD.
+    """
     mock_cursor = MagicMock()
     mock_conexion = MagicMock()
     mock_conexion.cursor.return_value = mock_cursor
@@ -33,8 +37,8 @@ def mock_conexion():
 
 def test_obtener_usuario_por_nombre_devuelve_datos(mock_conexion):
     """
-    Verifica que obtener_usuario_por_nombre() devuelve un diccionario
-    con los datos esperados cuando hay coincidencia.
+    Verifica que `obtener_usuario_por_nombre()` devuelve un diccionario
+    con los campos esperados cuando encuentra una coincidencia.
     """
     conexion, cursor = mock_conexion
     cursor.fetchone.return_value = (
@@ -50,7 +54,8 @@ def test_obtener_usuario_por_nombre_devuelve_datos(mock_conexion):
 
 def test_obtener_usuario_por_email_devuelve_datos(mock_conexion):
     """
-    Verifica que obtener_usuario_por_email() devuelve id y nombre correctamente.
+    Verifica que `obtener_usuario_por_email()` devuelve correctamente 
+    el ID y nombre del usuario al encontrar coincidencia por correo.
     """
     conexion, cursor = mock_conexion
     cursor.fetchone.return_value = (7, "CRESNIK")
@@ -66,8 +71,8 @@ def test_obtener_usuario_por_email_devuelve_datos(mock_conexion):
 
 def test_guardar_codigo_recuperacion_realiza_update(mock_conexion):
     """
-    Verifica que guardar_codigo_recuperacion() ejecuta correctamente
-    el UPDATE y realiza commit sin errores.
+    Verifica que `guardar_codigo_recuperacion()` ejecuta correctamente
+    un `UPDATE` en la base de datos y realiza `commit` exitosamente.
     """
     conexion, cursor = mock_conexion
 
@@ -84,8 +89,8 @@ def test_guardar_codigo_recuperacion_realiza_update(mock_conexion):
 
 def test_verificar_contrasena_correcta():
     """
-    Verifica que la función verificar_contrasena() devuelve True
-    al comparar una contraseña plana con su hash.
+    Comprueba que `verificar_contrasena()` devuelve True si la contraseña
+    ingresada coincide con el hash almacenado.
     """
     hash_pw = bcrypt.hashpw(b"1234", bcrypt.gensalt())
     assert login_consultas.verificar_contrasena(
@@ -94,8 +99,9 @@ def test_verificar_contrasena_correcta():
 
 def test_verificar_codigo_recuperacion_valido(mock_conexion):
     """
-    Verifica que el código de recuperación sea aceptado si no ha expirado
-    y coincide con el almacenado en la base de datos.
+    Verifica que `verificar_codigo_recuperacion()` devuelve True cuando:
+    - El código coincide con el almacenado.
+    - El código no ha expirado.
     """
     conexion, cursor = mock_conexion
     ahora = datetime.utcnow() + timedelta(minutes=3)
@@ -111,8 +117,8 @@ def test_verificar_codigo_recuperacion_valido(mock_conexion):
 
 def test_actualizar_contrasena_realiza_update(mock_conexion):
     """
-    Verifica que actualizar_contrasena() realiza correctamente
-    el UPDATE cifrado y realiza commit.
+    Verifica que `actualizar_contrasena()` actualiza correctamente el hash
+    de la nueva contraseña en la base de datos, con commit incluido.
     """
     conexion, cursor = mock_conexion
 

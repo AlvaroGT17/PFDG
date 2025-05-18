@@ -1,3 +1,13 @@
+"""
+Módulo de interfaz para visualizar el historial de fichajes en el sistema ReyBoxes.
+
+Permite mostrar registros de entrada y salida de empleados en una tabla,
+y ofrece funcionalidades para exportar los datos a formatos CSV y PDF.
+Incluye un botón para volver a la pantalla principal del sistema.
+
+La interfaz está diseñada para adaptarse tanto a usuarios comunes como a administradores.
+"""
+
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QIcon, QColor
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QHeaderView, QHBoxLayout, QToolButton
@@ -11,13 +21,20 @@ class VentanaHistorial(QWidget):
     Esta interfaz está diseñada tanto para usuarios comunes como para administradores.
     Permite visualizar una tabla con registros de fichajes, así como exportarlos a CSV o PDF.
     También incluye un botón para regresar al menú principal.
+
+    Atributos:
+        es_admin (bool): Determina si el usuario tiene privilegios de administrador.
+        tabla (QTableWidget): Tabla que contiene los registros de fichajes.
+        boton_csv (QToolButton): Botón para exportar el historial a CSV.
+        boton_pdf (QToolButton): Botón para exportar el historial a PDF.
+        boton_volver (QToolButton): Botón para regresar a la ventana anterior.
     """
 
     def __init__(self, es_admin=False):
         """
         Inicializa la ventana de historial de fichajes.
 
-        Parámetros:
+        Args:
             es_admin (bool): Indica si el usuario tiene rol de administrador (afecta el comportamiento futuro).
         """
         super().__init__()
@@ -37,8 +54,8 @@ class VentanaHistorial(QWidget):
         """
         Configura y construye la interfaz gráfica:
         - Título de la ventana.
-        - Tabla de fichajes con encabezados.
-        - Botones para exportar a CSV/PDF y volver al menú.
+        - Tabla de fichajes con encabezados y estilo personalizado.
+        - Botones para exportar a CSV, exportar a PDF y volver al menú.
         """
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -103,8 +120,9 @@ class VentanaHistorial(QWidget):
         """
         Carga los registros de fichajes en la tabla.
 
-        Parámetros:
+        Args:
             fichajes (list): Lista de tuplas con (fecha_hora, tipo, empleado).
+                             `fecha_hora` debe ser un objeto datetime.
         """
         self.tabla.setRowCount(len(fichajes))
         for fila, fichaje in enumerate(fichajes):

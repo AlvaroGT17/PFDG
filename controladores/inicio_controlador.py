@@ -1,6 +1,16 @@
-# inicio_controlador.py
-# ─────────────────────
+"""
+Controlador principal de la pantalla de inicio tras el login del sistema.
 
+Este módulo gestiona:
+- Navegación a módulos según el rol del usuario.
+- Conexión de eventos con las distintas ventanas (clientes, vehículos, fichaje, etc.).
+- Acceso a módulos de impresión y reimpresión (presupuestos, compras, ventas, recepcionamientos).
+- Control de cierre de sesión mediante señal.
+
+Utiliza:
+- Ventanas de `vistas.*` y controladores asociados para cada funcionalidad del taller.
+- Funciones de carga dinámica y control de flujo de la aplicación.
+"""
 from PySide6.QtCore import QObject, Signal, QTimer, Qt
 from vistas.ventana_inicio import VentanaInicio
 from vistas.ventana_presupuesto import VentanaPresupuesto
@@ -23,18 +33,29 @@ from modelos.recepcionamiento_consultas import (
     obtener_combustibles
 )
 
-# ───── NUEVAS VENTANAS DE REIMPRESIÓN ────────────────────────────────
 from controladores.reimpresionPresupuestos_controlador import ReimpresionPresupuestosControlador
 from controladores.reimpresionRecepcionamiento_controlador import ReimpresionRecepcionamientoControlador
 from controladores.reimpresionCompras_controlador import ReimpresionComprasControlador
 from controladores.reimpresionVentas_controlador import ReimpresionVentasControlador
-# ---------------------------------------------------------------------
 
 
 class InicioControlador(QObject):
+    """
+    Controlador que gestiona la pantalla de inicio y la navegación por módulos del sistema.
+
+    Señales:
+        senal_cerrar_sesion: se emite cuando el usuario cierra sesión voluntariamente.
+    """
     senal_cerrar_sesion = Signal()
 
     def __init__(self, nombre, rol):
+        """
+        Inicializa el controlador principal tras el login.
+
+        Args:
+            nombre (str): Nombre de usuario.
+            rol (str): Rol asignado al usuario (ADMINISTRADOR, MECANICO, etc.).
+        """
         super().__init__()
         self.nombre = nombre
         self.rol = rol
@@ -42,7 +63,6 @@ class InicioControlador(QObject):
         self.usuario_id = self.obtener_id_usuario()  # Se busca por nombre
         self.ventana = VentanaInicio(nombre, rol)
 
-        # ─── Conexiones ya existentes ────────────────────────────────
         if "cerrar sesión" in self.ventana.botones:
             self.ventana.botones["cerrar sesión"].clicked.connect(self.cerrar)
 
@@ -81,7 +101,6 @@ class InicioControlador(QObject):
                 self.ventana.botones["compraventa"].clicked.connect(
                     self.abrir_compraventa)
 
-        # ─── NUEVAS CONEXIONES: REIMPRESIÓN ──────────────────────────
         if self.rol.upper() in ["ADMINISTRADOR", "ADMINISTRATIVO"]:
             mapping_reimp = {
                 "reimpresion\nrecepcionamientos": self.abrir_reimpresion_recepcionamientos,
@@ -92,18 +111,21 @@ class InicioControlador(QObject):
             for clave, slot in mapping_reimp.items():
                 if clave in self.ventana.botones:
                     self.ventana.botones[clave].clicked.connect(slot)
-        # -----------------------------------------------------------------
 
-    # ─────────────────────── Métodos estándar (sin cambios) ─────────────────────
     def mostrar(self):
+        """Muestra la ventana de inicio."""
         self.ventana.show()
 
     def cerrar(self):
+        """
+        Cierra la sesión actual y emite la señal correspondiente.
+        """
         self.ventana.forzar_cierre = True
         self.ventana.close()
         self.senal_cerrar_sesion.emit()
 
     def abrir_fichaje(self):
+        """Abre la ventana de fichaje de entrada o salida."""
         self.fichaje = FicharControlador({
             "id": self.usuario_id,
             "nombre": self.nombre,
@@ -112,11 +134,18 @@ class InicioControlador(QObject):
         self.fichaje.mostrar()
 
     def obtener_id_usuario(self):
+        """
+        Obtiene el ID del usuario a partir de su nombre.
+
+        Returns:
+            int | None: ID si existe el usuario, None si no se encuentra.
+        """
         from modelos.login_consultas import obtener_usuario_por_nombre
         usuario = obtener_usuario_por_nombre(self.nombre)
         return usuario["id"] if usuario else None
 
     def abrir_historial(self):
+        """Abre la ventana del historial de fichajes del usuario o de todos (si es administrador)."""
         self.controlador_historial = HistorialControlador(
             usuario_id=self.usuario_id,
             es_admin=(self.rol.upper() == "ADMINISTRADOR")
@@ -124,19 +153,22 @@ class InicioControlador(QObject):
         self.controlador_historial.mostrar()
 
     def abrir_gestion_usuarios(self):
+        """Abre la gestión de usuarios si el rol lo permite."""
         self.ventana.hide()
         self.usuarios_controlador = UsuariosControlador(self.ventana)
 
     def abrir_clientes(self):
+        """Abre la ventana de gestión de clientes."""
         self.ventana.hide()
         self.clientes_controlador = ClientesControlador(self.ventana)
 
     def abrir_vehiculos(self):
+        """Abre la ventana de gestión de vehículos."""
         self.ventana.hide()
         self.vehiculos_controlador = VehiculosControlador(self.ventana)
 
-    # ─────────────────── Recepcionamiento existente ────────────────────
     def abrir_recepcionamiento(self):
+        """Abre el módulo de recepción de vehículos mediante carga previa."""
         def cargar_datos():
             return {
                 "motivos": obtener_motivos(),
@@ -155,19 +187,21 @@ class InicioControlador(QObject):
         )
 
     def mostrar_recepcionamiento(self):
+        """Muestra la ventana de recepcionamiento directamente, usada internamente."""
         self.recepcionamiento = VentanaRecepcionamiento()
         self.controlador_recepcionamiento = RecepcionamientoControlador(
             self.recepcionamiento)
         self.ventana_carga.cerrar()
         self.recepcionamiento.exec()
 
-    # ───────────── Compraventa y Presupuestos (existente) ──────────────
     def abrir_compraventa(self):
+        """Abre la ventana de gestión de compraventa de vehículos."""
         self.ventana.hide()
         self.controlador_compraventa = VentanaCompraventa(self.ventana)
         self.controlador_compraventa.show()
 
     def abrir_presupuestos(self):
+        """Abre el módulo de presupuestos en modo diálogo y vuelve a inicio al cerrarse."""
         self.ventana.hide()  # Oculta la ventana de inicio
 
         self.dialogo_presupuesto = VentanaPresupuesto(self.ventana)
@@ -178,12 +212,13 @@ class InicioControlador(QObject):
         self.dialogo_presupuesto.exec()  # Espera a que se cierre
         self.ventana.show()  # <- Recupera la ventana de inicio al cerrarse
 
-    # ─────────────────────────── NUEVA LÓGICA ──────────────────────────
-    # Helper genérico
-
     def _abrir_ventana_reimpresion(self, clase_ventana, lista_documentos=None):
         """
-        Crea la ventana, conecta señales y la muestra como diálogo modal.
+        Abre una ventana de reimpresión de documentos, conectando las señales necesarias.
+
+        Args:
+            clase_ventana: Clase de la ventana a abrir.
+            lista_documentos: Lista opcional de documentos precargados.
         """
         self.ventana.hide()
         dlg = clase_ventana(lista_documentos, parent=self.ventana)
@@ -193,6 +228,7 @@ class InicioControlador(QObject):
         self.ventana.show()
 
     def abrir_reimpresion_recepcionamientos(self):
+        """Abre el controlador de reimpresión de recepcionamientos."""
         self.ventana.hide()
         self.reimpresion_controlador = ReimpresionRecepcionamientoControlador(
             main_app=self,
@@ -201,6 +237,7 @@ class InicioControlador(QObject):
         )
 
     def abrir_reimpresion_presupuestos(self):
+        """Abre el controlador de reimpresión de presupuestos."""
         self.ventana.hide()
         self.reimpresion_presupuestos = ReimpresionPresupuestosControlador(
             main_app=self,
@@ -209,6 +246,7 @@ class InicioControlador(QObject):
         )
 
     def abrir_reimpresion_compras(self):
+        """Abre el controlador de reimpresión de documentos de compras."""
         self.ventana.hide()
         self.reimpresion_compras = ReimpresionComprasControlador(
             main_app=self,
@@ -217,6 +255,7 @@ class InicioControlador(QObject):
         )
 
     def abrir_reimpresion_ventas(self):
+        """Abre el controlador de reimpresión de documentos de ventas."""
         self.ventana.hide()
         self.reimpresion_ventas = ReimpresionVentasControlador(
             main_app=self,
@@ -226,12 +265,25 @@ class InicioControlador(QObject):
 
     # Señales que ejecutarás con tu lógica real
     def reimprimir_documento(self, doc_id: str):
+        """
+        Lógica pendiente para procesar la reimpresión de un documento.
+
+        Args:
+            doc_id (str): Identificador único del documento a imprimir.
+        """
         # TODO: lógica de impresión (PDF, impresora, etc.)
         print(f"[DEBUG] Solicitud de reimpresión del documento {doc_id}")
 
     def reenviar_documento(self, doc_id: str):
+        """
+        Lógica pendiente para reenviar un documento por correo u otros medios.
+
+        Args:
+            doc_id (str): Identificador único del documento a reenviar.
+        """
         # TODO: lógica de envío por correo / WhatsApp / API
         print(f"[DEBUG] Solicitud de reenvío del documento {doc_id}")
 
     def mostrar_ventana_inicio(self, nombre, rol):
+        """Muestra nuevamente la ventana principal del sistema."""
         self.ventana.show()

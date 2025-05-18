@@ -1,3 +1,14 @@
+"""
+Módulo de prueba para preparar y lanzar la ventana de compraventa (`VentanaCompraventa`) con datos simulados.
+
+Este script:
+- Simula la selección de operación (compra/venta).
+- Rellena todos los campos del formulario con datos ficticios.
+- Configura un controlador simulado (`MagicMock`) para evitar llamadas reales.
+
+Diseñado para pruebas visuales y desarrollo de interfaz en el sistema ReyBoxes.
+"""
+
 from PySide6.QtWidgets import QComboBox
 from vistas.ventana_compraventa import VentanaCompraventa
 from unittest.mock import MagicMock
@@ -5,7 +16,13 @@ from unittest.mock import MagicMock
 
 def simular_secciones(ventana):
     """
-    Prepara las secciones necesarias para que los atributos existan antes de cargar datos.
+    Prepara y asigna manualmente las secciones del formulario.
+
+    Esto es necesario antes de llamar a `actualizar_secciones()` ya que normalmente
+    estas secciones se crean dinámicamente tras la selección del tipo de operación.
+
+    Args:
+        ventana (VentanaCompraventa): Instancia de la ventana a modificar.
     """
     ventana.seccion_cliente = ventana.crear_seccion_datos_cliente()
     ventana.seccion_vehiculo = ventana.crear_seccion_datos_vehiculo()
@@ -13,6 +30,14 @@ def simular_secciones(ventana):
 
 
 def cargar_datos_prueba(ventana):
+    """
+    Carga datos ficticios en todos los campos del formulario.
+
+    Estos datos se usan para simular un contrato de compraventa sin depender de entrada manual.
+
+    Args:
+        ventana (VentanaCompraventa): Instancia de la ventana a rellenar.
+    """
     ventana.cliente_nombre.setText("SERGIO CABRERA PEÑA")
     ventana.cliente_dni.setText("99001122T")
     ventana.cliente_telefono.setText("437913693")
@@ -42,9 +67,20 @@ def cargar_datos_prueba(ventana):
 
 
 def iniciar_ventana_compraventa():
+    """
+    Inicializa una instancia de `VentanaCompraventa` con todos los datos necesarios simulados.
+
+    Incluye:
+    - ComboBox con operación seleccionada.
+    - Controlador simulado (`MagicMock`) para evitar dependencias externas.
+    - Campos de cliente y vehículo con información ficticia.
+
+    Returns:
+        VentanaCompraventa: Instancia completamente configurada lista para mostrar.
+    """
     ventana = VentanaCompraventa(None)
 
-    # Añadir combo simulado
+    # Añadir combo simulado para seleccionar operación
     combo = QComboBox()
     combo.addItems([
         "Seleccione la operación deseada",
@@ -54,18 +90,22 @@ def iniciar_ventana_compraventa():
     combo.setCurrentText("Compra por parte del concesionario")
     ventana.combo_operacion = combo
 
-    # Añadir un controlador simulado
+    # Asignar controlador simulado
     ventana.controlador = MagicMock()
     ventana.controlador.toggle_ruta_guardado = MagicMock()
     ventana.controlador.simular_contrato = MagicMock()
     ventana.controlador.aceptar_contrato_compra = MagicMock()
 
-    # Crear secciones después de asignar el controlador
+    # Crear y asignar secciones manualmente
     simular_secciones(ventana)
 
-    # Simular la selección para activar secciones
+    # Simular selección para activar la interfaz
     ventana.actualizar_secciones("Compra por parte del concesionario")
 
+    # Cargar campos con datos ficticios
     cargar_datos_prueba(ventana)
 
     return ventana
+
+# para ejecutar el modulo desde consola:
+# python -m pruebas.compraventa_test

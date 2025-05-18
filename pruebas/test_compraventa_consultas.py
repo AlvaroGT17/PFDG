@@ -1,10 +1,19 @@
 # pruebas/test_compraventa_consultas.py
 # ──────────────────────────────────────
 """
-Pruebas unitarias para el módulo compraventa_consultas.
+Pruebas unitarias para el módulo `compraventa_consultas`.
 
 Se utilizan mocks para interceptar llamadas a la base de datos,
 asegurando que no se realicen operaciones reales durante los tests.
+
+Las funciones verificadas incluyen:
+- Obtención de vehículos disponibles.
+- Inserción de nuevos vehículos.
+- Recuperación del ID de cliente.
+- Registro de ventas.
+- Manejo de errores en transacciones.
+
+Todas las pruebas simulan la conexión y el cursor mediante `unittest.mock`.
 """
 
 import pytest
@@ -14,6 +23,10 @@ import modelos.compraventa_consulta as consultas
 
 @patch("modelos.compraventa_consulta.obtener_conexion")
 def test_obtener_vehiculos_disponibles_retorna_lista(mock_conexion):
+    """
+    Verifica que `obtener_vehiculos_disponibles()` devuelve una lista
+    con al menos un vehículo correctamente estructurado.
+    """
     mock_cursor = MagicMock()
     mock_cursor.description = [
         ("id",), ("matricula",), ("marca",), ("modelo",),
@@ -38,6 +51,9 @@ def test_obtener_vehiculos_disponibles_retorna_lista(mock_conexion):
 
 @patch("modelos.compraventa_consulta.obtener_conexion")
 def test_insertar_nuevo_vehiculo_ejecuta_insert(mock_conexion):
+    """
+    Verifica que `insertar_nuevo_vehiculo()` realiza la inserción y commit correctamente.
+    """
     mock_cursor = MagicMock()
     mock_con = MagicMock()
     mock_con.cursor.return_value = mock_cursor
@@ -59,6 +75,9 @@ def test_insertar_nuevo_vehiculo_ejecuta_insert(mock_conexion):
 
 @patch("modelos.compraventa_consulta.obtener_conexion")
 def test_obtener_id_cliente_devuelve_id(mock_conexion):
+    """
+    Verifica que `obtener_id_cliente()` devuelve el ID correcto si el cliente existe.
+    """
     mock_cursor = MagicMock()
     mock_cursor.fetchone.return_value = (42,)
     mock_con = MagicMock()
@@ -71,6 +90,9 @@ def test_obtener_id_cliente_devuelve_id(mock_conexion):
 
 @patch("modelos.compraventa_consulta.obtener_conexion")
 def test_obtener_id_cliente_no_encontrado(mock_conexion):
+    """
+    Verifica que `obtener_id_cliente()` devuelva None si el cliente no existe.
+    """
     mock_cursor = MagicMock()
     mock_cursor.fetchone.return_value = None
     mock_con = MagicMock()
@@ -83,6 +105,10 @@ def test_obtener_id_cliente_no_encontrado(mock_conexion):
 
 @patch("modelos.compraventa_consulta.obtener_conexion")
 def test_registrar_venta_insert_y_update(mock_conexion):
+    """
+    Verifica que `registrar_venta()` realiza dos operaciones (insert y update) 
+    y hace commit correctamente.
+    """
     mock_cursor = MagicMock()
     mock_con = MagicMock()
     mock_con.cursor.return_value = mock_cursor
@@ -96,6 +122,10 @@ def test_registrar_venta_insert_y_update(mock_conexion):
 
 @patch("modelos.compraventa_consulta.obtener_conexion")
 def test_registrar_venta_error_hace_rollback(mock_conexion):
+    """
+    Verifica que si ocurre una excepción en `registrar_venta()`,
+    se realiza rollback sobre la transacción.
+    """
     mock_cursor = MagicMock()
     mock_cursor.execute.side_effect = Exception("Error en base de datos")
     mock_con = MagicMock()

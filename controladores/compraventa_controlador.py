@@ -1,3 +1,22 @@
+"""
+Controlador del módulo de compraventa de vehículos.
+
+Este controlador gestiona tanto la compra como la venta de vehículos,
+incluyendo búsqueda y creación de clientes, filtrado de vehículos,
+generación de contratos en HTML y PDF, envío por correo, e impresión directa.
+
+Incluye funcionalidades como:
+- Autocompletado por nombre y DNI.
+- Registro de vehículos en base de datos.
+- Simulación y aceptación de contratos de compra y venta.
+- Generación de informes con `jinja2` y `weasyprint`.
+- Gestión de rutas de guardado y exportación mensual.
+
+Utiliza:
+- Ventanas: `VentanaNuevoClienteCompraventas`, `VentanaCorreoConfirmacion`.
+- Modelos: `compraventa_consulta`, `nuevoCliente_compraventa_consulta`.
+- Utilidades: envío de correo, impresión, rutas y validaciones.
+"""
 import os
 import shutil
 import tempfile
@@ -32,6 +51,12 @@ from utilidades.rutas import (
 
 class CompraventaControlador:
     def __init__(self, vista):
+        """
+        Inicializa el controlador de compraventa.
+
+        Args:
+            vista: Instancia de la ventana de compraventa.
+        """
         self.vista = vista
         self.cliente_id = None
 
@@ -43,6 +68,9 @@ class CompraventaControlador:
         self.inicializar_autocompletado_dni()
 
     def inicializar_autocompletado_nombre(self):
+        """
+        Configura el autocompletado del campo de nombre del cliente a partir de la base de datos.
+        """
         try:
             conexion = obtener_conexion()
             cursor = conexion.cursor()
@@ -65,6 +93,9 @@ class CompraventaControlador:
         self.vista.cliente_nombre.setCompleter(completer_nombre)
 
     def inicializar_autocompletado_dni(self):
+        """
+        Configura el autocompletado del campo DNI del cliente.
+        """
         try:
             conexion = obtener_conexion()
             cursor = conexion.cursor()
@@ -84,6 +115,10 @@ class CompraventaControlador:
         self.vista.cliente_dni.setCompleter(completer_dni)
 
     def buscar_cliente_por_nombre(self):
+        """
+        Busca un cliente existente por su nombre completo.
+        Si no existe, pregunta al usuario si desea crear uno nuevo.
+        """
         nombre_completo = self.vista.cliente_nombre.text().strip().upper()
         if not nombre_completo:
             return
@@ -104,6 +139,10 @@ class CompraventaControlador:
                 self.abrir_ventana_nuevo_cliente(nombre=nombre_completo)
 
     def comprobar_dni_manualmente(self):
+        """
+        Comprueba si el DNI introducido ya está registrado.
+        Si no existe, ofrece la opción de registrar un nuevo cliente.
+        """
         dni = self.vista.cliente_dni.text().strip().upper()
         if not dni:
             return
@@ -123,6 +162,13 @@ class CompraventaControlador:
                 self.abrir_ventana_nuevo_cliente(dni=dni)
 
     def abrir_ventana_nuevo_cliente(self, nombre="", dni=""):
+        """
+        Abre la ventana de creación de nuevo cliente y asigna callback para capturar datos generados.
+
+        Args:
+            nombre (str): Nombre precargado.
+            dni (str): DNI precargado.
+        """
         def guardar_cliente(nuevo_id):
             cliente_nuevo = obtener_cliente_por_id(nuevo_id)
             if cliente_nuevo:
@@ -139,6 +185,12 @@ class CompraventaControlador:
         self.ventana_nuevo.show()
 
     def rellenar_datos_cliente(self, cliente):
+        """
+        Rellena los campos de la vista a partir de una tupla de cliente obtenida de la base de datos.
+
+        Args:
+            cliente (tuple): Datos del cliente.
+        """
         self.vista.cliente_dni.setText(cliente[4])
         self.vista.cliente_telefono.setText(cliente[5])
         self.vista.cliente_email.setText(cliente[6])
@@ -148,6 +200,12 @@ class CompraventaControlador:
         self.vista.cliente_observaciones.setText(cliente[11])
 
     def rellenar_datos_cliente_dict(self, cliente):
+        """
+        Rellena los campos del formulario con un diccionario de cliente.
+
+        Args:
+            cliente (dict): Datos del cliente.
+        """
         nombre_completo = " ".join(filter(None, [
             cliente.get('nombre', ''),
             cliente.get('primer_apellido', ''),
@@ -164,14 +222,27 @@ class CompraventaControlador:
         self.vista.cliente_observaciones.setText(cliente['observaciones'])
 
     def autocompletar_por_nombre(self, texto):
+        """
+        Ejecuta la búsqueda y autocompletado al seleccionar nombre desde el completer.
+
+        Args:
+            texto (str): Texto seleccionado.
+        """
         self.vista.cliente_nombre.setText(texto)
         self.buscar_cliente_por_nombre()
 
     def autocompletar_por_dni(self, texto):
+        """
+        Ejecuta la comprobación de DNI tras seleccionar un valor del completer.
+
+        Args:
+            texto (str): DNI seleccionado.
+        """
         self.vista.cliente_dni.setText(texto)
         self.comprobar_dni_manualmente()
 
     def recargar_vehiculos(self):
+        """Carga los vehículos disponibles desde base de datos y actualiza los filtros."""
         from modelos.compraventa_consulta import obtener_vehiculos_disponibles
         self.vista.vehiculos_disponibles = obtener_vehiculos_disponibles()
         self.vista.vehiculos_filtrados = self.vista.vehiculos_disponibles.copy()
@@ -179,6 +250,9 @@ class CompraventaControlador:
         self.actualizar_tabla_vehiculos()
 
     def llenar_valores_filtros(self):
+        """
+        Llena los valores posibles de los combos de filtro a partir de los datos cargados.
+        """
         valores = {campo: set() for campo in self.vista.filtros}
         for veh in self.vista.vehiculos_disponibles:
             for campo in valores:
@@ -205,6 +279,9 @@ class CompraventaControlador:
             combo.blockSignals(False)
 
     def actualizar_tabla_vehiculos(self):
+        """
+        Aplica los filtros activos y actualiza la tabla con los vehículos visibles.
+        """
         def coincide_rango(valor, texto_rango):
             try:
                 val = float(valor)
@@ -243,6 +320,7 @@ class CompraventaControlador:
         self.cargar_tabla_filtrada()
 
     def cargar_tabla_filtrada(self):
+        """Llena la tabla con los vehículos filtrados."""
         tabla = self.vista.tabla_vehiculos
         tabla.setRowCount(len(self.vista.vehiculos_filtrados))
 
@@ -260,6 +338,15 @@ class CompraventaControlador:
         tabla.setAlternatingRowColors(True)
 
     def toggle_ruta_guardado(self, estado, input_ruta, boton, tipo="compra"):
+        """
+        Activa o desactiva el uso de la ruta predeterminada para guardado de documentos.
+
+        Args:
+            estado (bool): True si se activa, False si se desactiva.
+            input_ruta (QLineEdit): Campo de texto donde se muestra la ruta.
+            boton (QPushButton): Botón asociado.
+            tipo (str): "compra" o "venta".
+        """
         input_ruta.setDisabled(estado)
         boton.setDisabled(estado)
 
@@ -272,27 +359,32 @@ class CompraventaControlador:
             input_ruta.clear()
 
     def seleccionar_ruta_guardado_compra(self):
+        """Abre un diálogo para seleccionar manualmente la carpeta de guardado de compras."""
         ruta = QFileDialog.getExistingDirectory(
             self.vista, "Seleccionar carpeta de guardado")
         if ruta:
             self.vista.input_ruta_guardado_compra.setText(ruta)
 
     def seleccionar_ruta_guardado_venta(self):
+        """Abre un diálogo para seleccionar manualmente la carpeta de guardado de ventas."""
         ruta = QFileDialog.getExistingDirectory(
             self.vista, "Seleccionar carpeta de guardado")
         if ruta:
             self.vista.input_ruta_guardado_venta.setText(ruta)
 
     def inicializar_datos_vehiculos(self):
+        """Inicia la carga inicial de vehículos disponibles."""
         self.recargar_vehiculos()
 
     def simular_contrato(self, tipo):
+        """Lanza la simulación del contrato de compra o venta según el tipo."""
         if tipo == "venta":
             self.simular_contrato_venta()
         elif tipo == "compra":
             self.simular_contrato_compra()
 
     def simular_contrato_compra(self):
+        """Genera y muestra una simulación de contrato de compra en HTML."""
         try:
             firma_cliente_base64 = self.vista.capturador_firma.obtener_imagen_base64()
 
@@ -333,6 +425,7 @@ class CompraventaControlador:
                 self.vista, "Error", f"❌ Error al simular contrato de compra:\n{str(e)}")
 
     def simular_contrato_venta(self):
+        """Genera y muestra una simulación de contrato de venta en HTML."""
         try:
             import shutil
             from jinja2 import Template
@@ -416,12 +509,25 @@ class CompraventaControlador:
             print(f"❌ Error al simular contrato de venta: {e}")
 
     def obtener_vehiculo_seleccionado(self):
+        """
+        Devuelve el vehículo seleccionado actualmente en la tabla.
+
+        Returns:
+            dict | None: Datos del vehículo si hay selección, None si no.
+        """
         fila = self.vista.tabla_vehiculos.currentRow()
         if fila == -1:
             return None
         return self.vista.vehiculos_filtrados[fila]
 
     def aceptar_contrato_compra(self):
+        """
+        Ejecuta la lógica completa para registrar un contrato de compra:
+        - Validación de campos.
+        - Inserción del vehículo en base de datos.
+        - Generación de contrato PDF.
+        - Envío por correo e impresión si están seleccionados.
+        """
         try:
             from weasyprint import HTML
             from jinja2 import Template
@@ -489,7 +595,7 @@ class CompraventaControlador:
                                         f"No se pudo eliminar el archivo temporal previo:\n{str(e)}")
                     return
 
-            # 🧩 NUEVO: Renderizar HTML desde plantilla y guardarlo
+            # NUEVO: Renderizar HTML desde plantilla y guardarlo
             try:
                 with open("plantillas/contrato_compra_concesionario.html", "r", encoding="utf-8") as f:
                     plantilla = Template(f.read())
@@ -579,7 +685,7 @@ class CompraventaControlador:
                         QMessageBox.warning(self.vista, "Error al enviar correo",
                                             f"❌ No se pudo enviar el correo:\n{error}")
 
-            # ✅ Imprimir directamente (al estilo del módulo de ventas)
+            # Imprimir directamente (al estilo del módulo de ventas)
             if self.vista.checkbox_imprimir_compra.isChecked():
                 try:
                     if os.path.isfile(ruta_destino):
@@ -597,6 +703,17 @@ class CompraventaControlador:
                 self.vista, "Error", f"❌ No se pudo registrar el contrato:\n{str(e)}")
 
     def generar_contrato_compra_html(self, datos_cliente, datos_vehiculo, firma_base64):
+        """
+        Genera un archivo HTML desde la plantilla de contrato de compra con los datos y firmas dados.
+
+        Args:
+            datos_cliente (dict): Información del cliente.
+            datos_vehiculo (dict): Información del vehículo.
+            firma_base64 (str): Firma en base64.
+
+        Returns:
+            str | None: Ruta al HTML generado o None si hay error.
+        """
         from jinja2 import Template
 
         try:
@@ -640,6 +757,13 @@ class CompraventaControlador:
             return None
 
     def aceptar_contrato_venta(self):
+        """
+        Ejecuta la lógica completa para registrar un contrato de venta:
+        - Validación y selección de vehículo.
+        - Generación del contrato en PDF.
+        - Guardado en carpetas correspondiente.
+        - Registro en base de datos, impresión y envío por correo si se indica.
+        """
         try:
             from weasyprint import HTML
 

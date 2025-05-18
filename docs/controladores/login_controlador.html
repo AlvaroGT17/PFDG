@@ -85,93 +85,159 @@
                     <h1 class="modulename">
 <a href="./../controladores.html">controladores</a><wbr>.login_controlador    </h1>
 
-                
+                        <div class="docstring"><p>Controlador del proceso de inicio de sesión de usuarios.</p>
+
+<p>Este módulo permite:</p>
+
+<ul>
+<li>Mostrar la interfaz de login.</li>
+<li>Validar las credenciales ingresadas.</li>
+<li>Mostrar una ventana de carga durante la verificación.</li>
+<li>Enviar señales al resto de la aplicación al iniciar sesión o solicitar recuperación.</li>
+</ul>
+
+<p>Utiliza:</p>
+
+<ul>
+<li><code>VentanaLogin</code> para la interfaz de entrada.</li>
+<li><code>VentanaCargaGif</code> para mostrar la animación durante el proceso.</li>
+<li><code>obtener_usuario_por_nombre</code> y <code>verificar_contrasena</code> para validación contra la base de datos.</li>
+</ul>
+</div>
+
                         <input id="mod-login_controlador-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-login_controlador-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMessageBox</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">QTimer</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">vistas.ventana_login</span><span class="w"> </span><span class="kn">import</span> <span class="n">VentanaLogin</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">modelos.login_consultas</span><span class="w"> </span><span class="kn">import</span> <span class="n">obtener_usuario_por_nombre</span><span class="p">,</span> <span class="n">verificar_contrasena</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">vistas.ventana_carga_gif</span><span class="w"> </span><span class="kn">import</span> <span class="n">VentanaCargaGif</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">LoginControlador</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="n">senal_abrir_recuperacion</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="n">senal_login_exitoso</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaLogin</span><span class="p">()</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 👈 ventana de carga vacía al inicio</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_entrar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">enlace_recuperar</span><span class="o">.</span><span class="n">linkActivated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">abrir_recuperacion</span><span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_usuario</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_contrasena</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_entrar</span><span class="o">.</span><span class="n">setDefault</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">cierre_autorizado</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abrir_recuperacion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_abrir_recuperacion</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">iniciar_proceso_login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="n">nombre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_usuario</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="n">contrasena</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_contrasena</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="n">errores</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">nombre</span><span class="p">:</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>            <span class="n">errores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;• Falta el nombre de usuario&quot;</span><span class="p">)</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">contrasena</span><span class="p">:</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>            <span class="n">errores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;• Falta la contraseña&quot;</span><span class="p">)</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>        <span class="k">if</span> <span class="n">errores</span><span class="p">:</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>                <span class="s2">&quot;Campos incompletos&quot;</span><span class="p">,</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errores</span><span class="p">),</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>            <span class="p">)</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>            <span class="k">return</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>        <span class="c1"># 🔄 Mostrar ventana de carga</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="n">VentanaCargaGif</span><span class="p">()</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>        <span class="c1"># ⏳ Esperar 200ms para que la animación se vea y luego validar</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">validar_login</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">contrasena</span><span class="p">))</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">validar_login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">,</span> <span class="n">contrasena</span><span class="p">):</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>        <span class="n">usuario</span> <span class="o">=</span> <span class="n">obtener_usuario_por_nombre</span><span class="p">(</span><span class="n">nombre</span><span class="p">)</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>        <span class="k">if</span> <span class="n">usuario</span> <span class="ow">and</span> <span class="n">verificar_contrasena</span><span class="p">(</span><span class="n">contrasena</span><span class="p">,</span> <span class="n">usuario</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]):</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>  <span class="c1"># ✅ Cierra video de carga</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>                <span class="s2">&quot; Login exitoso 👍&quot;</span><span class="p">,</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>                <span class="sa">f</span><span class="s2">&quot;Bienvenido/a, </span><span class="si">{</span><span class="n">usuario</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>            <span class="p">)</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">senal_login_exitoso</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">usuario</span><span class="p">)</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>  <span class="c1"># ❌ También cerramos si falla</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>                <span class="s2">&quot;❌ Error de autenticación&quot;</span><span class="p">,</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>                <span class="s2">&quot;Nombre o contraseña incorrectos.&quot;</span><span class="p">,</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>            <span class="p">)</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">Controlador del proceso de inicio de sesión de usuarios.</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">Este módulo permite:</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">- Mostrar la interfaz de login.</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="sd">- Validar las credenciales ingresadas.</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="sd">- Mostrar una ventana de carga durante la verificación.</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="sd">- Enviar señales al resto de la aplicación al iniciar sesión o solicitar recuperación.</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="sd">Utiliza:</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">- `VentanaLogin` para la interfaz de entrada.</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="sd">- `VentanaCargaGif` para mostrar la animación durante el proceso.</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">- `obtener_usuario_por_nombre` y `verificar_contrasena` para validación contra la base de datos.</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMessageBox</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">QTimer</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">vistas.ventana_login</span><span class="w"> </span><span class="kn">import</span> <span class="n">VentanaLogin</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">modelos.login_consultas</span><span class="w"> </span><span class="kn">import</span> <span class="n">obtener_usuario_por_nombre</span><span class="p">,</span> <span class="n">verificar_contrasena</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">vistas.ventana_carga_gif</span><span class="w"> </span><span class="kn">import</span> <span class="n">VentanaCargaGif</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="k">class</span><span class="w"> </span><span class="nc">LoginControlador</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">    Controlador encargado de gestionar el inicio de sesión del usuario.</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">    Señales:</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">        senal_abrir_recuperacion: Emitida cuando el usuario solicita recuperar la cuenta.</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">        senal_login_exitoso: Emitida con un diccionario de usuario si el login es exitoso.</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>    <span class="n">senal_abrir_recuperacion</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>    <span class="n">senal_login_exitoso</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="sd">        Inicializa el controlador de login y conecta los eventos de la interfaz.</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaLogin</span><span class="p">()</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 👈 ventana de carga vacía al inicio</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_entrar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">enlace_recuperar</span><span class="o">.</span><span class="n">linkActivated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">abrir_recuperacion</span><span class="p">)</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_usuario</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_contrasena</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_entrar</span><span class="o">.</span><span class="n">setDefault</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="sd">        Muestra la ventana de inicio de sesión.</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">        Cierra la ventana de login autorizando su cierre.</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">cierre_autorizado</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abrir_recuperacion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">        Cierra la ventana de login y emite la señal para abrir la recuperación de cuenta.</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_abrir_recuperacion</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">iniciar_proceso_login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">        Inicia el proceso de verificación del login:</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">        - Verifica que los campos estén completos.</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">        - Muestra animación de carga.</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">        - Ejecuta la validación tras un breve retardo.</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>        <span class="n">nombre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_usuario</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>        <span class="n">contrasena</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_contrasena</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>        <span class="n">errores</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">nombre</span><span class="p">:</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>            <span class="n">errores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;• Falta el nombre de usuario&quot;</span><span class="p">)</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">contrasena</span><span class="p">:</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>            <span class="n">errores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;• Falta la contraseña&quot;</span><span class="p">)</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="k">if</span> <span class="n">errores</span><span class="p">:</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>                <span class="s2">&quot;Campos incompletos&quot;</span><span class="p">,</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errores</span><span class="p">),</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>            <span class="p">)</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>            <span class="k">return</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="c1"># Mostrar ventana de carga</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="n">VentanaCargaGif</span><span class="p">()</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>        <span class="c1"># Esperar 200ms para que la animación se vea y luego validar</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">validar_login</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">contrasena</span><span class="p">))</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">validar_login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">,</span> <span class="n">contrasena</span><span class="p">):</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">        Verifica el nombre de usuario y contraseña contra la base de datos.</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">        Muestra un mensaje si es exitoso o si ocurre un error.</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">        Args:</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">            nombre (str): Nombre de usuario ingresado.</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">            contrasena (str): Contraseña ingresada.</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>        <span class="n">usuario</span> <span class="o">=</span> <span class="n">obtener_usuario_por_nombre</span><span class="p">(</span><span class="n">nombre</span><span class="p">)</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>        <span class="k">if</span> <span class="n">usuario</span> <span class="ow">and</span> <span class="n">verificar_contrasena</span><span class="p">(</span><span class="n">contrasena</span><span class="p">,</span> <span class="n">usuario</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]):</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>  <span class="c1"># ✅ Cierra video de carga</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>                <span class="s2">&quot; Login exitoso 👍&quot;</span><span class="p">,</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>                <span class="sa">f</span><span class="s2">&quot;Bienvenido/a, </span><span class="si">{</span><span class="n">usuario</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>            <span class="p">)</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">senal_login_exitoso</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">usuario</span><span class="p">)</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>  <span class="c1"># ❌ También cerramos si falla</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>                <span class="s2">&quot;❌ Error de autenticación&quot;</span><span class="p">,</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>                <span class="s2">&quot;Nombre o contraseña incorrectos.&quot;</span><span class="p">,</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 
@@ -187,85 +253,122 @@
 
     </div>
     <a class="headerlink" href="#LoginControlador"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador-9"><a href="#LoginControlador-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">LoginControlador</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-</span><span id="LoginControlador-10"><a href="#LoginControlador-10"><span class="linenos">10</span></a>    <span class="n">senal_abrir_recuperacion</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
-</span><span id="LoginControlador-11"><a href="#LoginControlador-11"><span class="linenos">11</span></a>    <span class="n">senal_login_exitoso</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
-</span><span id="LoginControlador-12"><a href="#LoginControlador-12"><span class="linenos">12</span></a>
-</span><span id="LoginControlador-13"><a href="#LoginControlador-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LoginControlador-14"><a href="#LoginControlador-14"><span class="linenos">14</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="LoginControlador-15"><a href="#LoginControlador-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaLogin</span><span class="p">()</span>
-</span><span id="LoginControlador-16"><a href="#LoginControlador-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 👈 ventana de carga vacía al inicio</span>
-</span><span id="LoginControlador-17"><a href="#LoginControlador-17"><span class="linenos">17</span></a>
-</span><span id="LoginControlador-18"><a href="#LoginControlador-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_entrar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
-</span><span id="LoginControlador-19"><a href="#LoginControlador-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">enlace_recuperar</span><span class="o">.</span><span class="n">linkActivated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-</span><span id="LoginControlador-20"><a href="#LoginControlador-20"><span class="linenos">20</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">abrir_recuperacion</span><span class="p">)</span>
-</span><span id="LoginControlador-21"><a href="#LoginControlador-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_usuario</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-</span><span id="LoginControlador-22"><a href="#LoginControlador-22"><span class="linenos">22</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
-</span><span id="LoginControlador-23"><a href="#LoginControlador-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_contrasena</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-</span><span id="LoginControlador-24"><a href="#LoginControlador-24"><span class="linenos">24</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
-</span><span id="LoginControlador-25"><a href="#LoginControlador-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_entrar</span><span class="o">.</span><span class="n">setDefault</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="LoginControlador-26"><a href="#LoginControlador-26"><span class="linenos">26</span></a>
-</span><span id="LoginControlador-27"><a href="#LoginControlador-27"><span class="linenos">27</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LoginControlador-28"><a href="#LoginControlador-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span><span id="LoginControlador-29"><a href="#LoginControlador-29"><span class="linenos">29</span></a>
-</span><span id="LoginControlador-30"><a href="#LoginControlador-30"><span class="linenos">30</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LoginControlador-31"><a href="#LoginControlador-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">cierre_autorizado</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="LoginControlador-32"><a href="#LoginControlador-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="LoginControlador-33"><a href="#LoginControlador-33"><span class="linenos">33</span></a>
-</span><span id="LoginControlador-34"><a href="#LoginControlador-34"><span class="linenos">34</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abrir_recuperacion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LoginControlador-35"><a href="#LoginControlador-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_abrir_recuperacion</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-</span><span id="LoginControlador-36"><a href="#LoginControlador-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
-</span><span id="LoginControlador-37"><a href="#LoginControlador-37"><span class="linenos">37</span></a>
-</span><span id="LoginControlador-38"><a href="#LoginControlador-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">iniciar_proceso_login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LoginControlador-39"><a href="#LoginControlador-39"><span class="linenos">39</span></a>        <span class="n">nombre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_usuario</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-</span><span id="LoginControlador-40"><a href="#LoginControlador-40"><span class="linenos">40</span></a>        <span class="n">contrasena</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_contrasena</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
-</span><span id="LoginControlador-41"><a href="#LoginControlador-41"><span class="linenos">41</span></a>
-</span><span id="LoginControlador-42"><a href="#LoginControlador-42"><span class="linenos">42</span></a>        <span class="n">errores</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="LoginControlador-43"><a href="#LoginControlador-43"><span class="linenos">43</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">nombre</span><span class="p">:</span>
-</span><span id="LoginControlador-44"><a href="#LoginControlador-44"><span class="linenos">44</span></a>            <span class="n">errores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;• Falta el nombre de usuario&quot;</span><span class="p">)</span>
-</span><span id="LoginControlador-45"><a href="#LoginControlador-45"><span class="linenos">45</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">contrasena</span><span class="p">:</span>
-</span><span id="LoginControlador-46"><a href="#LoginControlador-46"><span class="linenos">46</span></a>            <span class="n">errores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;• Falta la contraseña&quot;</span><span class="p">)</span>
-</span><span id="LoginControlador-47"><a href="#LoginControlador-47"><span class="linenos">47</span></a>
-</span><span id="LoginControlador-48"><a href="#LoginControlador-48"><span class="linenos">48</span></a>        <span class="k">if</span> <span class="n">errores</span><span class="p">:</span>
-</span><span id="LoginControlador-49"><a href="#LoginControlador-49"><span class="linenos">49</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-</span><span id="LoginControlador-50"><a href="#LoginControlador-50"><span class="linenos">50</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
-</span><span id="LoginControlador-51"><a href="#LoginControlador-51"><span class="linenos">51</span></a>                <span class="s2">&quot;Campos incompletos&quot;</span><span class="p">,</span>
-</span><span id="LoginControlador-52"><a href="#LoginControlador-52"><span class="linenos">52</span></a>                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errores</span><span class="p">),</span>
-</span><span id="LoginControlador-53"><a href="#LoginControlador-53"><span class="linenos">53</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
-</span><span id="LoginControlador-54"><a href="#LoginControlador-54"><span class="linenos">54</span></a>            <span class="p">)</span>
-</span><span id="LoginControlador-55"><a href="#LoginControlador-55"><span class="linenos">55</span></a>            <span class="k">return</span>
-</span><span id="LoginControlador-56"><a href="#LoginControlador-56"><span class="linenos">56</span></a>
-</span><span id="LoginControlador-57"><a href="#LoginControlador-57"><span class="linenos">57</span></a>        <span class="c1"># 🔄 Mostrar ventana de carga</span>
-</span><span id="LoginControlador-58"><a href="#LoginControlador-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="n">VentanaCargaGif</span><span class="p">()</span>
-</span><span id="LoginControlador-59"><a href="#LoginControlador-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span><span id="LoginControlador-60"><a href="#LoginControlador-60"><span class="linenos">60</span></a>
-</span><span id="LoginControlador-61"><a href="#LoginControlador-61"><span class="linenos">61</span></a>        <span class="c1"># ⏳ Esperar 200ms para que la animación se vea y luego validar</span>
-</span><span id="LoginControlador-62"><a href="#LoginControlador-62"><span class="linenos">62</span></a>        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">validar_login</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">contrasena</span><span class="p">))</span>
-</span><span id="LoginControlador-63"><a href="#LoginControlador-63"><span class="linenos">63</span></a>
-</span><span id="LoginControlador-64"><a href="#LoginControlador-64"><span class="linenos">64</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">validar_login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">,</span> <span class="n">contrasena</span><span class="p">):</span>
-</span><span id="LoginControlador-65"><a href="#LoginControlador-65"><span class="linenos">65</span></a>        <span class="n">usuario</span> <span class="o">=</span> <span class="n">obtener_usuario_por_nombre</span><span class="p">(</span><span class="n">nombre</span><span class="p">)</span>
-</span><span id="LoginControlador-66"><a href="#LoginControlador-66"><span class="linenos">66</span></a>        <span class="k">if</span> <span class="n">usuario</span> <span class="ow">and</span> <span class="n">verificar_contrasena</span><span class="p">(</span><span class="n">contrasena</span><span class="p">,</span> <span class="n">usuario</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]):</span>
-</span><span id="LoginControlador-67"><a href="#LoginControlador-67"><span class="linenos">67</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>  <span class="c1"># ✅ Cierra video de carga</span>
-</span><span id="LoginControlador-68"><a href="#LoginControlador-68"><span class="linenos">68</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span>
-</span><span id="LoginControlador-69"><a href="#LoginControlador-69"><span class="linenos">69</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
-</span><span id="LoginControlador-70"><a href="#LoginControlador-70"><span class="linenos">70</span></a>                <span class="s2">&quot; Login exitoso 👍&quot;</span><span class="p">,</span>
-</span><span id="LoginControlador-71"><a href="#LoginControlador-71"><span class="linenos">71</span></a>                <span class="sa">f</span><span class="s2">&quot;Bienvenido/a, </span><span class="si">{</span><span class="n">usuario</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span id="LoginControlador-72"><a href="#LoginControlador-72"><span class="linenos">72</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
-</span><span id="LoginControlador-73"><a href="#LoginControlador-73"><span class="linenos">73</span></a>            <span class="p">)</span>
-</span><span id="LoginControlador-74"><a href="#LoginControlador-74"><span class="linenos">74</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">senal_login_exitoso</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">usuario</span><span class="p">)</span>
-</span><span id="LoginControlador-75"><a href="#LoginControlador-75"><span class="linenos">75</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
-</span><span id="LoginControlador-76"><a href="#LoginControlador-76"><span class="linenos">76</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="LoginControlador-77"><a href="#LoginControlador-77"><span class="linenos">77</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>  <span class="c1"># ❌ También cerramos si falla</span>
-</span><span id="LoginControlador-78"><a href="#LoginControlador-78"><span class="linenos">78</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
-</span><span id="LoginControlador-79"><a href="#LoginControlador-79"><span class="linenos">79</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
-</span><span id="LoginControlador-80"><a href="#LoginControlador-80"><span class="linenos">80</span></a>                <span class="s2">&quot;❌ Error de autenticación&quot;</span><span class="p">,</span>
-</span><span id="LoginControlador-81"><a href="#LoginControlador-81"><span class="linenos">81</span></a>                <span class="s2">&quot;Nombre o contraseña incorrectos.&quot;</span><span class="p">,</span>
-</span><span id="LoginControlador-82"><a href="#LoginControlador-82"><span class="linenos">82</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
-</span><span id="LoginControlador-83"><a href="#LoginControlador-83"><span class="linenos">83</span></a>            <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador-23"><a href="#LoginControlador-23"><span class="linenos"> 23</span></a><span class="k">class</span><span class="w"> </span><span class="nc">LoginControlador</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+</span><span id="LoginControlador-24"><a href="#LoginControlador-24"><span class="linenos"> 24</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador-25"><a href="#LoginControlador-25"><span class="linenos"> 25</span></a><span class="sd">    Controlador encargado de gestionar el inicio de sesión del usuario.</span>
+</span><span id="LoginControlador-26"><a href="#LoginControlador-26"><span class="linenos"> 26</span></a>
+</span><span id="LoginControlador-27"><a href="#LoginControlador-27"><span class="linenos"> 27</span></a><span class="sd">    Señales:</span>
+</span><span id="LoginControlador-28"><a href="#LoginControlador-28"><span class="linenos"> 28</span></a><span class="sd">        senal_abrir_recuperacion: Emitida cuando el usuario solicita recuperar la cuenta.</span>
+</span><span id="LoginControlador-29"><a href="#LoginControlador-29"><span class="linenos"> 29</span></a><span class="sd">        senal_login_exitoso: Emitida con un diccionario de usuario si el login es exitoso.</span>
+</span><span id="LoginControlador-30"><a href="#LoginControlador-30"><span class="linenos"> 30</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="LoginControlador-31"><a href="#LoginControlador-31"><span class="linenos"> 31</span></a>    <span class="n">senal_abrir_recuperacion</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+</span><span id="LoginControlador-32"><a href="#LoginControlador-32"><span class="linenos"> 32</span></a>    <span class="n">senal_login_exitoso</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+</span><span id="LoginControlador-33"><a href="#LoginControlador-33"><span class="linenos"> 33</span></a>
+</span><span id="LoginControlador-34"><a href="#LoginControlador-34"><span class="linenos"> 34</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LoginControlador-35"><a href="#LoginControlador-35"><span class="linenos"> 35</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador-36"><a href="#LoginControlador-36"><span class="linenos"> 36</span></a><span class="sd">        Inicializa el controlador de login y conecta los eventos de la interfaz.</span>
+</span><span id="LoginControlador-37"><a href="#LoginControlador-37"><span class="linenos"> 37</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LoginControlador-38"><a href="#LoginControlador-38"><span class="linenos"> 38</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="LoginControlador-39"><a href="#LoginControlador-39"><span class="linenos"> 39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaLogin</span><span class="p">()</span>
+</span><span id="LoginControlador-40"><a href="#LoginControlador-40"><span class="linenos"> 40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 👈 ventana de carga vacía al inicio</span>
+</span><span id="LoginControlador-41"><a href="#LoginControlador-41"><span class="linenos"> 41</span></a>
+</span><span id="LoginControlador-42"><a href="#LoginControlador-42"><span class="linenos"> 42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_entrar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
+</span><span id="LoginControlador-43"><a href="#LoginControlador-43"><span class="linenos"> 43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">enlace_recuperar</span><span class="o">.</span><span class="n">linkActivated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+</span><span id="LoginControlador-44"><a href="#LoginControlador-44"><span class="linenos"> 44</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">abrir_recuperacion</span><span class="p">)</span>
+</span><span id="LoginControlador-45"><a href="#LoginControlador-45"><span class="linenos"> 45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_usuario</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+</span><span id="LoginControlador-46"><a href="#LoginControlador-46"><span class="linenos"> 46</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
+</span><span id="LoginControlador-47"><a href="#LoginControlador-47"><span class="linenos"> 47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_contrasena</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+</span><span id="LoginControlador-48"><a href="#LoginControlador-48"><span class="linenos"> 48</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
+</span><span id="LoginControlador-49"><a href="#LoginControlador-49"><span class="linenos"> 49</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_entrar</span><span class="o">.</span><span class="n">setDefault</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="LoginControlador-50"><a href="#LoginControlador-50"><span class="linenos"> 50</span></a>
+</span><span id="LoginControlador-51"><a href="#LoginControlador-51"><span class="linenos"> 51</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LoginControlador-52"><a href="#LoginControlador-52"><span class="linenos"> 52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador-53"><a href="#LoginControlador-53"><span class="linenos"> 53</span></a><span class="sd">        Muestra la ventana de inicio de sesión.</span>
+</span><span id="LoginControlador-54"><a href="#LoginControlador-54"><span class="linenos"> 54</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LoginControlador-55"><a href="#LoginControlador-55"><span class="linenos"> 55</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="LoginControlador-56"><a href="#LoginControlador-56"><span class="linenos"> 56</span></a>
+</span><span id="LoginControlador-57"><a href="#LoginControlador-57"><span class="linenos"> 57</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LoginControlador-58"><a href="#LoginControlador-58"><span class="linenos"> 58</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador-59"><a href="#LoginControlador-59"><span class="linenos"> 59</span></a><span class="sd">        Cierra la ventana de login autorizando su cierre.</span>
+</span><span id="LoginControlador-60"><a href="#LoginControlador-60"><span class="linenos"> 60</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LoginControlador-61"><a href="#LoginControlador-61"><span class="linenos"> 61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">cierre_autorizado</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="LoginControlador-62"><a href="#LoginControlador-62"><span class="linenos"> 62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="LoginControlador-63"><a href="#LoginControlador-63"><span class="linenos"> 63</span></a>
+</span><span id="LoginControlador-64"><a href="#LoginControlador-64"><span class="linenos"> 64</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abrir_recuperacion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LoginControlador-65"><a href="#LoginControlador-65"><span class="linenos"> 65</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador-66"><a href="#LoginControlador-66"><span class="linenos"> 66</span></a><span class="sd">        Cierra la ventana de login y emite la señal para abrir la recuperación de cuenta.</span>
+</span><span id="LoginControlador-67"><a href="#LoginControlador-67"><span class="linenos"> 67</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LoginControlador-68"><a href="#LoginControlador-68"><span class="linenos"> 68</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_abrir_recuperacion</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+</span><span id="LoginControlador-69"><a href="#LoginControlador-69"><span class="linenos"> 69</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
+</span><span id="LoginControlador-70"><a href="#LoginControlador-70"><span class="linenos"> 70</span></a>
+</span><span id="LoginControlador-71"><a href="#LoginControlador-71"><span class="linenos"> 71</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">iniciar_proceso_login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LoginControlador-72"><a href="#LoginControlador-72"><span class="linenos"> 72</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador-73"><a href="#LoginControlador-73"><span class="linenos"> 73</span></a><span class="sd">        Inicia el proceso de verificación del login:</span>
+</span><span id="LoginControlador-74"><a href="#LoginControlador-74"><span class="linenos"> 74</span></a><span class="sd">        - Verifica que los campos estén completos.</span>
+</span><span id="LoginControlador-75"><a href="#LoginControlador-75"><span class="linenos"> 75</span></a><span class="sd">        - Muestra animación de carga.</span>
+</span><span id="LoginControlador-76"><a href="#LoginControlador-76"><span class="linenos"> 76</span></a><span class="sd">        - Ejecuta la validación tras un breve retardo.</span>
+</span><span id="LoginControlador-77"><a href="#LoginControlador-77"><span class="linenos"> 77</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LoginControlador-78"><a href="#LoginControlador-78"><span class="linenos"> 78</span></a>        <span class="n">nombre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_usuario</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span id="LoginControlador-79"><a href="#LoginControlador-79"><span class="linenos"> 79</span></a>        <span class="n">contrasena</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_contrasena</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+</span><span id="LoginControlador-80"><a href="#LoginControlador-80"><span class="linenos"> 80</span></a>
+</span><span id="LoginControlador-81"><a href="#LoginControlador-81"><span class="linenos"> 81</span></a>        <span class="n">errores</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="LoginControlador-82"><a href="#LoginControlador-82"><span class="linenos"> 82</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">nombre</span><span class="p">:</span>
+</span><span id="LoginControlador-83"><a href="#LoginControlador-83"><span class="linenos"> 83</span></a>            <span class="n">errores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;• Falta el nombre de usuario&quot;</span><span class="p">)</span>
+</span><span id="LoginControlador-84"><a href="#LoginControlador-84"><span class="linenos"> 84</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">contrasena</span><span class="p">:</span>
+</span><span id="LoginControlador-85"><a href="#LoginControlador-85"><span class="linenos"> 85</span></a>            <span class="n">errores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;• Falta la contraseña&quot;</span><span class="p">)</span>
+</span><span id="LoginControlador-86"><a href="#LoginControlador-86"><span class="linenos"> 86</span></a>
+</span><span id="LoginControlador-87"><a href="#LoginControlador-87"><span class="linenos"> 87</span></a>        <span class="k">if</span> <span class="n">errores</span><span class="p">:</span>
+</span><span id="LoginControlador-88"><a href="#LoginControlador-88"><span class="linenos"> 88</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+</span><span id="LoginControlador-89"><a href="#LoginControlador-89"><span class="linenos"> 89</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
+</span><span id="LoginControlador-90"><a href="#LoginControlador-90"><span class="linenos"> 90</span></a>                <span class="s2">&quot;Campos incompletos&quot;</span><span class="p">,</span>
+</span><span id="LoginControlador-91"><a href="#LoginControlador-91"><span class="linenos"> 91</span></a>                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errores</span><span class="p">),</span>
+</span><span id="LoginControlador-92"><a href="#LoginControlador-92"><span class="linenos"> 92</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
+</span><span id="LoginControlador-93"><a href="#LoginControlador-93"><span class="linenos"> 93</span></a>            <span class="p">)</span>
+</span><span id="LoginControlador-94"><a href="#LoginControlador-94"><span class="linenos"> 94</span></a>            <span class="k">return</span>
+</span><span id="LoginControlador-95"><a href="#LoginControlador-95"><span class="linenos"> 95</span></a>
+</span><span id="LoginControlador-96"><a href="#LoginControlador-96"><span class="linenos"> 96</span></a>        <span class="c1"># Mostrar ventana de carga</span>
+</span><span id="LoginControlador-97"><a href="#LoginControlador-97"><span class="linenos"> 97</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="n">VentanaCargaGif</span><span class="p">()</span>
+</span><span id="LoginControlador-98"><a href="#LoginControlador-98"><span class="linenos"> 98</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="LoginControlador-99"><a href="#LoginControlador-99"><span class="linenos"> 99</span></a>
+</span><span id="LoginControlador-100"><a href="#LoginControlador-100"><span class="linenos">100</span></a>        <span class="c1"># Esperar 200ms para que la animación se vea y luego validar</span>
+</span><span id="LoginControlador-101"><a href="#LoginControlador-101"><span class="linenos">101</span></a>        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">validar_login</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">contrasena</span><span class="p">))</span>
+</span><span id="LoginControlador-102"><a href="#LoginControlador-102"><span class="linenos">102</span></a>
+</span><span id="LoginControlador-103"><a href="#LoginControlador-103"><span class="linenos">103</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">validar_login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">,</span> <span class="n">contrasena</span><span class="p">):</span>
+</span><span id="LoginControlador-104"><a href="#LoginControlador-104"><span class="linenos">104</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador-105"><a href="#LoginControlador-105"><span class="linenos">105</span></a><span class="sd">        Verifica el nombre de usuario y contraseña contra la base de datos.</span>
+</span><span id="LoginControlador-106"><a href="#LoginControlador-106"><span class="linenos">106</span></a><span class="sd">        Muestra un mensaje si es exitoso o si ocurre un error.</span>
+</span><span id="LoginControlador-107"><a href="#LoginControlador-107"><span class="linenos">107</span></a>
+</span><span id="LoginControlador-108"><a href="#LoginControlador-108"><span class="linenos">108</span></a><span class="sd">        Args:</span>
+</span><span id="LoginControlador-109"><a href="#LoginControlador-109"><span class="linenos">109</span></a><span class="sd">            nombre (str): Nombre de usuario ingresado.</span>
+</span><span id="LoginControlador-110"><a href="#LoginControlador-110"><span class="linenos">110</span></a><span class="sd">            contrasena (str): Contraseña ingresada.</span>
+</span><span id="LoginControlador-111"><a href="#LoginControlador-111"><span class="linenos">111</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LoginControlador-112"><a href="#LoginControlador-112"><span class="linenos">112</span></a>        <span class="n">usuario</span> <span class="o">=</span> <span class="n">obtener_usuario_por_nombre</span><span class="p">(</span><span class="n">nombre</span><span class="p">)</span>
+</span><span id="LoginControlador-113"><a href="#LoginControlador-113"><span class="linenos">113</span></a>        <span class="k">if</span> <span class="n">usuario</span> <span class="ow">and</span> <span class="n">verificar_contrasena</span><span class="p">(</span><span class="n">contrasena</span><span class="p">,</span> <span class="n">usuario</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]):</span>
+</span><span id="LoginControlador-114"><a href="#LoginControlador-114"><span class="linenos">114</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>  <span class="c1"># ✅ Cierra video de carga</span>
+</span><span id="LoginControlador-115"><a href="#LoginControlador-115"><span class="linenos">115</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span>
+</span><span id="LoginControlador-116"><a href="#LoginControlador-116"><span class="linenos">116</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
+</span><span id="LoginControlador-117"><a href="#LoginControlador-117"><span class="linenos">117</span></a>                <span class="s2">&quot; Login exitoso 👍&quot;</span><span class="p">,</span>
+</span><span id="LoginControlador-118"><a href="#LoginControlador-118"><span class="linenos">118</span></a>                <span class="sa">f</span><span class="s2">&quot;Bienvenido/a, </span><span class="si">{</span><span class="n">usuario</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="LoginControlador-119"><a href="#LoginControlador-119"><span class="linenos">119</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
+</span><span id="LoginControlador-120"><a href="#LoginControlador-120"><span class="linenos">120</span></a>            <span class="p">)</span>
+</span><span id="LoginControlador-121"><a href="#LoginControlador-121"><span class="linenos">121</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">senal_login_exitoso</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">usuario</span><span class="p">)</span>
+</span><span id="LoginControlador-122"><a href="#LoginControlador-122"><span class="linenos">122</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
+</span><span id="LoginControlador-123"><a href="#LoginControlador-123"><span class="linenos">123</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="LoginControlador-124"><a href="#LoginControlador-124"><span class="linenos">124</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>  <span class="c1"># ❌ También cerramos si falla</span>
+</span><span id="LoginControlador-125"><a href="#LoginControlador-125"><span class="linenos">125</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+</span><span id="LoginControlador-126"><a href="#LoginControlador-126"><span class="linenos">126</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
+</span><span id="LoginControlador-127"><a href="#LoginControlador-127"><span class="linenos">127</span></a>                <span class="s2">&quot;❌ Error de autenticación&quot;</span><span class="p">,</span>
+</span><span id="LoginControlador-128"><a href="#LoginControlador-128"><span class="linenos">128</span></a>                <span class="s2">&quot;Nombre o contraseña incorrectos.&quot;</span><span class="p">,</span>
+</span><span id="LoginControlador-129"><a href="#LoginControlador-129"><span class="linenos">129</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
+</span><span id="LoginControlador-130"><a href="#LoginControlador-130"><span class="linenos">130</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>QObject(self, /, parent: PySide6.QtCore.QObject | None = None, *, objectName: str | None = None) -> None</p>
+            <div class="docstring"><p>Controlador encargado de gestionar el inicio de sesión del usuario.</p>
+
+<p>Señales:
+    senal_abrir_recuperacion: Emitida cuando el usuario solicita recuperar la cuenta.
+    senal_login_exitoso: Emitida con un diccionario de usuario si el login es exitoso.</p>
 </div>
 
 
@@ -279,25 +382,26 @@
 
     </div>
     <a class="headerlink" href="#LoginControlador.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador.__init__-13"><a href="#LoginControlador.__init__-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LoginControlador.__init__-14"><a href="#LoginControlador.__init__-14"><span class="linenos">14</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="LoginControlador.__init__-15"><a href="#LoginControlador.__init__-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaLogin</span><span class="p">()</span>
-</span><span id="LoginControlador.__init__-16"><a href="#LoginControlador.__init__-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 👈 ventana de carga vacía al inicio</span>
-</span><span id="LoginControlador.__init__-17"><a href="#LoginControlador.__init__-17"><span class="linenos">17</span></a>
-</span><span id="LoginControlador.__init__-18"><a href="#LoginControlador.__init__-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_entrar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
-</span><span id="LoginControlador.__init__-19"><a href="#LoginControlador.__init__-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">enlace_recuperar</span><span class="o">.</span><span class="n">linkActivated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-</span><span id="LoginControlador.__init__-20"><a href="#LoginControlador.__init__-20"><span class="linenos">20</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">abrir_recuperacion</span><span class="p">)</span>
-</span><span id="LoginControlador.__init__-21"><a href="#LoginControlador.__init__-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_usuario</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-</span><span id="LoginControlador.__init__-22"><a href="#LoginControlador.__init__-22"><span class="linenos">22</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
-</span><span id="LoginControlador.__init__-23"><a href="#LoginControlador.__init__-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_contrasena</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-</span><span id="LoginControlador.__init__-24"><a href="#LoginControlador.__init__-24"><span class="linenos">24</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
-</span><span id="LoginControlador.__init__-25"><a href="#LoginControlador.__init__-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_entrar</span><span class="o">.</span><span class="n">setDefault</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador.__init__-34"><a href="#LoginControlador.__init__-34"><span class="linenos">34</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LoginControlador.__init__-35"><a href="#LoginControlador.__init__-35"><span class="linenos">35</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador.__init__-36"><a href="#LoginControlador.__init__-36"><span class="linenos">36</span></a><span class="sd">        Inicializa el controlador de login y conecta los eventos de la interfaz.</span>
+</span><span id="LoginControlador.__init__-37"><a href="#LoginControlador.__init__-37"><span class="linenos">37</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LoginControlador.__init__-38"><a href="#LoginControlador.__init__-38"><span class="linenos">38</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="LoginControlador.__init__-39"><a href="#LoginControlador.__init__-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaLogin</span><span class="p">()</span>
+</span><span id="LoginControlador.__init__-40"><a href="#LoginControlador.__init__-40"><span class="linenos">40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 👈 ventana de carga vacía al inicio</span>
+</span><span id="LoginControlador.__init__-41"><a href="#LoginControlador.__init__-41"><span class="linenos">41</span></a>
+</span><span id="LoginControlador.__init__-42"><a href="#LoginControlador.__init__-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_entrar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
+</span><span id="LoginControlador.__init__-43"><a href="#LoginControlador.__init__-43"><span class="linenos">43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">enlace_recuperar</span><span class="o">.</span><span class="n">linkActivated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+</span><span id="LoginControlador.__init__-44"><a href="#LoginControlador.__init__-44"><span class="linenos">44</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">abrir_recuperacion</span><span class="p">)</span>
+</span><span id="LoginControlador.__init__-45"><a href="#LoginControlador.__init__-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_usuario</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+</span><span id="LoginControlador.__init__-46"><a href="#LoginControlador.__init__-46"><span class="linenos">46</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
+</span><span id="LoginControlador.__init__-47"><a href="#LoginControlador.__init__-47"><span class="linenos">47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_contrasena</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+</span><span id="LoginControlador.__init__-48"><a href="#LoginControlador.__init__-48"><span class="linenos">48</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">iniciar_proceso_login</span><span class="p">)</span>
+</span><span id="LoginControlador.__init__-49"><a href="#LoginControlador.__init__-49"><span class="linenos">49</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_entrar</span><span class="o">.</span><span class="n">setDefault</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>__init__(self, /, parent: PySide6.QtCore.QObject | None = None, *, objectName: str | None = None) -> None</p>
-
-<p>Initialize self.  See help(type(self)) for accurate signature.</p>
+            <div class="docstring"><p>Inicializa el controlador de login y conecta los eventos de la interfaz.</p>
 </div>
 
 
@@ -312,7 +416,9 @@
     </div>
     <a class="headerlink" href="#LoginControlador.senal_abrir_recuperacion"></a>
     
-    
+            <div class="docstring"><p>The type of the None singleton.</p>
+</div>
+
 
                             </div>
                             <div id="LoginControlador.senal_login_exitoso" class="classattr">
@@ -325,7 +431,9 @@
     </div>
     <a class="headerlink" href="#LoginControlador.senal_login_exitoso"></a>
     
-    
+            <div class="docstring"><p>The type of the None singleton.</p>
+</div>
+
 
                             </div>
                             <div id="LoginControlador.ventana" class="classattr">
@@ -361,12 +469,17 @@
 
     </div>
     <a class="headerlink" href="#LoginControlador.mostrar"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador.mostrar-27"><a href="#LoginControlador.mostrar-27"><span class="linenos">27</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LoginControlador.mostrar-28"><a href="#LoginControlador.mostrar-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador.mostrar-51"><a href="#LoginControlador.mostrar-51"><span class="linenos">51</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LoginControlador.mostrar-52"><a href="#LoginControlador.mostrar-52"><span class="linenos">52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador.mostrar-53"><a href="#LoginControlador.mostrar-53"><span class="linenos">53</span></a><span class="sd">        Muestra la ventana de inicio de sesión.</span>
+</span><span id="LoginControlador.mostrar-54"><a href="#LoginControlador.mostrar-54"><span class="linenos">54</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LoginControlador.mostrar-55"><a href="#LoginControlador.mostrar-55"><span class="linenos">55</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Muestra la ventana de inicio de sesión.</p>
+</div>
+
 
                             </div>
                             <div id="LoginControlador.cerrar" class="classattr">
@@ -380,13 +493,18 @@
 
     </div>
     <a class="headerlink" href="#LoginControlador.cerrar"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador.cerrar-30"><a href="#LoginControlador.cerrar-30"><span class="linenos">30</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LoginControlador.cerrar-31"><a href="#LoginControlador.cerrar-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">cierre_autorizado</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="LoginControlador.cerrar-32"><a href="#LoginControlador.cerrar-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador.cerrar-57"><a href="#LoginControlador.cerrar-57"><span class="linenos">57</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LoginControlador.cerrar-58"><a href="#LoginControlador.cerrar-58"><span class="linenos">58</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador.cerrar-59"><a href="#LoginControlador.cerrar-59"><span class="linenos">59</span></a><span class="sd">        Cierra la ventana de login autorizando su cierre.</span>
+</span><span id="LoginControlador.cerrar-60"><a href="#LoginControlador.cerrar-60"><span class="linenos">60</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LoginControlador.cerrar-61"><a href="#LoginControlador.cerrar-61"><span class="linenos">61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">cierre_autorizado</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="LoginControlador.cerrar-62"><a href="#LoginControlador.cerrar-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Cierra la ventana de login autorizando su cierre.</p>
+</div>
+
 
                             </div>
                             <div id="LoginControlador.abrir_recuperacion" class="classattr">
@@ -400,13 +518,18 @@
 
     </div>
     <a class="headerlink" href="#LoginControlador.abrir_recuperacion"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador.abrir_recuperacion-34"><a href="#LoginControlador.abrir_recuperacion-34"><span class="linenos">34</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abrir_recuperacion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LoginControlador.abrir_recuperacion-35"><a href="#LoginControlador.abrir_recuperacion-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_abrir_recuperacion</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-</span><span id="LoginControlador.abrir_recuperacion-36"><a href="#LoginControlador.abrir_recuperacion-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador.abrir_recuperacion-64"><a href="#LoginControlador.abrir_recuperacion-64"><span class="linenos">64</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">abrir_recuperacion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LoginControlador.abrir_recuperacion-65"><a href="#LoginControlador.abrir_recuperacion-65"><span class="linenos">65</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador.abrir_recuperacion-66"><a href="#LoginControlador.abrir_recuperacion-66"><span class="linenos">66</span></a><span class="sd">        Cierra la ventana de login y emite la señal para abrir la recuperación de cuenta.</span>
+</span><span id="LoginControlador.abrir_recuperacion-67"><a href="#LoginControlador.abrir_recuperacion-67"><span class="linenos">67</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LoginControlador.abrir_recuperacion-68"><a href="#LoginControlador.abrir_recuperacion-68"><span class="linenos">68</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_abrir_recuperacion</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+</span><span id="LoginControlador.abrir_recuperacion-69"><a href="#LoginControlador.abrir_recuperacion-69"><span class="linenos">69</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Cierra la ventana de login y emite la señal para abrir la recuperación de cuenta.</p>
+</div>
+
 
                             </div>
                             <div id="LoginControlador.iniciar_proceso_login" class="classattr">
@@ -420,35 +543,49 @@
 
     </div>
     <a class="headerlink" href="#LoginControlador.iniciar_proceso_login"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador.iniciar_proceso_login-38"><a href="#LoginControlador.iniciar_proceso_login-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">iniciar_proceso_login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LoginControlador.iniciar_proceso_login-39"><a href="#LoginControlador.iniciar_proceso_login-39"><span class="linenos">39</span></a>        <span class="n">nombre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_usuario</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-</span><span id="LoginControlador.iniciar_proceso_login-40"><a href="#LoginControlador.iniciar_proceso_login-40"><span class="linenos">40</span></a>        <span class="n">contrasena</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_contrasena</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
-</span><span id="LoginControlador.iniciar_proceso_login-41"><a href="#LoginControlador.iniciar_proceso_login-41"><span class="linenos">41</span></a>
-</span><span id="LoginControlador.iniciar_proceso_login-42"><a href="#LoginControlador.iniciar_proceso_login-42"><span class="linenos">42</span></a>        <span class="n">errores</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="LoginControlador.iniciar_proceso_login-43"><a href="#LoginControlador.iniciar_proceso_login-43"><span class="linenos">43</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">nombre</span><span class="p">:</span>
-</span><span id="LoginControlador.iniciar_proceso_login-44"><a href="#LoginControlador.iniciar_proceso_login-44"><span class="linenos">44</span></a>            <span class="n">errores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;• Falta el nombre de usuario&quot;</span><span class="p">)</span>
-</span><span id="LoginControlador.iniciar_proceso_login-45"><a href="#LoginControlador.iniciar_proceso_login-45"><span class="linenos">45</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">contrasena</span><span class="p">:</span>
-</span><span id="LoginControlador.iniciar_proceso_login-46"><a href="#LoginControlador.iniciar_proceso_login-46"><span class="linenos">46</span></a>            <span class="n">errores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;• Falta la contraseña&quot;</span><span class="p">)</span>
-</span><span id="LoginControlador.iniciar_proceso_login-47"><a href="#LoginControlador.iniciar_proceso_login-47"><span class="linenos">47</span></a>
-</span><span id="LoginControlador.iniciar_proceso_login-48"><a href="#LoginControlador.iniciar_proceso_login-48"><span class="linenos">48</span></a>        <span class="k">if</span> <span class="n">errores</span><span class="p">:</span>
-</span><span id="LoginControlador.iniciar_proceso_login-49"><a href="#LoginControlador.iniciar_proceso_login-49"><span class="linenos">49</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-</span><span id="LoginControlador.iniciar_proceso_login-50"><a href="#LoginControlador.iniciar_proceso_login-50"><span class="linenos">50</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
-</span><span id="LoginControlador.iniciar_proceso_login-51"><a href="#LoginControlador.iniciar_proceso_login-51"><span class="linenos">51</span></a>                <span class="s2">&quot;Campos incompletos&quot;</span><span class="p">,</span>
-</span><span id="LoginControlador.iniciar_proceso_login-52"><a href="#LoginControlador.iniciar_proceso_login-52"><span class="linenos">52</span></a>                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errores</span><span class="p">),</span>
-</span><span id="LoginControlador.iniciar_proceso_login-53"><a href="#LoginControlador.iniciar_proceso_login-53"><span class="linenos">53</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
-</span><span id="LoginControlador.iniciar_proceso_login-54"><a href="#LoginControlador.iniciar_proceso_login-54"><span class="linenos">54</span></a>            <span class="p">)</span>
-</span><span id="LoginControlador.iniciar_proceso_login-55"><a href="#LoginControlador.iniciar_proceso_login-55"><span class="linenos">55</span></a>            <span class="k">return</span>
-</span><span id="LoginControlador.iniciar_proceso_login-56"><a href="#LoginControlador.iniciar_proceso_login-56"><span class="linenos">56</span></a>
-</span><span id="LoginControlador.iniciar_proceso_login-57"><a href="#LoginControlador.iniciar_proceso_login-57"><span class="linenos">57</span></a>        <span class="c1"># 🔄 Mostrar ventana de carga</span>
-</span><span id="LoginControlador.iniciar_proceso_login-58"><a href="#LoginControlador.iniciar_proceso_login-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="n">VentanaCargaGif</span><span class="p">()</span>
-</span><span id="LoginControlador.iniciar_proceso_login-59"><a href="#LoginControlador.iniciar_proceso_login-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span><span id="LoginControlador.iniciar_proceso_login-60"><a href="#LoginControlador.iniciar_proceso_login-60"><span class="linenos">60</span></a>
-</span><span id="LoginControlador.iniciar_proceso_login-61"><a href="#LoginControlador.iniciar_proceso_login-61"><span class="linenos">61</span></a>        <span class="c1"># ⏳ Esperar 200ms para que la animación se vea y luego validar</span>
-</span><span id="LoginControlador.iniciar_proceso_login-62"><a href="#LoginControlador.iniciar_proceso_login-62"><span class="linenos">62</span></a>        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">validar_login</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">contrasena</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador.iniciar_proceso_login-71"><a href="#LoginControlador.iniciar_proceso_login-71"><span class="linenos"> 71</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">iniciar_proceso_login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LoginControlador.iniciar_proceso_login-72"><a href="#LoginControlador.iniciar_proceso_login-72"><span class="linenos"> 72</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador.iniciar_proceso_login-73"><a href="#LoginControlador.iniciar_proceso_login-73"><span class="linenos"> 73</span></a><span class="sd">        Inicia el proceso de verificación del login:</span>
+</span><span id="LoginControlador.iniciar_proceso_login-74"><a href="#LoginControlador.iniciar_proceso_login-74"><span class="linenos"> 74</span></a><span class="sd">        - Verifica que los campos estén completos.</span>
+</span><span id="LoginControlador.iniciar_proceso_login-75"><a href="#LoginControlador.iniciar_proceso_login-75"><span class="linenos"> 75</span></a><span class="sd">        - Muestra animación de carga.</span>
+</span><span id="LoginControlador.iniciar_proceso_login-76"><a href="#LoginControlador.iniciar_proceso_login-76"><span class="linenos"> 76</span></a><span class="sd">        - Ejecuta la validación tras un breve retardo.</span>
+</span><span id="LoginControlador.iniciar_proceso_login-77"><a href="#LoginControlador.iniciar_proceso_login-77"><span class="linenos"> 77</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LoginControlador.iniciar_proceso_login-78"><a href="#LoginControlador.iniciar_proceso_login-78"><span class="linenos"> 78</span></a>        <span class="n">nombre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_usuario</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span id="LoginControlador.iniciar_proceso_login-79"><a href="#LoginControlador.iniciar_proceso_login-79"><span class="linenos"> 79</span></a>        <span class="n">contrasena</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_contrasena</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+</span><span id="LoginControlador.iniciar_proceso_login-80"><a href="#LoginControlador.iniciar_proceso_login-80"><span class="linenos"> 80</span></a>
+</span><span id="LoginControlador.iniciar_proceso_login-81"><a href="#LoginControlador.iniciar_proceso_login-81"><span class="linenos"> 81</span></a>        <span class="n">errores</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="LoginControlador.iniciar_proceso_login-82"><a href="#LoginControlador.iniciar_proceso_login-82"><span class="linenos"> 82</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">nombre</span><span class="p">:</span>
+</span><span id="LoginControlador.iniciar_proceso_login-83"><a href="#LoginControlador.iniciar_proceso_login-83"><span class="linenos"> 83</span></a>            <span class="n">errores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;• Falta el nombre de usuario&quot;</span><span class="p">)</span>
+</span><span id="LoginControlador.iniciar_proceso_login-84"><a href="#LoginControlador.iniciar_proceso_login-84"><span class="linenos"> 84</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">contrasena</span><span class="p">:</span>
+</span><span id="LoginControlador.iniciar_proceso_login-85"><a href="#LoginControlador.iniciar_proceso_login-85"><span class="linenos"> 85</span></a>            <span class="n">errores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;• Falta la contraseña&quot;</span><span class="p">)</span>
+</span><span id="LoginControlador.iniciar_proceso_login-86"><a href="#LoginControlador.iniciar_proceso_login-86"><span class="linenos"> 86</span></a>
+</span><span id="LoginControlador.iniciar_proceso_login-87"><a href="#LoginControlador.iniciar_proceso_login-87"><span class="linenos"> 87</span></a>        <span class="k">if</span> <span class="n">errores</span><span class="p">:</span>
+</span><span id="LoginControlador.iniciar_proceso_login-88"><a href="#LoginControlador.iniciar_proceso_login-88"><span class="linenos"> 88</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+</span><span id="LoginControlador.iniciar_proceso_login-89"><a href="#LoginControlador.iniciar_proceso_login-89"><span class="linenos"> 89</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
+</span><span id="LoginControlador.iniciar_proceso_login-90"><a href="#LoginControlador.iniciar_proceso_login-90"><span class="linenos"> 90</span></a>                <span class="s2">&quot;Campos incompletos&quot;</span><span class="p">,</span>
+</span><span id="LoginControlador.iniciar_proceso_login-91"><a href="#LoginControlador.iniciar_proceso_login-91"><span class="linenos"> 91</span></a>                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errores</span><span class="p">),</span>
+</span><span id="LoginControlador.iniciar_proceso_login-92"><a href="#LoginControlador.iniciar_proceso_login-92"><span class="linenos"> 92</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
+</span><span id="LoginControlador.iniciar_proceso_login-93"><a href="#LoginControlador.iniciar_proceso_login-93"><span class="linenos"> 93</span></a>            <span class="p">)</span>
+</span><span id="LoginControlador.iniciar_proceso_login-94"><a href="#LoginControlador.iniciar_proceso_login-94"><span class="linenos"> 94</span></a>            <span class="k">return</span>
+</span><span id="LoginControlador.iniciar_proceso_login-95"><a href="#LoginControlador.iniciar_proceso_login-95"><span class="linenos"> 95</span></a>
+</span><span id="LoginControlador.iniciar_proceso_login-96"><a href="#LoginControlador.iniciar_proceso_login-96"><span class="linenos"> 96</span></a>        <span class="c1"># Mostrar ventana de carga</span>
+</span><span id="LoginControlador.iniciar_proceso_login-97"><a href="#LoginControlador.iniciar_proceso_login-97"><span class="linenos"> 97</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span> <span class="o">=</span> <span class="n">VentanaCargaGif</span><span class="p">()</span>
+</span><span id="LoginControlador.iniciar_proceso_login-98"><a href="#LoginControlador.iniciar_proceso_login-98"><span class="linenos"> 98</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="LoginControlador.iniciar_proceso_login-99"><a href="#LoginControlador.iniciar_proceso_login-99"><span class="linenos"> 99</span></a>
+</span><span id="LoginControlador.iniciar_proceso_login-100"><a href="#LoginControlador.iniciar_proceso_login-100"><span class="linenos">100</span></a>        <span class="c1"># Esperar 200ms para que la animación se vea y luego validar</span>
+</span><span id="LoginControlador.iniciar_proceso_login-101"><a href="#LoginControlador.iniciar_proceso_login-101"><span class="linenos">101</span></a>        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">validar_login</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">contrasena</span><span class="p">))</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Inicia el proceso de verificación del login:</p>
+
+<ul>
+<li>Verifica que los campos estén completos.</li>
+<li>Muestra animación de carga.</li>
+<li>Ejecuta la validación tras un breve retardo.</li>
+</ul>
+</div>
+
 
                             </div>
                             <div id="LoginControlador.validar_login" class="classattr">
@@ -462,30 +599,45 @@
 
     </div>
     <a class="headerlink" href="#LoginControlador.validar_login"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador.validar_login-64"><a href="#LoginControlador.validar_login-64"><span class="linenos">64</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">validar_login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">,</span> <span class="n">contrasena</span><span class="p">):</span>
-</span><span id="LoginControlador.validar_login-65"><a href="#LoginControlador.validar_login-65"><span class="linenos">65</span></a>        <span class="n">usuario</span> <span class="o">=</span> <span class="n">obtener_usuario_por_nombre</span><span class="p">(</span><span class="n">nombre</span><span class="p">)</span>
-</span><span id="LoginControlador.validar_login-66"><a href="#LoginControlador.validar_login-66"><span class="linenos">66</span></a>        <span class="k">if</span> <span class="n">usuario</span> <span class="ow">and</span> <span class="n">verificar_contrasena</span><span class="p">(</span><span class="n">contrasena</span><span class="p">,</span> <span class="n">usuario</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]):</span>
-</span><span id="LoginControlador.validar_login-67"><a href="#LoginControlador.validar_login-67"><span class="linenos">67</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>  <span class="c1"># ✅ Cierra video de carga</span>
-</span><span id="LoginControlador.validar_login-68"><a href="#LoginControlador.validar_login-68"><span class="linenos">68</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span>
-</span><span id="LoginControlador.validar_login-69"><a href="#LoginControlador.validar_login-69"><span class="linenos">69</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
-</span><span id="LoginControlador.validar_login-70"><a href="#LoginControlador.validar_login-70"><span class="linenos">70</span></a>                <span class="s2">&quot; Login exitoso 👍&quot;</span><span class="p">,</span>
-</span><span id="LoginControlador.validar_login-71"><a href="#LoginControlador.validar_login-71"><span class="linenos">71</span></a>                <span class="sa">f</span><span class="s2">&quot;Bienvenido/a, </span><span class="si">{</span><span class="n">usuario</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span id="LoginControlador.validar_login-72"><a href="#LoginControlador.validar_login-72"><span class="linenos">72</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
-</span><span id="LoginControlador.validar_login-73"><a href="#LoginControlador.validar_login-73"><span class="linenos">73</span></a>            <span class="p">)</span>
-</span><span id="LoginControlador.validar_login-74"><a href="#LoginControlador.validar_login-74"><span class="linenos">74</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">senal_login_exitoso</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">usuario</span><span class="p">)</span>
-</span><span id="LoginControlador.validar_login-75"><a href="#LoginControlador.validar_login-75"><span class="linenos">75</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
-</span><span id="LoginControlador.validar_login-76"><a href="#LoginControlador.validar_login-76"><span class="linenos">76</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="LoginControlador.validar_login-77"><a href="#LoginControlador.validar_login-77"><span class="linenos">77</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>  <span class="c1"># ❌ También cerramos si falla</span>
-</span><span id="LoginControlador.validar_login-78"><a href="#LoginControlador.validar_login-78"><span class="linenos">78</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
-</span><span id="LoginControlador.validar_login-79"><a href="#LoginControlador.validar_login-79"><span class="linenos">79</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
-</span><span id="LoginControlador.validar_login-80"><a href="#LoginControlador.validar_login-80"><span class="linenos">80</span></a>                <span class="s2">&quot;❌ Error de autenticación&quot;</span><span class="p">,</span>
-</span><span id="LoginControlador.validar_login-81"><a href="#LoginControlador.validar_login-81"><span class="linenos">81</span></a>                <span class="s2">&quot;Nombre o contraseña incorrectos.&quot;</span><span class="p">,</span>
-</span><span id="LoginControlador.validar_login-82"><a href="#LoginControlador.validar_login-82"><span class="linenos">82</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
-</span><span id="LoginControlador.validar_login-83"><a href="#LoginControlador.validar_login-83"><span class="linenos">83</span></a>            <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginControlador.validar_login-103"><a href="#LoginControlador.validar_login-103"><span class="linenos">103</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">validar_login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">,</span> <span class="n">contrasena</span><span class="p">):</span>
+</span><span id="LoginControlador.validar_login-104"><a href="#LoginControlador.validar_login-104"><span class="linenos">104</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="LoginControlador.validar_login-105"><a href="#LoginControlador.validar_login-105"><span class="linenos">105</span></a><span class="sd">        Verifica el nombre de usuario y contraseña contra la base de datos.</span>
+</span><span id="LoginControlador.validar_login-106"><a href="#LoginControlador.validar_login-106"><span class="linenos">106</span></a><span class="sd">        Muestra un mensaje si es exitoso o si ocurre un error.</span>
+</span><span id="LoginControlador.validar_login-107"><a href="#LoginControlador.validar_login-107"><span class="linenos">107</span></a>
+</span><span id="LoginControlador.validar_login-108"><a href="#LoginControlador.validar_login-108"><span class="linenos">108</span></a><span class="sd">        Args:</span>
+</span><span id="LoginControlador.validar_login-109"><a href="#LoginControlador.validar_login-109"><span class="linenos">109</span></a><span class="sd">            nombre (str): Nombre de usuario ingresado.</span>
+</span><span id="LoginControlador.validar_login-110"><a href="#LoginControlador.validar_login-110"><span class="linenos">110</span></a><span class="sd">            contrasena (str): Contraseña ingresada.</span>
+</span><span id="LoginControlador.validar_login-111"><a href="#LoginControlador.validar_login-111"><span class="linenos">111</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LoginControlador.validar_login-112"><a href="#LoginControlador.validar_login-112"><span class="linenos">112</span></a>        <span class="n">usuario</span> <span class="o">=</span> <span class="n">obtener_usuario_por_nombre</span><span class="p">(</span><span class="n">nombre</span><span class="p">)</span>
+</span><span id="LoginControlador.validar_login-113"><a href="#LoginControlador.validar_login-113"><span class="linenos">113</span></a>        <span class="k">if</span> <span class="n">usuario</span> <span class="ow">and</span> <span class="n">verificar_contrasena</span><span class="p">(</span><span class="n">contrasena</span><span class="p">,</span> <span class="n">usuario</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]):</span>
+</span><span id="LoginControlador.validar_login-114"><a href="#LoginControlador.validar_login-114"><span class="linenos">114</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>  <span class="c1"># ✅ Cierra video de carga</span>
+</span><span id="LoginControlador.validar_login-115"><a href="#LoginControlador.validar_login-115"><span class="linenos">115</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span>
+</span><span id="LoginControlador.validar_login-116"><a href="#LoginControlador.validar_login-116"><span class="linenos">116</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
+</span><span id="LoginControlador.validar_login-117"><a href="#LoginControlador.validar_login-117"><span class="linenos">117</span></a>                <span class="s2">&quot; Login exitoso 👍&quot;</span><span class="p">,</span>
+</span><span id="LoginControlador.validar_login-118"><a href="#LoginControlador.validar_login-118"><span class="linenos">118</span></a>                <span class="sa">f</span><span class="s2">&quot;Bienvenido/a, </span><span class="si">{</span><span class="n">usuario</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="LoginControlador.validar_login-119"><a href="#LoginControlador.validar_login-119"><span class="linenos">119</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
+</span><span id="LoginControlador.validar_login-120"><a href="#LoginControlador.validar_login-120"><span class="linenos">120</span></a>            <span class="p">)</span>
+</span><span id="LoginControlador.validar_login-121"><a href="#LoginControlador.validar_login-121"><span class="linenos">121</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">senal_login_exitoso</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">usuario</span><span class="p">)</span>
+</span><span id="LoginControlador.validar_login-122"><a href="#LoginControlador.validar_login-122"><span class="linenos">122</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
+</span><span id="LoginControlador.validar_login-123"><a href="#LoginControlador.validar_login-123"><span class="linenos">123</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="LoginControlador.validar_login-124"><a href="#LoginControlador.validar_login-124"><span class="linenos">124</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana_carga</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>  <span class="c1"># ❌ También cerramos si falla</span>
+</span><span id="LoginControlador.validar_login-125"><a href="#LoginControlador.validar_login-125"><span class="linenos">125</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+</span><span id="LoginControlador.validar_login-126"><a href="#LoginControlador.validar_login-126"><span class="linenos">126</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span>
+</span><span id="LoginControlador.validar_login-127"><a href="#LoginControlador.validar_login-127"><span class="linenos">127</span></a>                <span class="s2">&quot;❌ Error de autenticación&quot;</span><span class="p">,</span>
+</span><span id="LoginControlador.validar_login-128"><a href="#LoginControlador.validar_login-128"><span class="linenos">128</span></a>                <span class="s2">&quot;Nombre o contraseña incorrectos.&quot;</span><span class="p">,</span>
+</span><span id="LoginControlador.validar_login-129"><a href="#LoginControlador.validar_login-129"><span class="linenos">129</span></a>                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Ok</span>
+</span><span id="LoginControlador.validar_login-130"><a href="#LoginControlador.validar_login-130"><span class="linenos">130</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Verifica el nombre de usuario y contraseña contra la base de datos.
+Muestra un mensaje si es exitoso o si ocurre un error.</p>
+
+<p>Args:
+    nombre (str): Nombre de usuario ingresado.
+    contrasena (str): Contraseña ingresada.</p>
+</div>
+
 
                             </div>
                             <div id="LoginControlador.staticMetaObject" class="classattr">

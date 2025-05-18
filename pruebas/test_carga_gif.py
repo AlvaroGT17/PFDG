@@ -13,8 +13,6 @@ Clases utilizadas:
     - VentanaCargaGif (desde `vistas.ventana_carga_gif`)
     - QLabel, QMovie (desde PySide6)
 
-Autor: Cresnik
-Proyecto: ReyBoxes - Gestión de Taller Mecánico
 """
 
 from PySide6.QtWidgets import QLabel

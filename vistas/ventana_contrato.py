@@ -1,3 +1,11 @@
+"""
+Módulo para la visualización de contratos de compraventa en formato HTML.
+
+Esta ventana permite al usuario visualizar un contrato generado previamente
+y tomar una decisión: aceptarlo (lo que puede desencadenar una acción adicional)
+o cancelarlo cerrando la ventana. El contrato se carga desde un archivo HTML.
+"""
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QPushButton, QHBoxLayout
@@ -11,16 +19,24 @@ class VentanaContrato(QWidget):
     Permite al usuario visualizar el contenido del contrato generado, aceptar su contenido
     o cancelar la operación. Al aceptar, se puede ejecutar una acción personalizada
     mediante una función de callback.
+
+    Atributos:
+        vista_previa (QTextBrowser): Visor del contenido HTML del contrato.
+        boton_aceptar (QPushButton): Botón para aceptar el contrato.
+        boton_volver (QPushButton): Botón para cerrar la ventana sin aceptar.
+        callback_aceptar (func): Función que se ejecuta si el contrato es aceptado.
+        tipo_operacion (str): Tipo de contrato: "compra" o "venta".
     """
 
     def __init__(self, html_path, tipo_operacion, callback_aceptar=None):
         """
         Inicializa la ventana de contrato.
 
-        Parámetros:
+        Args:
             html_path (str): Ruta al archivo HTML que contiene el contrato.
             tipo_operacion (str): Indica si es un contrato de "compra" o "venta".
-            callback_aceptar (func, opcional): Función que se ejecutará si se acepta el contrato.
+            callback_aceptar (function, optional): Función que se ejecutará si se acepta el contrato.
+                                                   Recibe el tipo de operación como argumento.
         """
         super().__init__()
         self.setWindowTitle(
@@ -64,7 +80,7 @@ class VentanaContrato(QWidget):
         """
         Ejecuta la función callback si fue proporcionada y cierra la ventana.
 
-        Pasa el tipo de operación ("compra" o "venta") como argumento al callback.
+        La función callback recibe como argumento el tipo de operación: "compra" o "venta".
         """
         if self.callback_aceptar:
             self.callback_aceptar(self.tipo_operacion)

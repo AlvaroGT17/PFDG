@@ -1,3 +1,15 @@
+"""
+Módulo de conexión a la base de datos PostgreSQL.
+
+Utiliza variables de entorno definidas en un archivo `.env` para establecer
+una conexión segura con la base de datos. Soporta conexión con o sin SSL
+según la configuración establecida.
+
+Funciones:
+- obtener_conexion: Establece y devuelve una conexión activa a la base de datos.
+
+Incluye un bloque de prueba para verificar la conexión directamente desde consola.
+"""
 import psycopg2
 from psycopg2 import OperationalError
 import os
@@ -9,7 +21,21 @@ load_dotenv()
 
 def obtener_conexion():
     """
-    Devuelve una conexión activa a la base de datos usando datos del archivo .env
+    Establece una conexión con la base de datos PostgreSQL usando las variables de entorno.
+
+    Variables de entorno esperadas:
+        - DB_NOMBRE: Nombre de la base de datos.
+        - DB_USUARIO: Usuario de la base de datos.
+        - DB_CONTRASENA: Contraseña del usuario.
+        - DB_HOST: Dirección del servidor.
+        - DB_PUERTO: Puerto de conexión.
+        - DB_SSL: "true" para habilitar SSL, cualquier otro valor lo desactiva.
+
+    Returns:
+        connection (psycopg2.extensions.connection): Objeto de conexión a PostgreSQL.
+
+    Raises:
+        OperationalError: Si no se puede establecer la conexión.
     """
     try:
         conexion = psycopg2.connect(
@@ -28,8 +54,11 @@ def obtener_conexion():
         raise
 
 
-# 🔧 Prueba desde consola
+# Prueba desde consola
 if __name__ == '__main__':
+    """
+    Bloque de prueba para ejecutar el módulo directamente y verificar si la conexión es exitosa.
+    """
     try:
         conexion = obtener_conexion()
         print("✅ Conexión establecida correctamente")

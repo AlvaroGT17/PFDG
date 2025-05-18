@@ -2,14 +2,16 @@
 """
 Tests unitarios para el módulo `presupuesto_consultas`.
 
-Incluye pruebas para:
-- Obtener recepciones disponibles para presupuesto.
-- Insertar presupuesto y obtener ID.
-- Insertar tareas asociadas a un presupuesto.
+Este conjunto de pruebas valida las funciones relacionadas con el tratamiento
+de presupuestos dentro de la base de datos, incluyendo:
 
-Se usan mocks para evitar conexión real a la base de datos.
+- La obtención de recepcionamientos disponibles para presupuestar.
+- La inserción de presupuestos y la recuperación de su ID.
+- La inserción de tareas asociadas a presupuestos.
 
-Autor: Cresnik
+Se utilizan mocks para evitar el uso de una base de datos real durante las pruebas.
+
+Autor: Cresnik  
 Proyecto: ReyBoxes - Gestión de Taller Mecánico
 """
 
@@ -20,13 +22,24 @@ import modelos.presupuesto_consultas as consultas
 
 @pytest.fixture
 def mock_conexion():
+    """
+    Simula una conexión y cursor de base de datos.
+
+    Devuelve una tupla `(conn, cursor)` con métodos mockeados.
+    Verifica además que `conn.close()` se llama al finalizar.
+    """
     mock_cursor = MagicMock()
     mock_conn = MagicMock()
     mock_conn.cursor.return_value = mock_cursor
-    return mock_conn, mock_cursor
+    yield mock_conn, mock_cursor
+    mock_conn.close.assert_called_once()
 
 
 def test_obtener_recepciones_para_presupuesto(mock_conexion):
+    """
+    Verifica que la función `obtener_recepciones_para_presupuesto` retorna 
+    correctamente una lista de recepciones disponibles con los campos esperados.
+    """
     conn, cursor = mock_conexion
 
     # Simular columnas y datos
@@ -49,6 +62,10 @@ def test_obtener_recepciones_para_presupuesto(mock_conexion):
 
 
 def test_insertar_presupuesto_retorna_id(mock_conexion):
+    """
+    Verifica que `insertar_presupuesto` inserta correctamente los datos
+    y devuelve el ID del nuevo presupuesto (simulado como 42).
+    """
     conn, cursor = mock_conexion
     cursor.fetchone.return_value = [42]
 
@@ -66,6 +83,10 @@ def test_insertar_presupuesto_retorna_id(mock_conexion):
 
 
 def test_insertar_tarea_presupuesto_insert_correcto(mock_conexion):
+    """
+    Comprueba que `insertar_tarea_presupuesto` ejecuta correctamente 
+    la inserción de una tarea asociada a un presupuesto.
+    """
     conn, cursor = mock_conexion
 
     with patch("modelos.presupuesto_consultas.obtener_conexion", return_value=conn):

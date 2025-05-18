@@ -3,6 +3,9 @@ Módulo para la ventana de recuperación de cuenta de usuario.
 
 Permite al usuario introducir su correo electrónico para
 recibir un código de verificación y proceder al restablecimiento de contraseña.
+
+Incluye una interfaz gráfica amigable, con campos validados, iconos informativos
+y botones accesibles para continuar o volver al inicio.
 """
 
 from PySide6.QtCore import Qt
@@ -14,11 +17,24 @@ from utilidades.rutas import obtener_ruta_absoluta
 class VentanaRecuperar(QWidget):
     """
     Ventana gráfica para el proceso de recuperación de cuenta mediante correo electrónico.
+
+    Permite al usuario:
+    - Introducir su correo registrado.
+    - Solicitar el envío de un código de verificación.
+    - Volver a la pantalla de inicio de sesión.
+
+    Atributos:
+        input_correo (QLineEdit): Campo de entrada para el correo del usuario.
+        btn_enviar (QPushButton): Botón para enviar el código de verificación.
+        btn_volver (QPushButton): Botón para regresar al login.
     """
 
     def __init__(self):
         """
-        Inicializa la ventana de recuperación.
+        Inicializa la ventana de recuperación de cuenta.
+
+        Carga la hoja de estilo personalizada, define el diseño
+        y crea los controles de interacción con el usuario.
         """
         super().__init__()
         self.setWindowTitle("ReyBoxes - Recuperar cuenta")
@@ -39,6 +55,12 @@ class VentanaRecuperar(QWidget):
     def inicializar_ui(self):
         """
         Configura y organiza los elementos visuales de la ventana.
+
+        Incluye:
+        - Título con estilo.
+        - Texto de instrucción.
+        - Campo de correo electrónico con icono.
+        - Botones de acción: Enviar Código y Volver.
         """
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)

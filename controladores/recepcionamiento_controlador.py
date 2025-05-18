@@ -1,3 +1,18 @@
+"""
+Controlador de la ventana de Recepcionamiento de vehículos en taller.
+
+Este módulo gestiona:
+- Autocompletado de clientes y vehículos.
+- Generación del documento PDF con los datos del formulario.
+- Inserción de datos en la base de datos.
+- Envío opcional del documento por correo.
+- Impresión directa si se selecciona.
+
+Utiliza:
+- `vistas.ventana_recepcionamiento`: Interfaz gráfica.
+- `utilidades.recepcionamiento_utilidades`: Utilidades para validación y generación de documentos.
+- `modelos.recepcionamiento_consultas`: Acceso a la base de datos.
+"""
 import os
 import smtplib
 import subprocess
@@ -24,7 +39,26 @@ from modelos.recepcionamiento_consultas import (
 
 
 class RecepcionamientoControlador:
+    """
+    Controlador principal del formulario de recepcionamiento de vehículos.
+
+    Se encarga de:
+    - Inicializar la interfaz.
+    - Cargar datos y configurar autocompletado.
+    - Conectar eventos de la GUI.
+    - Validar y guardar información.
+    - Generar documentos PDF.
+    - Gestionar el envío por correo e impresión.
+    """
+
     def __init__(self, vista, datos):
+        """
+        Inicializa el controlador.
+
+        Args:
+            vista: Instancia de la ventana `VentanaRecepcionamiento`.
+            datos: Diccionario con datos iniciales (motivos, urgencias, tipos, etc.).
+        """
         self.vista = vista
         self.datos = datos
         self._conectar_eventos()
@@ -35,6 +69,10 @@ class RecepcionamientoControlador:
         self._asignar_numero_recepcionamiento()
 
     def _conectar_eventos(self):
+        """
+        Conecta los eventos de la interfaz gráfica a los métodos del controlador.
+        Incluye acciones para botones y cambios en los combos.
+        """
         self.vista.boton_confirmar.clicked.connect(
             self.confirmar_recepcionamiento)
         self.vista.boton_cancelar.clicked.connect(self.vista.close)
@@ -44,22 +82,31 @@ class RecepcionamientoControlador:
             self._filtrar_tipos_por_categoria)
 
     def confirmar_recepcionamiento(self):
+        """
+        Procesa los datos introducidos por el usuario cuando pulsa "Confirmar".
+
+        - Valida el formulario.
+        - Genera el documento PDF.
+        - Guarda la información en base de datos.
+        - Envia el correo con el documento adjunto si está marcado.
+        - Imprime automáticamente si el checkbox está activado.
+        """
         datos = self._recopilar_datos()
 
-        # 🔍 Cliente
+        # Cliente
         print("🪪 DNI introducido por el usuario:", datos["DNI"])
         cliente_id = obtener_cliente_id_por_dni(datos["DNI"])
         print("👤 ID del cliente obtenido en base de datos:", cliente_id)
 
-        # 🔐 Usuario
+        # Usuario
         print("👨‍💻 ID del usuario (empleado) actual:",
               self.datos.get("usuario_id"))
 
-        # 📂 Estado
+        # Estado
         estado_id = obtener_estado_id_por_defecto()
         print("📥 ID del estado por defecto (Pendiente):", estado_id)
 
-        # ⚙️ Motivo
+        # Motivo
         print(f"📝 Motivo seleccionado en el formulario:", datos["Motivo"])
         print(f"🆔 ID correspondiente del motivo:",
               self.motivos_dict.get(datos["Motivo"]))
@@ -202,6 +249,10 @@ class RecepcionamientoControlador:
         self.vista.close()
 
     def _cargar_datos_completos(self):
+        """
+        Carga los datos iniciales proporcionados al controlador
+        en los combos de la interfaz (categorías, tipos, motivos, urgencias, combustibles).
+        """
         self.tipos_vehiculos = self.datos.get("tipos", [])
 
         self.vista.combo_categoria.clear()
@@ -229,6 +280,12 @@ class RecepcionamientoControlador:
             self.urgencias_dict[item["descripcion"]] = item["id"]
 
     def _recopilar_datos(self):
+        """
+        Recoge todos los valores del formulario y los empaqueta en un diccionario.
+
+        Returns:
+            dict: Datos recopilados del cliente, vehículo y estado del formulario.
+        """
         return {
             # Datos del cliente
             "Nombre": self.vista.input_nombre.text(),
@@ -275,6 +332,10 @@ class RecepcionamientoControlador:
         }
 
     def _configurar_autocompletado_clientes(self):
+        """
+        Configura los autocompletadores para los campos de nombre y DNI del cliente,
+        utilizando los clientes registrados en la base de datos.
+        """
         self.datos_clientes = obtener_clientes()
 
         nombres = [f"{c['nombre']} {c['primer_apellido']} {c['segundo_apellido']}".strip()
@@ -293,6 +354,10 @@ class RecepcionamientoControlador:
             self._autocompletar_por_dni)
 
     def _autocompletar_por_nombre(self):
+        """
+        Busca coincidencias exactas por nombre completo del cliente
+        e invoca el rellenado automático de campos si se encuentra uno.
+        """
         texto = self.vista.input_nombre.text().strip().upper()
         cliente = next((c for c in self.datos_clientes
                         if f"{c['nombre']} {c['primer_apellido']} {c['segundo_apellido']}".strip().upper() == texto),
@@ -301,6 +366,10 @@ class RecepcionamientoControlador:
             self._rellenar_campos_cliente(cliente)
 
     def _autocompletar_por_dni(self):
+        """
+        Busca coincidencias exactas por DNI del cliente e invoca
+        el rellenado automático si se encuentra un cliente válido.
+        """
         texto = self.vista.input_dni.text().strip().upper()
         cliente = next(
             (c for c in self.datos_clientes if c['dni'].upper() == texto), None)
@@ -308,6 +377,12 @@ class RecepcionamientoControlador:
             self._rellenar_campos_cliente(cliente)
 
     def _rellenar_campos_cliente(self, cliente):
+        """
+        Llena automáticamente los campos del formulario con los datos del cliente seleccionado.
+
+        Args:
+            cliente (dict): Diccionario con los datos del cliente.
+        """
         self.vista.input_nombre.setText(
             f"{cliente['nombre']} {cliente['primer_apellido']} {cliente['segundo_apellido']}".strip())
         self.vista.input_dni.setText(cliente['dni'])
@@ -317,6 +392,13 @@ class RecepcionamientoControlador:
         self._actualizar_autocompletado_matriculas(cliente['dni'])
 
     def _autocompletar_datos_vehiculo(self, matricula=None):
+        """
+        Rellena automáticamente los campos del vehículo al seleccionar una matrícula conocida.
+
+        Args:
+            matricula (str, optional): Matrícula del vehículo. Si no se proporciona,
+                                      se toma del combo correspondiente.
+        """
         matricula = matricula or self.vista.input_matricula.currentText().strip().upper()
         if not matricula or matricula == "Seleccione una matrícula":
             return
@@ -337,6 +419,9 @@ class RecepcionamientoControlador:
             self.vista.combo_tipo.setCurrentText(datos["tipo"] or "")
 
     def _filtrar_tipos_por_categoria(self):
+        """
+        Filtra y muestra los tipos de vehículo disponibles según la categoría seleccionada.
+        """
         categoria_seleccionada = self.vista.combo_categoria.currentText()
         self.vista.combo_tipo.clear()
         self.vista.combo_tipo.addItem("Seleccione el tipo")
@@ -345,23 +430,39 @@ class RecepcionamientoControlador:
         self.vista.combo_tipo.addItems(tipos_filtrados)
 
     def _configurar_autocompletado_matricula(self):
+        """
+        Configura el autocompletado del campo de matrícula con las existentes en la base de datos.
+        """
         matriculas = obtener_matriculas_existentes()
         completer = QCompleter(matriculas)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.vista.input_matricula.setCompleter(completer)
 
     def _actualizar_autocompletado_matriculas(self, dni_cliente):
+        """
+        Actualiza las opciones del combo de matrícula con las que están asociadas al cliente.
+
+        Args:
+            dni_cliente (str): DNI del cliente.
+        """
         self.vista.input_matricula.clear()
         self.vista.input_matricula.addItem("Seleccione una matrícula")
         matriculas = obtener_matriculas_por_cliente(dni_cliente)
         self.vista.input_matricula.addItems(matriculas)
 
     def _asignar_numero_recepcionamiento(self):
+        """
+        Asigna el número de recepcionamiento siguiente disponible y lo muestra en el campo correspondiente.
+        """
         numero = obtener_siguiente_numero_recepcionamiento()
         self.vista.input_numero_recepcion.setText(str(numero).zfill(5))
         self.vista.input_numero_recepcion.setReadOnly(True)
 
     def _activar_ruta_predeterminada(self):
+        """
+        Activa el uso de la ruta de guardado predeterminada si el checkbox correspondiente está activo.
+        Conecta el evento `toggled` al método manejador.
+        """
         if self.vista.checkbox_ruta_predeterminada.isChecked():
             ruta = obtener_ruta_predeterminada_recepcionamientos()
             self.vista.input_ruta_guardado.setText(ruta)
@@ -370,6 +471,12 @@ class RecepcionamientoControlador:
             self._manejar_checkbox_ruta)
 
     def _manejar_checkbox_ruta(self, estado):
+        """
+        Activa o desactiva el campo de ruta manual según el estado del checkbox.
+
+        Args:
+            estado (bool): Estado del checkbox (True si está activado).
+        """
         if estado:
             ruta = obtener_ruta_predeterminada_recepcionamientos()
             self.vista.input_ruta_guardado.setText(ruta)

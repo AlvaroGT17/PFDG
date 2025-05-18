@@ -1,3 +1,14 @@
+"""
+Módulo para la recuperación de cuentas mediante el envío de códigos por correo electrónico.
+
+Este módulo permite:
+- Verificar si un usuario existe mediante su email.
+- Generar y guardar un código de recuperación temporal con expiración.
+- Enviar un correo HTML con el código de recuperación personalizado.
+
+Requiere conexión a una base de datos PostgreSQL y configuración de variables
+de entorno para el correo emisor y las credenciales de la base de datos.
+"""
 import os
 import random
 import smtplib
@@ -9,11 +20,25 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from utilidades.rutas import obtener_ruta_absoluta
 
-# Cargar variables de entorno
+
 load_dotenv()
 
 
 def enviar_codigo_recuperacion(correo_usuario):
+    """
+    Envía un código de recuperación de cuenta al correo del usuario.
+
+    - Verifica si el correo está registrado en la tabla `usuarios`.
+    - Genera un código numérico de 6 cifras válido por 5 minutos.
+    - Guarda el código y su fecha de expiración en la base de datos.
+    - Envía un correo electrónico con el código utilizando formato HTML.
+
+    Args:
+        correo_usuario (str): Dirección de correo del usuario que solicita la recuperación.
+
+    Returns:
+        bool: True si el código fue generado y enviado correctamente, False si hubo un error o el correo no existe.
+    """
     conexion = None
     try:
         # 1. Conexión a la base de datos
@@ -65,6 +90,21 @@ def enviar_codigo_recuperacion(correo_usuario):
 
 
 def enviar_correo(nombre, destinatario, codigo):
+    """
+    Envía un correo HTML con el código de recuperación al usuario.
+
+    El mensaje contiene estilo personalizado, branding de ReyBoxes,
+    y una advertencia de expiración del código.
+
+    Args:
+        nombre (str): Nombre del destinatario (formateado en el cuerpo del mensaje).
+        destinatario (str): Dirección de correo electrónico del destinatario.
+        codigo (str): Código de recuperación generado.
+
+    Variables de entorno requeridas:
+        - CORREO_REMITENTE: Dirección de email configurada como remitente.
+        - CORREO_CONTRASENA: Contraseña o clave de aplicación del correo emisor.
+    """
     nombre_formateado = nombre.strip().capitalize()
     asunto = "🔐 Recuperación de cuenta - 🚗ReyBoxes"
 

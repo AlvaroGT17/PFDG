@@ -4,6 +4,9 @@ Módulo para la ventana de reimpresión de recepcionamientos en formato PDF.
 Esta interfaz permite visualizar una tabla con los documentos generados
 durante el proceso de recepcionamiento, y ofrece opciones para reenviarlos,
 imprimirlos o abrirlos desde el sistema de archivos.
+
+Los archivos se agrupan por carpetas, habitualmente con nombres de mes (por ejemplo, "2024-09"),
+y se muestran en una tabla interactiva con opciones accesibles al usuario.
 """
 
 import os
@@ -21,19 +24,34 @@ from utilidades.rutas import obtener_ruta_absoluta
 
 class VentanaReimpresionRecepcionamiento(QWidget):
     """
-    Ventana de PySide6 que permite la gestión visual de documentos PDF
-    generados en recepcionamientos anteriores.
+    Ventana gráfica para gestionar documentos PDF de recepcionamientos.
 
-    Aporta funcionalidades para abrir, reenviar e imprimir dichos documentos.
+    Esta ventana permite:
+    - Listar documentos agrupados por mes.
+    - Abrir los archivos con doble clic.
+    - Enviarlos o imprimirlos con botones accesibles.
+    - Volver a la pantalla anterior mediante un callback.
+
+    Atributos:
+        nombre_usuario (str): Nombre del usuario actual.
+        rol_usuario (str): Rol asignado al usuario (p.ej., Administrador).
+        volver_callback (function): Función a ejecutar al pulsar el botón "Volver".
+        tabla (QTableWidget): Tabla que muestra los documentos encontrados.
+        btn_enviar (QToolButton): Botón para reenviar el documento seleccionado.
+        btn_imprimir (QToolButton): Botón para imprimir el documento.
+        btn_volver (QToolButton): Botón para volver al menú anterior.
     """
 
     def __init__(self, nombre_usuario, rol_usuario, volver_callback):
         """
-        Inicializa la ventana con la información del usuario y función de retorno.
+        Constructor de la ventana.
 
-        :param nombre_usuario: Nombre del usuario activo.
-        :param rol_usuario: Rol actual del usuario.
-        :param volver_callback: Función a ejecutar al pulsar "Volver".
+        Configura los elementos gráficos, aplica estilos y carga los documentos disponibles.
+
+        Args:
+            nombre_usuario (str): Nombre del usuario activo en la sesión.
+            rol_usuario (str): Rol del usuario actual (por ejemplo, "Administrativo").
+            volver_callback (function): Función a ejecutar al pulsar el botón de volver.
         """
         super().__init__()
         self.nombre_usuario = nombre_usuario
@@ -52,7 +70,12 @@ class VentanaReimpresionRecepcionamiento(QWidget):
 
     def init_ui(self):
         """
-        Construye y organiza los componentes visuales de la interfaz.
+        Construye y organiza todos los componentes visuales de la interfaz.
+
+        Incluye:
+        - Un título centrado.
+        - Una tabla con columnas: mes, nombre de archivo, ruta (oculta).
+        - Tres botones: Enviar, Imprimir y Volver, con iconos y estilo.
         """
         layout_principal = QVBoxLayout()
 
@@ -110,8 +133,11 @@ class VentanaReimpresionRecepcionamiento(QWidget):
 
     def cargar_documentos(self):
         """
-        Escanea la carpeta `documentos/recepcionamientos` en busca de archivos PDF,
-        organizándolos por carpeta (normalmente con nombre de mes).
+        Escanea recursivamente la carpeta `documentos/recepcionamientos` para localizar
+        archivos PDF y cargarlos en la tabla.
+
+        Los documentos se agrupan visualmente por el nombre de la carpeta superior (que suele ser un mes en formato YYYY-MM).
+        Si el nombre puede convertirse en una fecha, se muestra como "Mes Año" (ej.: "Marzo 2024").
         """
         print("🔄 Cargando documentos de recepcionamiento...")
         ruta_base = obtener_ruta_absoluta("documentos/recepcionamientos")
@@ -144,10 +170,11 @@ class VentanaReimpresionRecepcionamiento(QWidget):
 
     def abrir_documento_seleccionado(self, fila, columna):
         """
-        Abre el documento PDF asociado a la fila seleccionada de la tabla.
+        Intenta abrir el documento PDF asociado a la fila seleccionada con la aplicación predeterminada del sistema.
 
-        :param fila: Índice de la fila seleccionada.
-        :param columna: Índice de la columna seleccionada (no se utiliza).
+        Args:
+            fila (int): Índice de la fila seleccionada en la tabla.
+            columna (int): Índice de la columna donde se hizo doble clic (no se usa).
         """
         ruta_item = self.tabla.item(fila, 2)
         if ruta_item:
@@ -159,5 +186,5 @@ class VentanaReimpresionRecepcionamiento(QWidget):
                     QMessageBox.critical(
                         self, "Error", f"No se pudo abrir el documento:\n{str(e)}")
             else:
-                QMessageBox.warning(self, "No encontrado",
-                                    "El archivo seleccionado no existe.")
+                QMessageBox.warning(
+                    self, "No encontrado", "El archivo seleccionado no existe.")

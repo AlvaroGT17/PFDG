@@ -10,8 +10,6 @@ Se verifican los siguientes escenarios:
 Las funciones dependientes (`validar_dni`, `dni_ya_existe`, `crear_cliente_y_devolver_id`)
 se simulan con mocks para evitar acceso real a base de datos o ventanas de diálogo.
 
-Autor: Cresnik
-Proyecto: ReyBoxes - Gestión de Taller Mecánico
 """
 
 import pytest

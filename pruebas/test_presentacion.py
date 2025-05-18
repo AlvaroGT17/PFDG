@@ -2,12 +2,15 @@
 """
 Pruebas para la ventana de presentación (`VentanaPresentacion`).
 
-Objetivo:
-- Verificar que la ventana splash se muestra correctamente y es visible.
-- Impedir que durante el test se abra automáticamente la ventana de login.
+Este módulo comprueba el correcto comportamiento visual y lógico 
+de la pantalla splash que se muestra al iniciar el sistema.
 
-Autor: Cresnik  
-Proyecto: ReyBoxes - Gestión de Taller Mecánico
+Objetivos:
+- Verificar que la ventana se muestra correctamente.
+- Comprobar sus configuraciones visuales (tamaño, transparencia, flags).
+- Confirmar que se gestiona correctamente la transición a la ventana de login.
+- Validar que el temporizador (`QTimer`) se activa para el cambio automático.
+
 """
 
 from PySide6.QtCore import Qt
@@ -18,8 +21,8 @@ from unittest.mock import patch
 
 def test_presentacion_se_muestra(qtbot):
     """
-    Verifica que la ventana de presentación se inicia correctamente,
-    se muestra con tamaño válido y no lanza la ventana de login durante el test.
+    Verifica que la ventana de presentación se inicializa correctamente,
+    es visible al mostrarse, y no abre la ventana de login durante el test.
     """
     # 🧪 Parcheamos VentanaLogin para que no se abra realmente
     with patch("vistas.ventana_presentacion.VentanaLogin") as mock_login:
@@ -35,6 +38,10 @@ def test_presentacion_se_muestra(qtbot):
 
 
 def test_presentacion_configuracion_inicial(qtbot):
+    """
+    Verifica que la ventana de presentación se configure sin bordes,
+    con fondo translúcido y con la propiedad de mantenerse al frente.
+    """
     with patch("vistas.ventana_presentacion.VentanaLogin"):
         ventana = VentanaPresentacion()
         qtbot.addWidget(ventana)
@@ -45,7 +52,11 @@ def test_presentacion_configuracion_inicial(qtbot):
         assert ventana.height() == 700
 
 
-def test_presentacion_configuracion_inicial(qtbot):
+def test_presentacion_configuracion_dimensiones(qtbot):
+    """
+    Verifica que la ventana splash se muestra con dimensiones esperadas
+    (ancho: 1000px, alto: 700px).
+    """
     with patch("vistas.ventana_presentacion.VentanaLogin"):
         ventana = VentanaPresentacion()
         qtbot.addWidget(ventana)
@@ -59,6 +70,10 @@ def test_presentacion_configuracion_inicial(qtbot):
 
 
 def test_mostrar_login_lanza_login_y_cierra(qtbot):
+    """
+    Verifica que al ejecutar `mostrar_login`, se crea la ventana de login
+    y se cierra la ventana de presentación.
+    """
     with patch("vistas.ventana_presentacion.VentanaLogin") as mock_login:
         ventana = VentanaPresentacion()
         qtbot.addWidget(ventana)
@@ -70,6 +85,10 @@ def test_mostrar_login_lanza_login_y_cierra(qtbot):
 
 
 def test_esperar_y_cambiar_lanza_timer(qtbot, mocker):
+    """
+    Comprueba que el método `esperar_y_cambiar()` activa correctamente
+    un temporizador (`QTimer.singleShot`) configurado a 30ms.
+    """
     ventana = VentanaPresentacion()
     single_shot_mock = mocker.patch.object(QTimer, "singleShot")
 
@@ -80,5 +99,9 @@ def test_esperar_y_cambiar_lanza_timer(qtbot, mocker):
 
 
 def test_presentacion_instancia_basica(qtbot):
+    """
+    Verifica que la ventana puede instanciarse sin errores 
+    y añadirse al entorno de pruebas Qt.
+    """
     ventana = VentanaPresentacion()
     qtbot.addWidget(ventana)

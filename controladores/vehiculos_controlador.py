@@ -1,3 +1,16 @@
+"""
+Controlador para la gestión de vehículos en el sistema.
+
+Este controlador conecta la vista `VentanaVehiculos` con los modelos de datos,
+permitiendo:
+
+- Buscar, crear, modificar y eliminar vehículos.
+- Buscar clientes por nombre o DNI.
+- Crear nuevos clientes desde un diálogo si no existen.
+- Autocompletar campos con datos existentes.
+- Validar formularios antes de realizar operaciones.
+- Gestionar interacciones entre vehículos y clientes.
+"""
 from PySide6.QtCore import QObject, Qt, QEvent
 from PySide6.QtWidgets import QMessageBox, QCompleter
 from vistas.ventana_vehiculos import VentanaVehiculos
@@ -16,7 +29,29 @@ from controladores.crear_cliente_rapido_controlador import CrearClienteRapidoCon
 
 
 class VehiculosControlador(QObject):
+    """
+    Clase que controla la ventana de gestión de vehículos.
+
+    Permite realizar búsquedas por matrícula, nombre o DNI, así como registrar,
+    modificar o eliminar vehículos asociados a un cliente. También permite crear
+    clientes rápidamente si no existen.
+
+    Métodos clave:
+        - buscar_vehiculo
+        - guardar_vehiculo
+        - modificar_vehiculo
+        - eliminar_vehiculo
+        - crear_cliente_dialogo
+    """
+
     def __init__(self, ventana_anterior):
+        """
+        Inicializa el controlador cargando la vista, los datos de clientes,
+        categorías, combustibles, y conectando eventos.
+
+        Args:
+            ventana_anterior: Referencia a la ventana desde la que se abrió esta.
+        """
         super().__init__()
         self.ventana = VentanaVehiculos()
         self.ventana_anterior = ventana_anterior
@@ -72,7 +107,7 @@ class VehiculosControlador(QObject):
         categorias = obtener_categorias()
         self.ventana.combo_categoria.addItems(categorias)
 
-        # 🛢️ Cargar combustibles
+        # Cargar combustibles
         self.lista_combustibles = obtener_combustibles()
         self.ventana.combo_combustible.addItem("Selecciona combustible", -1)
         for combustible in self.lista_combustibles:
@@ -82,6 +117,16 @@ class VehiculosControlador(QObject):
         self.ventana.show()
 
     def eventFilter(self, source, event):
+        """
+        Captura eventos de teclado para autocompletar clientes al pulsar Enter.
+
+        Args:
+            source: Campo de texto que origina el evento.
+            event (QEvent): Evento recibido.
+
+        Returns:
+            bool: True si el evento fue manejado, False en caso contrario.
+        """
         if event.type() == QEvent.KeyPress:
             if event.key() in (Qt.Key_Return, Qt.Key_Enter):
                 if source == self.ventana.input_buscar_nombre:
@@ -93,10 +138,16 @@ class VehiculosControlador(QObject):
         return super().eventFilter(source, event)
 
     def buscar_vehiculo_desde_input(self):
+        """
+        Llama a `buscar_vehiculo` usando el texto introducido en el campo de matrícula.
+        """
         matricula = self.ventana.input_buscar_matricula.text().strip().upper()
         self.buscar_vehiculo(matricula)
 
     def buscar_cliente_por_nombre(self):
+        """
+        Busca un cliente por nombre completo. Si no se encuentra, ofrece crearlo.
+        """
         texto = self.ventana.input_buscar_nombre.text().strip().upper()
         if texto in self.clientes_dict_nombre:
             cliente_id = self.clientes_dict_nombre[texto]
@@ -108,6 +159,9 @@ class VehiculosControlador(QObject):
             self.crear_cliente_dialogo(self.ventana.input_buscar_nombre)
 
     def buscar_cliente_por_dni(self):
+        """
+        Busca un cliente por su DNI. Si no se encuentra, ofrece crearlo.
+        """
         dni = self.ventana.input_buscar_dni.text().strip().upper()
         if dni in self.clientes_dict_dni:
             cliente_id = self.clientes_dict_dni[dni]
@@ -119,6 +173,12 @@ class VehiculosControlador(QObject):
             self.crear_cliente_dialogo(self.ventana.input_buscar_dni)
 
     def rellenar_datos_cliente(self, cliente):
+        """
+        Rellena los campos de cliente en la vista con los datos proporcionados.
+
+        Args:
+            cliente (dict): Diccionario con los datos del cliente.
+        """
         self.ventana.input_nombre.setText(cliente["nombre"])
         self.ventana.input_apellido1.setText(cliente["primer_apellido"])
         self.ventana.input_apellido2.setText(
@@ -132,6 +192,12 @@ class VehiculosControlador(QObject):
         self.ventana.input_provincia.setText(cliente["provincia"] or "")
 
     def crear_cliente_dialogo(self, campo_foco):
+        """
+        Muestra un diálogo para crear un cliente si no existe.
+
+        Args:
+            campo_foco: Campo que recupera el foco si se cancela la creación.
+        """
         respuesta = QMessageBox.question(
             self.ventana,
             "Cliente no encontrado",
@@ -148,6 +214,14 @@ class VehiculosControlador(QObject):
             campo_foco.setFocus()
 
     def cliente_creado(self, datos_cliente):
+        """
+        Se ejecuta cuando un cliente es creado desde el diálogo rápido.
+
+        Actualiza los campos visuales y los autocompletadores.
+
+        Args:
+            datos_cliente (dict): Información del nuevo cliente.
+        """
         self.lista_clientes = obtener_clientes()
         self.clientes_dict_nombre = {
             f"{c['nombre']} {c['primer_apellido']} {c.get('segundo_apellido', '')}".strip().upper(): c["id"]
@@ -179,6 +253,12 @@ class VehiculosControlador(QObject):
         self.cliente_id_actual = datos_cliente["id"]
 
     def buscar_vehiculo(self, matricula):
+        """
+        Busca un vehículo por matrícula y muestra sus datos junto con los del cliente asociado.
+
+        Args:
+            matricula (str): Matrícula del vehículo.
+        """
         datos = buscar_vehiculo_por_matricula(matricula)
         if not datos:
             self.mostrar_info(
@@ -188,7 +268,7 @@ class VehiculosControlador(QObject):
         self.vehiculo_id_actual = datos["id"]
         self.cliente_id_actual = datos["cliente_id"]
 
-        # 🧍 Cliente
+        # Cliente
         cliente = obtener_cliente_por_id(datos["cliente_id"])
         if cliente:
             nombre_completo = f"{cliente['nombre']} {cliente['primer_apellido']} {cliente.get('segundo_apellido', '')}".strip(
@@ -196,7 +276,7 @@ class VehiculosControlador(QObject):
             self.ventana.input_buscar_nombre.setText(nombre_completo)
             self.rellenar_datos_cliente(cliente)
 
-        # 🚗 Vehículo
+        # Vehículo
         self.ventana.input_matricula.setText(datos["matricula"])
         self.ventana.input_marca.setText(datos["marca"])
         self.ventana.input_modelo.setText(datos["modelo"])
@@ -216,7 +296,7 @@ class VehiculosControlador(QObject):
         else:
             self.ventana.combo_combustible.setCurrentIndex(0)
 
-        # 🟥 Seleccionar categoría
+        # Seleccionar categoría
         indice_categoria = self.ventana.combo_categoria.findText(
             datos["categoria"], Qt.MatchFixedString
         )
@@ -237,6 +317,10 @@ class VehiculosControlador(QObject):
         self.ventana.boton_eliminar.setEnabled(True)
 
     def guardar_vehiculo(self):
+        """
+        Guarda un nuevo vehículo si los datos son válidos.
+        Actualiza autocompletado de matrículas.
+        """
         if not self.obtener_datos_y_validar():
             return
 
@@ -258,6 +342,9 @@ class VehiculosControlador(QObject):
             QCompleter(self.lista_matriculas))
 
     def modificar_vehiculo(self):
+        """
+        Modifica un vehículo existente si ha sido previamente cargado y los datos son válidos.
+        """
         if not self.vehiculo_id_actual:
             self.mostrar_error("Primero debes buscar un vehículo.")
             return
@@ -284,6 +371,9 @@ class VehiculosControlador(QObject):
             QCompleter(self.lista_matriculas))
 
     def eliminar_vehiculo(self):
+        """
+        Elimina el vehículo actualmente cargado tras confirmación del usuario.
+        """
         if not self.vehiculo_id_actual:
             self.mostrar_error("Primero debes buscar un vehículo.")
             return
@@ -302,6 +392,12 @@ class VehiculosControlador(QObject):
                 self.mostrar_error("No se pudo eliminar el vehículo.")
 
     def obtener_datos_y_validar(self):
+        """
+        Extrae y valida los datos introducidos en el formulario.
+
+        Returns:
+            bool: True si todos los campos obligatorios son válidos, False en caso contrario.
+        """
         nombre_cliente = self.ventana.input_buscar_nombre.text().strip().upper()
         self.matricula = self.ventana.input_matricula.text().strip().upper()
         self.marca = self.ventana.input_marca.text().strip()
@@ -338,6 +434,9 @@ class VehiculosControlador(QObject):
         return True
 
     def limpiar_campos(self):
+        """
+        Limpia todos los campos de la interfaz, reseteando el estado del formulario.
+        """
         self.vehiculo_id_actual = None
         self.cliente_id_actual = None
         self.ventana.input_buscar_matricula.clear()
@@ -369,16 +468,34 @@ class VehiculosControlador(QObject):
         self.ventana.boton_eliminar.setEnabled(False)
 
     def volver(self):
+        """
+        Cierra esta ventana y vuelve a la anterior.
+        """
         self.ventana.deleteLater()
         self.ventana_anterior.show()
 
     def mostrar_error(self, mensaje):
+        """
+        Muestra un mensaje de error.
+
+        Args:
+            mensaje (str): Texto del mensaje a mostrar.
+        """
         QMessageBox.critical(self.ventana, "Error", mensaje)
 
     def mostrar_info(self, mensaje):
+        """
+        Muestra un mensaje informativo.
+
+        Args:
+            mensaje (str): Texto del mensaje a mostrar.
+        """
         QMessageBox.information(self.ventana, "Información", mensaje)
 
     def actualizar_tipos_por_categoria(self):
+        """
+        Carga los tipos de vehículo correspondientes a la categoría seleccionada.
+        """
         categoria = self.ventana.combo_categoria.currentText()
         if categoria != "Selecciona categoría":
             tipos = obtener_tipos_por_categoria(categoria)

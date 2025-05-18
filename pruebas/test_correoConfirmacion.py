@@ -9,8 +9,6 @@ Este conjunto de pruebas cubre:
 Las pruebas utilizan `pytest-qt` para simular la interacción del usuario
 y `unittest.mock` para interceptar los mensajes de advertencia.
 
-Autor: Cresnik
-Proyecto: ReyBoxes - Gestión de Taller Mecánico
 """
 
 import pytest

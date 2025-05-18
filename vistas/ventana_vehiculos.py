@@ -61,7 +61,7 @@ class VentanaVehiculos(QWidget):
         titulo.setObjectName("titulo_principal")
         layout_principal.addWidget(titulo)
 
-        # 🔍 Búsqueda
+        # Búsqueda
         layout_seccion_busqueda = QHBoxLayout()
         layout_seccion_busqueda.setSpacing(10)
 

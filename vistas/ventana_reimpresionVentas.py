@@ -2,8 +2,11 @@
 Módulo de interfaz gráfica para la reimpresión de documentos de ventas.
 
 Contiene la clase VentanaReimpresionVentas, que permite al usuario visualizar
-una lista de contratos de venta generados, con opciones para enviarlos,
+una lista de contratos de venta generados, con opciones para enviarlos por correo,
 imprimirlos o abrirlos directamente desde la aplicación.
+
+Los documentos se cargan dinámicamente desde la carpeta de ventas, agrupados por mes.
+La interfaz está diseñada para facilitar la gestión y reutilización de documentos PDF.
 """
 
 import os
@@ -20,20 +23,34 @@ from utilidades.rutas import obtener_ruta_absoluta
 
 class VentanaReimpresionVentas(QWidget):
     """
-    Ventana que permite al usuario consultar, visualizar, reenviar o imprimir
-    documentos PDF generados previamente en la sección de ventas.
+    Ventana gráfica para consultar y gestionar documentos de ventas en PDF.
 
-    Se carga una tabla con los archivos PDF encontrados en la carpeta correspondiente,
-    agrupados por mes.
+    Esta interfaz permite al usuario:
+    - Visualizar una tabla de documentos agrupados por mes.
+    - Abrir documentos directamente desde la aplicación.
+    - Reenviar o imprimir los documentos seleccionados.
+    - Volver a la pantalla anterior mediante una función callback.
+
+    Atributos:
+        nombre_usuario (str): Nombre del usuario actual.
+        rol_usuario (str): Rol del usuario actual.
+        volver_callback (function): Función que se ejecuta al pulsar el botón "Volver".
+        tabla (QTableWidget): Tabla principal que muestra los documentos cargados.
+        btn_enviar (QPushButton): Botón para reenviar el documento.
+        btn_imprimir (QPushButton): Botón para imprimir el documento.
+        btn_volver (QPushButton): Botón para volver a la ventana anterior.
     """
 
     def __init__(self, nombre_usuario, rol_usuario, volver_callback):
         """
-        Inicializa la ventana con el nombre del usuario, rol y una función de retorno.
+        Constructor de la ventana.
 
-        :param nombre_usuario: Nombre del usuario actual.
-        :param rol_usuario: Rol del usuario actual.
-        :param volver_callback: Función que se ejecuta al pulsar el botón Volver.
+        Configura la ventana, su estilo, y carga los documentos PDF desde el directorio definido.
+
+        Args:
+            nombre_usuario (str): Nombre del usuario activo.
+            rol_usuario (str): Rol del usuario (usado para posibles permisos).
+            volver_callback (function): Función que se ejecuta al pulsar el botón "Volver".
         """
         super().__init__()
         self.nombre_usuario = nombre_usuario
@@ -53,7 +70,12 @@ class VentanaReimpresionVentas(QWidget):
 
     def init_ui(self):
         """
-        Configura y organiza los elementos visuales de la interfaz.
+        Crea y organiza los elementos visuales de la interfaz gráfica.
+
+        Incluye:
+        - Título superior.
+        - Tabla para mostrar los documentos PDF encontrados.
+        - Botones inferiores para reenviar, imprimir o volver.
         """
         layout_principal = QVBoxLayout()
 
@@ -102,8 +124,12 @@ class VentanaReimpresionVentas(QWidget):
 
     def cargar_documentos(self):
         """
-        Busca todos los documentos PDF en la carpeta de ventas y los muestra en la tabla.
-        Agrupa por mes a partir del nombre de las carpetas.
+        Carga todos los documentos PDF desde la carpeta de ventas y los agrega a la tabla.
+
+        Recorre recursivamente las subcarpetas de la ruta 'documentos/ventas',
+        agrupando los archivos por nombre de carpeta (usado como nombre de mes).
+
+        Si no se encuentra la carpeta base, se imprime un aviso por consola.
         """
         print("🔄 Cargando documentos de ventas...")
         ruta_base = obtener_ruta_absoluta("documentos/ventas")
@@ -130,10 +156,11 @@ class VentanaReimpresionVentas(QWidget):
 
     def abrir_documento_seleccionado(self, fila, columna):
         """
-        Abre el documento PDF seleccionado al hacer doble clic en la tabla.
+        Abre el documento PDF correspondiente a la fila seleccionada al hacer doble clic.
 
-        :param fila: Fila seleccionada.
-        :param columna: Columna seleccionada.
+        Args:
+            fila (int): Índice de la fila seleccionada.
+            columna (int): Índice de la columna donde se ha hecho doble clic.
         """
         ruta_item = self.tabla.item(fila, 2)
         if ruta_item:

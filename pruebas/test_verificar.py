@@ -1,65 +1,60 @@
 """
-TESTS AUTOMÁTICOS: Ventana de verificación de código (VentanaVerificar)
+Módulo de pruebas automáticas para la ventana de verificación de código (`VentanaVerificar`).
 
-Este módulo realiza pruebas sobre la interfaz de la pantalla donde el usuario
-introduce un código de recuperación enviado por correo.
+Este módulo realiza validaciones básicas sobre la interfaz gráfica correspondiente a la
+pantalla de verificación de código enviado por correo electrónico.
 
-Objetivos de estas pruebas:
-1. Verificar que la ventana se inicializa correctamente sin errores.
-2. Asegurar que existe un botón visible y etiquetado como "Verificar".
+Objetivos:
+1. Verificar que la ventana se inicializa correctamente.
+2. Asegurar que el botón "Verificar" está presente y correctamente etiquetado.
 
-Estas pruebas utilizan `pytest-qt` para trabajar con interfaces gráficas
-(PySide6) en modo de prueba (sin necesidad de mostrar la ventana).
-
-Dependencias:
+Dependencias necesarias:
 - pytest
 - pytest-qt
 - PySide6
+
+Forma parte del entorno de testeo del sistema ReyBoxes.
 """
 
 import pytest
 from pruebas.verificar_test import iniciar_ventana_verificar
 from PySide6.QtWidgets import QPushButton
 
-# ------------------------------------------------------------------------------
-# TEST 1: Verificar que la ventana se crea correctamente
-# ------------------------------------------------------------------------------
-
 
 def test_ventana_verificar_se_inicializa(qtbot):
     """
-    TEST: Inicialización de VentanaVerificar
+    Verifica que la ventana de verificación se crea correctamente.
 
-    Crea una instancia de la ventana y la registra con `qtbot`
-    para asegurarse de que la interfaz puede cargarse correctamente
-    sin errores ni excepciones.
+    Usa `qtbot` para agregar la instancia y comprobar que:
+    - No es `None`.
+    - Tiene un título asignado.
 
-    Assertions:
-    - La instancia de ventana no debe ser None.
-    - Debe tener un título asignado.
+    Args:
+        qtbot: Fixture de pytest-qt para manejar widgets en tests.
+
+    Asserts:
+        - La ventana debe existir.
+        - Debe tener un título distinto de cadena vacía.
     """
     ventana = iniciar_ventana_verificar()
     qtbot.addWidget(ventana)
 
-    assert ventana is not None, "La ventana no se pudo crear"
-    assert ventana.windowTitle() != "", "La ventana no tiene título asignado"
+    assert ventana is not None, "❌ La ventana no se pudo crear"
+    assert ventana.windowTitle() != "", "❌ La ventana no tiene título asignado"
 
-
-# ------------------------------------------------------------------------------
-# TEST 2: Verificar que existe el botón "Verificar"
-# ------------------------------------------------------------------------------
 
 def test_boton_verificar_existe(qtbot):
     """
-    TEST: Presencia del botón 'Verificar'
+    Verifica que la ventana contiene un botón etiquetado como "Verificar".
 
-    Busca entre todos los botones (`QPushButton`) que haya en la ventana,
-    y verifica que al menos uno tenga el texto "Verificar" (ignorando mayúsculas).
+    Este botón es esencial para procesar el código OTP introducido por el usuario.
+    La búsqueda se hace entre todos los QPushButton visibles.
 
-    Este botón es fundamental para validar el código OTP ingresado.
+    Args:
+        qtbot: Fixture de pytest-qt.
 
-    Assertions:
-    - Debe existir al menos un botón cuyo texto contenga "verificar"
+    Asserts:
+        - Debe existir al menos un botón cuyo texto contenga la palabra "verificar" (sin distinción de mayúsculas).
     """
     ventana = iniciar_ventana_verificar()
     qtbot.addWidget(ventana)
@@ -67,4 +62,4 @@ def test_boton_verificar_existe(qtbot):
     botones = ventana.findChildren(QPushButton)
     assert any(
         "verificar" in b.text().lower() for b in botones
-    ), "No se encontró un botón con texto 'Verificar'"
+    ), "❌ No se encontró un botón con texto 'Verificar'"

@@ -1,5 +1,14 @@
-from PySide6.QtGui import QIcon
+"""
+Módulo de interfaz para registrar y gestionar clientes en el sistema ReyBoxes.
+
+La ventana permite buscar, visualizar, registrar, modificar y eliminar datos
+de clientes del taller. Incluye campos detallados para la información personal
+y un conjunto de botones de acción. Está diseñada para una experiencia fluida
+mediante scroll y estilos visuales personalizados.
+"""
+
 from PySide6.QtCore import Qt, QSize
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QTextEdit, QToolButton, QVBoxLayout, QHBoxLayout, QScrollArea
 from utilidades.rutas import obtener_ruta_absoluta
 
@@ -13,9 +22,23 @@ class VentanaClientes(QWidget):
     - Visualizar y editar información detallada del cliente.
     - Registrar nuevos clientes, modificar registros existentes, limpiar el formulario o eliminar datos.
     - Utiliza un diseño limpio y scrollable para mejorar la experiencia de usuario.
+
+    Atributos:
+        input_buscar_nombre (QLineEdit): Campo de búsqueda por nombre y apellidos.
+        input_buscar_dni (QLineEdit): Campo de búsqueda por DNI.
+        input_buscar_telefono (QLineEdit): Campo de búsqueda por teléfono.
+        titulo (QLabel): Título dinámico de la ventana.
+        input_nombre, input_apellido1, ... (QLineEdit/QTextEdit): Campos de entrada para los datos del cliente.
+        boton_guardar, boton_modificar, ... (QToolButton): Botones de acción de la ventana.
     """
 
     def __init__(self):
+        """
+        Inicializa la ventana de gestión de clientes.
+
+        Configura el título, icono, tamaño fijo, widgets de entrada, scroll, botones de acción
+        y aplica estilos visuales personalizados desde un archivo CSS.
+        """
         super().__init__()
         self.setWindowTitle("ReyBoxes - Registrar cliente")
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
@@ -28,38 +51,35 @@ class VentanaClientes(QWidget):
     def setup_ui(self):
         """
         Inicializa y organiza todos los elementos gráficos de la interfaz:
+
         - Campos de búsqueda (nombre, DNI, teléfono).
         - Campos de entrada para los datos del cliente.
         - Botones de acción (registrar, modificar, limpiar, eliminar, volver).
         - Scroll para facilitar la navegación en pantallas pequeñas.
-        - Conexión para actualizar dinámicamente el título.
+        - Conexión para actualizar dinámicamente el título con el nombre del cliente.
         """
         layout_principal = QVBoxLayout(self)
         layout_principal.setContentsMargins(20, 20, 20, 20)
         layout_principal.setSpacing(15)
 
-        # Buscadores por nombre, DNI y teléfono
+        # Campos de búsqueda
         layout_busqueda = QHBoxLayout()
         layout_busqueda.setSpacing(10)
 
-        # Nombre
         label_nombre = QLabel("Nombre:")
         self.input_buscar_nombre = QLineEdit()
         self.input_buscar_nombre.setPlaceholderText("Nombre y apellidos")
 
-        # DNI
         label_dni = QLabel("DNI:")
         self.input_buscar_dni = QLineEdit()
         self.input_buscar_dni.setPlaceholderText("DNI")
         self.input_buscar_dni.setFixedWidth(130)
 
-        # Teléfono
         label_tel = QLabel("Teléfono:")
         self.input_buscar_telefono = QLineEdit()
         self.input_buscar_telefono.setPlaceholderText("Teléfono")
         self.input_buscar_telefono.setFixedWidth(130)
 
-        # Añadir al layout
         layout_busqueda.addWidget(label_nombre)
         layout_busqueda.addWidget(self.input_buscar_nombre, stretch=1)
         layout_busqueda.addWidget(label_dni)
@@ -69,14 +89,14 @@ class VentanaClientes(QWidget):
 
         layout_principal.addLayout(layout_busqueda)
 
-        # Título
+        # Título dinámico
         self.titulo = QLabel()
         self.titulo.setObjectName("titulo_cliente")
         self.titulo.setAlignment(Qt.AlignCenter)
         self.actualizar_titulo("")
         layout_principal.addWidget(self.titulo)
 
-        # Scroll con los campos
+        # Scroll con campos de entrada
         contenedor = QWidget()
         contenedor.setObjectName("contenedor")
         layout_contenedor = QVBoxLayout(contenedor)
@@ -116,17 +136,13 @@ class VentanaClientes(QWidget):
         self.input_observaciones.setPlaceholderText("Observaciones (opcional)")
         self.input_observaciones.setFixedHeight(80)
 
-        layout_contenedor.addWidget(self.input_nombre)
-        layout_contenedor.addWidget(self.input_apellido1)
-        layout_contenedor.addWidget(self.input_apellido2)
-        layout_contenedor.addWidget(self.input_dni)
-        layout_contenedor.addWidget(self.input_telefono)
-        layout_contenedor.addWidget(self.input_email)
-        layout_contenedor.addWidget(self.input_direccion)
-        layout_contenedor.addWidget(self.input_cp)
-        layout_contenedor.addWidget(self.input_localidad)
-        layout_contenedor.addWidget(self.input_provincia)
-        layout_contenedor.addWidget(self.input_observaciones)
+        for widget in [
+            self.input_nombre, self.input_apellido1, self.input_apellido2, self.input_dni,
+            self.input_telefono, self.input_email, self.input_direccion,
+            self.input_cp, self.input_localidad, self.input_provincia,
+            self.input_observaciones
+        ]:
+            layout_contenedor.addWidget(widget)
 
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
@@ -174,15 +190,15 @@ class VentanaClientes(QWidget):
             QIcon(obtener_ruta_absoluta("img/volver.png")))
         self.boton_volver.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
-        layout_botones.addWidget(self.boton_guardar)
-        layout_botones.addWidget(self.boton_modificar)
-        layout_botones.addWidget(self.boton_limpiar)
-        layout_botones.addWidget(self.boton_eliminar)
-        layout_botones.addWidget(self.boton_volver)
+        for btn in [
+            self.boton_guardar, self.boton_modificar, self.boton_limpiar,
+            self.boton_eliminar, self.boton_volver
+        ]:
+            layout_botones.addWidget(btn)
 
         layout_principal.addLayout(layout_botones)
 
-        # Título dinámico
+        # Actualización dinámica del título con el nombre
         self.input_nombre.textChanged.connect(self.actualizar_titulo)
 
     def aplicar_estilos(self):
@@ -197,7 +213,7 @@ class VentanaClientes(QWidget):
         """
         Actualiza dinámicamente el título principal de la ventana con el nombre ingresado en el campo.
 
-        Parámetros:
+        Args:
             texto (str): Texto actual del campo de nombre.
         """
         nombre = texto.strip().upper()
@@ -214,7 +230,7 @@ class VentanaClientes(QWidget):
         """
         Anula el evento de cierre de la ventana para evitar el cierre accidental.
 
-        Parámetros:
+        Args:
             event (QCloseEvent): Evento de cierre capturado por Qt.
         """
         event.ignore()

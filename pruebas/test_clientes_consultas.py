@@ -9,8 +9,6 @@ Estas pruebas validan el comportamiento de:
 
 Todas las funciones que interactúan con PostgreSQL se simulan mediante mocks con `unittest.mock`.
 
-Autor: Cresnik
-Proyecto: ReyBoxes - Gestión de Taller Mecánico
 """
 
 import pytest

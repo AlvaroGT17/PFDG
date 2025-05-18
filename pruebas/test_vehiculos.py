@@ -1,83 +1,99 @@
 """
-TESTS AUTOMÁTICOS: Ventana de gestión de vehículos
+TESTS AUTOMÁTICOS: Ventana de gestión de vehículos (`VentanaVehiculos`)
 
-Este módulo contiene pruebas automatizadas para verificar que la interfaz
-gráfica de la ventana de gestión de vehículos (VentanaVehiculos) se carga
-correctamente y contiene los elementos esenciales de búsqueda.
+Este módulo contiene pruebas automáticas enfocadas en validar:
+1. Que la ventana se inicializa correctamente sin errores.
+2. Que existen campos de búsqueda esenciales y correctamente etiquetados.
+3. Que los botones principales de acción están presentes.
 
-Las pruebas están diseñadas para:
-1. Asegurar que la ventana se inicializa sin errores.
-2. Confirmar que existen campos de búsqueda funcionales con nombres intuitivos.
-
-Dependencias:
+Requisitos:
 - pytest
 - pytest-qt
 - PySide6
+
+Las pruebas están diseñadas para asegurar la estabilidad visual
+y funcional básica de la interfaz gráfica.
+
+Estas validaciones se integran dentro del entorno de pruebas del sistema ReyBoxes.
 """
 
 import pytest
 from pruebas.vehiculos_test import iniciar_ventana_vehiculos
-from PySide6.QtWidgets import QPushButton, QLabel, QLineEdit
-
-# ------------------------------------------------------------------------------
-# TEST 1: Verificar que la ventana de vehículos se crea correctamente
-# ------------------------------------------------------------------------------
+from PySide6.QtWidgets import QLineEdit
 
 
 def test_ventana_vehiculos_se_inicializa(qtbot):
     """
-    TEST: Inicialización de VentanaVehiculos
+    Verifica que la ventana `VentanaVehiculos` se crea sin errores.
 
-    Crea una instancia de la ventana y la registra con qtbot
-    (para manejo correcto en entorno de pruebas automáticas).
+    Usa `qtbot` para registrar la ventana en el entorno de prueba
+    y confirma que su título no está vacío.
 
-    Verifica que la ventana tiene un título asignado (indicador de
-    que se inicializó correctamente y no está vacía o rota).
+    Args:
+        qtbot: Fixture proporcionada por `pytest-qt`.
 
-    Assertions:
-    - El título de la ventana no debe ser una cadena vacía.
-    """
-    ventana = iniciar_ventana_vehiculos()  # Instancia sin mostrar
-    qtbot.addWidget(ventana)               # Registra con qtbot (Pytest-Qt)
-
-    assert ventana.windowTitle() != "", "La ventana no tiene título"
-
-
-# ------------------------------------------------------------------------------
-# TEST 2: Verificar que hay campos de búsqueda funcionales
-# ------------------------------------------------------------------------------
-
-def test_hay_campos_de_busqueda(qtbot):
-    """
-    TEST: Verificación de campos de búsqueda
-
-    Comprueba que existen al menos dos campos de entrada (`QLineEdit`)
-    en la ventana, y que al menos uno de ellos está relacionado con
-    el nombre o identificación del cliente (por su `placeholderText`).
-
-    Esto garantiza que el usuario pueda buscar por datos clave
-    (nombre, cliente, etc.).
-
-    Assertions:
-    - Debe haber al menos 2 QLineEdit (campos de entrada).
-    - Al menos uno de ellos debe tener como placeholder las palabras
-      "nombre" o "cliente" (en minúsculas).
-
-    Este test está diseñado para adaptarse a interfaces modernas,
-    que usan placeholders en lugar de QLabel clásicos.
+    Asserts:
+        - La ventana debe tener un título asignado.
     """
     ventana = iniciar_ventana_vehiculos()
     qtbot.addWidget(ventana)
 
-    # Obtener todos los campos QLineEdit de la ventana
-    campos = ventana.findChildren(QLineEdit)
-    assert len(campos) >= 2, "Faltan campos de entrada"
+    assert ventana.windowTitle() != "", "❌ La ventana no tiene título asignado."
 
-    # Extraer y limpiar los textos de placeholder
+
+def test_hay_campos_de_busqueda(qtbot):
+    """
+    Verifica que existen al menos dos campos de búsqueda funcionales (`QLineEdit`),
+    y que al menos uno de ellos se refiere a "nombre" o "cliente".
+
+    Esta prueba se adapta a interfaces modernas que utilizan `placeholderText`
+    en lugar de `QLabel` visibles.
+
+    Args:
+        qtbot: Fixture de `pytest-qt`.
+
+    Asserts:
+        - Al menos 2 campos `QLineEdit` deben estar presentes.
+        - Uno de ellos debe contener "nombre" o "cliente" como placeholder.
+    """
+    ventana = iniciar_ventana_vehiculos()
+    qtbot.addWidget(ventana)
+
+    campos = ventana.findChildren(QLineEdit)
+    assert len(campos) >= 2, "❌ Faltan campos de entrada"
+
     placeholders = [c.placeholderText().lower()
                     for c in campos if c.placeholderText()]
-
-    # Buscar palabras clave entre los placeholders
     assert any(
         "nombre" in p or "cliente" in p for p in placeholders
-    ), "No hay placeholder de nombre o cliente"
+    ), "❌ No hay campos con placeholder que contenga 'nombre' o 'cliente'"
+
+
+def test_botones_de_accion_estan_presentes(qtbot):
+    """
+    Verifica que los botones principales de acción estén correctamente creados:
+    - Registrar
+    - Modificar
+    - Limpiar
+    - Eliminar
+    - Volver
+
+    Args:
+        qtbot: Fixture de `pytest-qt`.
+
+    Asserts:
+        - Cada uno de los textos esperados debe estar presente entre los botones de acción.
+    """
+    ventana = iniciar_ventana_vehiculos()
+    qtbot.addWidget(ventana)
+
+    nombres_botones = [
+        ventana.boton_guardar.text().lower(),
+        ventana.boton_modificar.text().lower(),
+        ventana.boton_limpiar.text().lower(),
+        ventana.boton_eliminar.text().lower(),
+        ventana.boton_volver.text().lower()
+    ]
+
+    for esperado in ["registrar", "modificar", "limpiar", "eliminar", "volver"]:
+        assert esperado in nombres_botones, f"❌ Falta el botón: '{esperado}'"

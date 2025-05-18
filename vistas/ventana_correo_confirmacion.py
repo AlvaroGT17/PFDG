@@ -1,3 +1,13 @@
+"""
+Módulo de diálogo para confirmar el correo de envío de un contrato en ReyBoxes.
+
+Este diálogo modal permite al usuario elegir entre:
+- Enviar el contrato al correo electrónico predeterminado del cliente.
+- Introducir manualmente un correo personalizado.
+
+Incluye validaciones básicas y aplica un estilo visual mediante un archivo CSS externo.
+"""
+
 import os
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QRadioButton, QLineEdit, QPushButton, QButtonGroup, QMessageBox
@@ -12,22 +22,23 @@ class VentanaCorreoConfirmacion(QDialog):
     - Usar el correo por defecto del cliente.
     - Introducir un correo personalizado manualmente.
 
-    Incluye validaciones básicas y aplica un estilo visual mediante archivo CSS externo.
+    Atributos:
+        correo_seleccionado (str | None): Correo elegido por el usuario o "DEFECTO".
     """
 
     def __init__(self, correo_defecto, parent=None):
         """
         Inicializa la ventana de confirmación de correo.
 
-        Parámetros:
+        Args:
             correo_defecto (str): Dirección de correo predefinida del cliente.
-            parent (QWidget, opcional): Ventana padre del diálogo.
+            parent (QWidget, optional): Ventana padre del diálogo.
         """
         super().__init__(parent)
         self.setWindowTitle("Enviar contrato por correo")
         self.setMinimumWidth(400)
-        self.correo_seleccionado = None
         self.setWindowIcon(QIcon(obtener_ruta_absoluta("img/favicon.ico")))
+        self.correo_seleccionado = None
         self.aplicar_estilos_personalizados()
 
         layout = QVBoxLayout()
@@ -66,8 +77,13 @@ class VentanaCorreoConfirmacion(QDialog):
         """
         Verifica la opción seleccionada y valida el campo si se elige correo personalizado.
 
-        Si la validación es correcta, se guarda la selección y se cierra el diálogo.
-        En caso de error, muestra un mensaje al usuario.
+        Si la validación es correcta, se guarda la selección en `correo_seleccionado`
+        y se cierra el diálogo. Si hay errores, se muestra un mensaje informativo.
+
+        Posibles valores de retorno en `correo_seleccionado`:
+        - "DEFECTO": si se elige el correo por defecto del cliente.
+        - str: el correo personalizado introducido.
+        - None: si no se ha confirmado nada.
         """
         if self.radio_defecto.isChecked():
             self.correo_seleccionado = "DEFECTO"
@@ -87,7 +103,9 @@ class VentanaCorreoConfirmacion(QDialog):
     def aplicar_estilos_personalizados(self):
         """
         Intenta aplicar el archivo CSS para personalizar el diseño del diálogo.
-        Si no se encuentra o falla, muestra un mensaje de error en consola.
+
+        Si no se encuentra o falla la lectura del archivo, se imprime un mensaje
+        de error en la consola sin interrumpir la ejecución.
         """
         try:
             ruta_css = os.path.join("css", "correo_confirmacion.css")

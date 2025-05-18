@@ -1,3 +1,16 @@
+"""
+Controlador para la reimpresión de documentos de presupuestos.
+
+Permite al usuario:
+- Cargar y visualizar documentos PDF generados desde la sección de presupuestos.
+- Imprimir (abrir) un documento seleccionado.
+- Enviar el documento seleccionado por correo electrónico a un destinatario.
+
+Utiliza:
+- `VentanaReimpresionPresupuestos`: Vista principal.
+- `VentanaCorreoConfirmacion`: Diálogo para ingresar el correo destino.
+- `enviar_correo_presupuesto`: Función que realiza el envío del documento PDF adjunto.
+"""
 import os
 import webbrowser
 from datetime import datetime
@@ -9,7 +22,22 @@ from utilidades.rutas import obtener_ruta_absoluta
 
 
 class ReimpresionPresupuestosControlador:
+    """
+    Controlador de la ventana de reimpresión de presupuestos.
+
+    Permite imprimir o enviar por correo un presupuesto generado anteriormente,
+    cargado desde la carpeta `documentos/presupuestos`.
+    """
+
     def __init__(self, main_app, nombre_usuario, rol_usuario):
+        """
+        Inicializa la ventana, conecta botones y carga los documentos disponibles.
+
+        Args:
+            main_app: Referencia a la aplicación principal.
+            nombre_usuario (str): Nombre del usuario activo.
+            rol_usuario (str): Rol del usuario activo.
+        """
         self.main_app = main_app
         self.nombre = nombre_usuario
         self.rol = rol_usuario
@@ -28,10 +56,17 @@ class ReimpresionPresupuestosControlador:
         self.cargar_documentos()
 
     def volver_a_inicio(self):
+        """
+        Cierra esta ventana y muestra el menú principal.
+        """
         self.ventana.close()
         self.main_app.mostrar_ventana_inicio(self.nombre, self.rol)
 
     def cargar_documentos(self):
+        """
+        Carga los documentos PDF de presupuestos desde la carpeta correspondiente
+        y los muestra en la tabla visual con información de mes y nombre de archivo.
+        """
         print("🔄 Cargando documentos de presupuestos...")
         ruta_base = obtener_ruta_absoluta("documentos/presupuestos")
         if not os.path.exists(ruta_base):
@@ -63,6 +98,12 @@ class ReimpresionPresupuestosControlador:
             self.ventana.tabla.setItem(i, 2, QTableWidgetItem(ruta))
 
     def obtener_documento_seleccionado(self):
+        """
+        Devuelve la ruta del documento seleccionado en la tabla.
+
+        Returns:
+            str or None: Ruta absoluta al archivo PDF seleccionado o None si no se seleccionó nada.
+        """
         fila = self.ventana.tabla.currentRow()
         if fila == -1:
             QMessageBox.warning(self.ventana, "Sin selección",
@@ -72,6 +113,9 @@ class ReimpresionPresupuestosControlador:
         return ruta if os.path.exists(ruta) else None
 
     def imprimir_documento(self):
+        """
+        Abre el archivo PDF seleccionado usando el visor predeterminado del sistema.
+        """
         ruta = self.obtener_documento_seleccionado()
         if not ruta:
             return
@@ -82,6 +126,12 @@ class ReimpresionPresupuestosControlador:
             QMessageBox.critical(self.ventana, "Error", str(e))
 
     def enviar_documento(self):
+        """
+        Extrae el nombre del cliente del nombre del archivo, muestra un diálogo
+        para seleccionar el correo y envía el documento por email.
+
+        Usa `enviar_correo_presupuesto` con los datos recopilados.
+        """
         ruta = self.obtener_documento_seleccionado()
         if not ruta:
             return

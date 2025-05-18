@@ -11,8 +11,6 @@ Se utilizan mocks para simular el comportamiento de funciones externas (como
 las consultas a base de datos o validaciones de DNI) y centrarse exclusivamente
 en la lógica del controlador.
 
-Autor: Cresnik
-Proyecto: ReyBoxes - Gestión de Taller Mecánico
 """
 
 import pytest
@@ -25,18 +23,15 @@ from controladores.clientes_controlador import ClientesControlador
 @pytest.fixture
 def controlador(qtbot):
     """
-    Crea una instancia del controlador con una ventana anterior ficticia para pruebas.
-
-    Args:
-        qtbot: Fixture de pytest-qt para probar interfaces Qt.
-
-    Returns:
-        ClientesControlador: Instancia lista para pruebas.
+    Fixture que crea y destruye una instancia de ClientesControlador correctamente.
     """
     ventana_anterior = MagicMock()
     controlador = ClientesControlador(ventana_anterior)
     qtbot.addWidget(controlador.ventana)
-    return controlador
+    controlador.ventana.show()
+    yield controlador
+    controlador.ventana.close()
+    controlador.ventana.deleteLater()
 
 
 def test_registro_falla_sin_nombre_dni(qtbot, controlador):

@@ -1,3 +1,16 @@
+"""
+Controlador para la gestión de clientes en la aplicación ReyBoxes.
+
+Permite:
+- Registrar nuevos clientes.
+- Modificar o eliminar clientes existentes.
+- Buscar clientes por nombre, DNI o teléfono con autocompletado.
+- Validar datos como formato de email y validez de DNI.
+
+Este controlador enlaza con la interfaz `VentanaClientes` y los modelos de
+consulta de clientes en base de datos, ofreciendo interacción completa
+a nivel de datos y visual.
+"""
 from PySide6.QtWidgets import QMessageBox, QCompleter
 from PySide6.QtCore import Qt, QEvent, QObject
 from vistas.ventana_clientes import VentanaClientes
@@ -15,6 +28,12 @@ import re
 
 class ClientesControlador(QObject):
     def __init__(self, ventana_anterior):
+        """
+        Inicializa el controlador de clientes y configura eventos.
+
+        Args:
+            ventana_anterior: Ventana desde la que se abre este módulo (para volver).
+        """
         super().__init__()
         self.setObjectName("controlador_clientes")
         self.ventana = VentanaClientes()
@@ -66,6 +85,16 @@ class ClientesControlador(QObject):
         self.ventana.show()
 
     def eventFilter(self, source, event):
+        """
+        Captura la pulsación de Enter en los campos de búsqueda para autocompletar datos.
+
+        Args:
+            source: Campo de texto que emite el evento.
+            event: Evento generado.
+
+        Returns:
+            bool: True si se gestiona el evento, False si se delega.
+        """
         if event.type() == QEvent.KeyPress and event.key() in (Qt.Key_Return, Qt.Key_Enter):
             if source == self.ventana.input_buscar_nombre:
                 texto = source.text().strip()
@@ -88,10 +117,12 @@ class ClientesControlador(QObject):
         return super().eventFilter(source, event)
 
     def volver(self):
+        """Cierra esta ventana y vuelve a la anterior."""
         self.ventana.close()
         self.ventana_anterior.show()
 
     def limpiar_campos(self):
+        """Limpia todos los campos del formulario de cliente."""
         self.ventana.input_nombre.clear()
         self.ventana.input_apellido1.clear()
         self.ventana.input_apellido2.clear()
@@ -110,6 +141,13 @@ class ClientesControlador(QObject):
         self.cliente_seleccionado_id = None
 
     def registrar_cliente(self):
+        """
+        Valida e inserta un nuevo cliente en la base de datos.
+
+        Requiere como obligatorios: nombre, primer apellido y DNI.
+        Verifica la validez del DNI y el formato de correo si se indica.
+        Previene duplicados por DNI.
+        """
         nombre = self.ventana.input_nombre.text().strip()
         apellido1 = self.ventana.input_apellido1.text().strip()
         apellido2 = self.ventana.input_apellido2.text().strip()
@@ -152,6 +190,12 @@ class ClientesControlador(QObject):
             self.mostrar_error("Ocurrió un error al registrar el cliente.")
 
     def rellenar_campos(self, cliente):
+        """
+        Rellena el formulario con los datos de un cliente existente.
+
+        Args:
+            cliente (dict): Diccionario con datos del cliente.
+        """
         self.cliente_seleccionado_id = cliente["id"]
         self.ventana.boton_modificar.setEnabled(True)
         self.ventana.boton_eliminar.setEnabled(True)
@@ -170,16 +214,33 @@ class ClientesControlador(QObject):
             cliente["observaciones"] or "")
 
     def validar_email(self, email):
+        """
+        Comprueba si el email tiene un formato válido.
+
+        Args:
+            email (str): Dirección a validar.
+
+        Returns:
+            bool: True si es válido, False en caso contrario.
+        """
         patron = r'^[\w\.-]+@[\w\.-]+\.\w+$'
         return re.match(patron, email)
 
     def mostrar_error(self, mensaje):
+        """Muestra un cuadro de error con el mensaje especificado."""
         QMessageBox.critical(self.ventana, "Error", mensaje)
 
     def mostrar_info(self, mensaje):
+        """Muestra un cuadro informativo con el mensaje especificado."""
         QMessageBox.information(self.ventana, "Información", mensaje)
 
     def modificar_cliente(self):
+        """
+        Permite actualizar los datos de un cliente ya registrado.
+
+        Valida el nuevo DNI si se cambia y comprueba posibles duplicados.
+        Valida el formato del correo electrónico.
+        """
         if not self.cliente_seleccionado_id:
             self.mostrar_error(
                 "Primero debes buscar y seleccionar un cliente.")
@@ -232,6 +293,11 @@ class ClientesControlador(QObject):
             self.mostrar_error("Ocurrió un error al modificar el cliente.")
 
     def eliminar_cliente(self):
+        """
+        Solicita confirmación y elimina un cliente si es aceptado.
+
+        No afecta a sus intervenciones o vehículos registrados.
+        """
         if not self.cliente_seleccionado_id:
             self.mostrar_error(
                 "Primero debes seleccionar un cliente para eliminar.")
@@ -262,6 +328,9 @@ class ClientesControlador(QObject):
                 self.mostrar_error("Error al eliminar el cliente.")
 
     def volver(self):
+        """
+        Cierra la ventana actual y regresa a la ventana anterior.
+        """
         self.ventana.close()
         self.ventana.deleteLater()
         self.ventana_anterior.show()

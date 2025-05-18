@@ -13,16 +13,24 @@ from vistas.ventana_verificar import VentanaVerificar
 
 def iniciar_ventana_verificar():
     """
-    Devuelve una instancia de la ventana de verificación de código sin mostrarla.
+    Crea y devuelve una instancia de la ventana de verificación de código.
+
+    Esta función es útil para ser invocada desde otros módulos de test o desde un visor
+    de ventanas como `SelectorVentana`.
 
     Returns:
-        VentanaVerificar: Instancia de la ventana lista para pruebas.
+        VentanaVerificar: Instancia de la ventana lista para ser mostrada o testeada.
     """
     return VentanaVerificar()
 
 
 if __name__ == "__main__":
-    # Si se ejecuta este archivo directamente, se lanza la ventana de forma manual
+    """
+    Punto de entrada para ejecutar manualmente la ventana de verificación.
+
+    Lanza una aplicación Qt y muestra la ventana `VentanaVerificar`.
+    Este modo está pensado para pruebas visuales individuales.
+    """
     from PySide6.QtWidgets import QApplication
     import sys
 
@@ -30,3 +38,6 @@ if __name__ == "__main__":
     ventana = iniciar_ventana_verificar()
     ventana.show()
     sys.exit(app.exec())
+
+# para ejecutar el modulo desde consola:
+# python -m pruebas.verificar_test

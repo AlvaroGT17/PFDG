@@ -1,3 +1,15 @@
+"""
+Módulo de ventana de presentación (splash screen) para la aplicación ReyBoxes.
+
+Esta ventana se muestra brevemente al iniciar el programa, presentando el logo de la aplicación
+con una animación elegante antes de redirigir al usuario a la pantalla de inicio de sesión.
+
+Características:
+- Ventana sin bordes ni marco.
+- Fondo completamente transparente.
+- Animación de entrada del logo.
+"""
+
 import sys
 from PySide6.QtGui import QPixmap, Qt
 from PySide6.QtWidgets import QWidget, QLabel
@@ -49,16 +61,16 @@ class VentanaPresentacion(QWidget):
 
     def esperar_y_cambiar(self):
         """
-        Espera una pequeña fracción de tiempo tras finalizar la animación y luego lanza la ventana de login.
+        Lanza un temporizador muy corto tras finalizar la animación del logo,
+        y transiciona posteriormente a la ventana de login.
         """
         QTimer.singleShot(30, self.mostrar_login)
 
     def mostrar_login(self):
         """
-        Muestra la ventana de login y cierra la ventana de presentación.
+        Crea e inicia la ventana de login, cerrando la ventana de presentación actual.
 
-        Al finalizar la animación, esta función crea una instancia de VentanaLogin,
-        la muestra en pantalla y cierra la ventana de presentación actual.
+        Este método se ejecuta tras la animación y la breve espera configurada.
         """
         self.login = VentanaLogin()
         self.login.show()

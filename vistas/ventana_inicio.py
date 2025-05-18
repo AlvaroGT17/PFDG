@@ -1,3 +1,13 @@
+"""
+Módulo para la ventana principal del sistema ReyBoxes (Dashboard).
+
+La ventana sirve como punto de inicio tras el login, mostrando un saludo personalizado
+y una cuadrícula de botones animados para acceder a distintas funcionalidades,
+según el rol del usuario (Administrador, Mecánico, etc.).
+
+Incluye soporte para scroll si hay demasiados accesos visibles.
+"""
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QScrollArea
@@ -13,15 +23,20 @@ class VentanaInicio(QWidget):
     funcionalidades del sistema dependiendo del rol del usuario (administrador, mecánico, etc).
 
     Incluye un saludo personalizado y un panel con scroll si hay demasiadas opciones.
+
+    Atributos:
+        nombre (str): Nombre del usuario conectado (en mayúsculas).
+        rol (str): Rol del usuario (ADMINISTRADOR, MECANICO, etc.).
+        botones (dict): Diccionario que almacena los botones visibles por texto en minúscula.
     """
 
     def __init__(self, nombre, rol):
         """
         Inicializa la ventana de inicio, cargando estilos, nombre del usuario y su rol.
 
-        Parámetros:
+        Args:
             nombre (str): Nombre del usuario conectado.
-            rol (str): Rol asignado (determina los botones visibles).
+            rol (str): Rol asignado al usuario (determina los botones visibles).
         """
         super().__init__()
         self.setWindowTitle("ReyBoxes - Panel Principal")
@@ -42,10 +57,10 @@ class VentanaInicio(QWidget):
     def inicializar_ui(self):
         """
         Crea la estructura visual de la ventana:
-        - Saludo al usuario.
-        - Rol actual.
-        - Botones distribuidos en cuadrícula según permisos del rol.
-        - Scroll en caso de desbordamiento vertical.
+        - Muestra un saludo con el nombre del usuario.
+        - Indica el rol actual del usuario.
+        - Carga botones permitidos según el rol y los organiza en una cuadrícula.
+        - Añade scroll vertical si hay más de 3 filas de botones.
         """
         layout_principal = QVBoxLayout(self)
         layout_principal.setContentsMargins(30, 30, 30, 30)
@@ -87,7 +102,7 @@ class VentanaInicio(QWidget):
             ("Cerrar sesión", "salir.png"),
         ]
 
-        # Accesos permitidos por rol (en minúsculas para comparación)
+        # Accesos permitidos por rol (debes completar estos arrays según tu lógica)
         accesos_por_rol = {
             "ADMINISTRADOR": [...],
             "MECANICO": [...],
@@ -129,12 +144,11 @@ class VentanaInicio(QWidget):
 
     def closeEvent(self, event):
         """
-        Controla el cierre de la ventana.
-        Solo se permite cerrar si la variable "forzar_cierre" está activada.
+        Controla el cierre de la ventana. Solo se permite cerrar si la variable "forzar_cierre" está activada.
 
-        Si no lo está, el cierre se ignora.
+        Si no está activada, el intento de cierre se ignora.
 
-        Parámetros:
+        Args:
             event (QCloseEvent): Evento de cierre de la ventana.
         """
         if not getattr(self, "forzar_cierre", False):

@@ -1,21 +1,25 @@
 """
-TEST: Ventana de historial de fichajes
+Tests para la ventana `VentanaHistorial` del sistema de fichajes.
 
-Verifica que la ventana `VentanaHistorial` puede crearse correctamente con PySide6
-y que la tabla tiene al menos una columna.
+Este conjunto de pruebas valida los siguientes aspectos:
+- Que la ventana se inicializa correctamente.
+- Que la tabla de fichajes está presente y contiene columnas.
+- Que los botones de acción (CSV, PDF, Volver) existen y están correctamente configurados.
+- Que los datos de fichajes se cargan correctamente en la tabla.
+- Que los colores aplicados a las filas de la tabla se ajustan según el tipo de fichaje.
+
 """
 
 import pytest
-from PySide6.QtWidgets import QTableWidget
-from controladores.historial_controlador import HistorialControlador
-from datetime import datetime
 from PySide6.QtWidgets import QTableWidget, QToolButton
 from controladores.historial_controlador import HistorialControlador
+from datetime import datetime
 
 
 def test_historial_crea_ventana_correctamente(qtbot):
     """
-    Crea el controlador de historial con datos simulados y verifica que la ventana se instancia correctamente.
+    Verifica que la instancia del controlador de historial se crea correctamente 
+    y que la ventana tiene un título válido.
     """
     usuario_id = 1
     es_admin = False
@@ -29,7 +33,7 @@ def test_historial_crea_ventana_correctamente(qtbot):
 
 def test_historial_contiene_tabla(qtbot):
     """
-    Verifica que la ventana contiene una tabla QTableWidget con columnas.
+    Verifica que la ventana contiene una tabla (`QTableWidget`) con al menos una columna.
     """
     controlador = HistorialControlador(usuario_id=1, es_admin=False)
     qtbot.addWidget(controlador.ventana)
@@ -41,7 +45,11 @@ def test_historial_contiene_tabla(qtbot):
 
 def test_botones_existen_y_tienen_iconos(qtbot):
     """
-    Verifica que los botones CSV, PDF y Volver existen, tienen texto e icono.
+    Comprueba que los botones de exportación (CSV, PDF) y el botón Volver:
+    - Existen en la ventana.
+    - Son instancias de `QToolButton`.
+    - Tienen texto asignado.
+    - Tienen un icono visible.
     """
     controlador = HistorialControlador(usuario_id=1, es_admin=False)
     qtbot.addWidget(controlador.ventana)
@@ -56,7 +64,8 @@ def test_botones_existen_y_tienen_iconos(qtbot):
 
 def test_cargar_datos_tabla(qtbot):
     """
-    Verifica que la tabla carga correctamente los datos proporcionados.
+    Verifica que el método `cargar_datos()` llena correctamente la tabla
+    con los registros de fichajes proporcionados.
     """
     controlador = HistorialControlador(usuario_id=1, es_admin=False)
     qtbot.addWidget(controlador.ventana)
@@ -77,7 +86,8 @@ def test_cargar_datos_tabla(qtbot):
 
 def test_colores_aplicados_por_tipo(qtbot):
     """
-    Verifica que los colores de fondo en la tabla se aplican según el tipo de fichaje.
+    Verifica que los colores de fondo de las filas de la tabla se aplican correctamente 
+    según el tipo de fichaje (ENTRADA o SALIDA), usando los colores definidos en la lógica.
     """
     controlador = HistorialControlador(usuario_id=1, es_admin=False)
     qtbot.addWidget(controlador.ventana)
@@ -93,5 +103,5 @@ def test_colores_aplicados_por_tipo(qtbot):
     salida_color = controlador.ventana.tabla.item(
         1, 0).background().color().name()
 
-    assert entrada_color.lower() == "#fff8cc"
-    assert salida_color.lower() == "#e0f0ff"
+    assert entrada_color.lower() == "#fff8cc"  # Color definido para ENTRADA
+    assert salida_color.lower() == "#e0f0ff"  # Color definido para SALIDA

@@ -1,3 +1,14 @@
+"""
+Módulo de operaciones CRUD para la gestión de clientes.
+
+Incluye funciones para:
+- Crear, actualizar y eliminar clientes.
+- Verificar existencia de DNI.
+- Obtener información detallada o listada de clientes.
+- Buscar clientes por nombre o ID.
+
+Utiliza conexiones a PostgreSQL y fechas gestionadas con `datetime`.
+"""
 from modelos.conexion_bd import obtener_conexion
 from psycopg2 import sql
 from datetime import datetime
@@ -5,6 +16,15 @@ from utilidades.comprobar_dni import DNIUtils
 
 
 def dni_ya_existe(dni):
+    """
+    Verifica si un DNI ya está registrado en la base de datos.
+
+    Args:
+        dni (str): DNI a verificar.
+
+    Returns:
+        bool: True si el DNI existe, False si no o si ocurre un error.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -20,6 +40,25 @@ def dni_ya_existe(dni):
 
 def crear_cliente(nombre, apellido1, apellido2, dni, telefono, email,
                   direccion, cp, localidad, provincia, observaciones):
+    """
+    Inserta un nuevo cliente en la base de datos.
+
+    Args:
+        nombre (str): Nombre del cliente.
+        apellido1 (str): Primer apellido.
+        apellido2 (str): Segundo apellido.
+        dni (str): Documento Nacional de Identidad.
+        telefono (str): Número de teléfono.
+        email (str): Correo electrónico.
+        direccion (str): Dirección postal.
+        cp (str): Código postal.
+        localidad (str): Ciudad/localidad.
+        provincia (str): Provincia.
+        observaciones (str): Comentarios u observaciones adicionales.
+
+    Returns:
+        bool: True si se creó correctamente, False si ocurrió un error.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -60,6 +99,12 @@ def crear_cliente(nombre, apellido1, apellido2, dni, telefono, email,
 
 
 def obtener_nombres_completos():
+    """
+    Devuelve una lista de nombres completos (nombre + apellidos) de todos los clientes.
+
+    Returns:
+        list[str]: Lista de nombres completos.
+    """
     conexion = obtener_conexion()
     cursor = conexion.cursor()
     cursor.execute("""
@@ -72,6 +117,15 @@ def obtener_nombres_completos():
 
 
 def obtener_datos_cliente_por_nombre(nombre_completo):
+    """
+    Recupera todos los campos de un cliente a partir de su nombre completo.
+
+    Args:
+        nombre_completo (str): Nombre + apellidos del cliente.
+
+    Returns:
+        tuple or None: Tupla con los datos del cliente si se encuentra, None si no.
+    """
     conexion = obtener_conexion()
     cursor = conexion.cursor()
     cursor.execute("""
@@ -84,6 +138,12 @@ def obtener_datos_cliente_por_nombre(nombre_completo):
 
 
 def buscar_clientes_por_nombre():
+    """
+    Obtiene una lista de clientes con su nombre completo y ID, ordenados alfabéticamente.
+
+    Returns:
+        list[tuple]: Tuplas (nombre_completo, id).
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -106,6 +166,15 @@ def buscar_clientes_por_nombre():
 
 
 def obtener_cliente_por_id(cliente_id):
+    """
+    Recupera los datos de un cliente a partir de su ID.
+
+    Args:
+        cliente_id (int): ID del cliente.
+
+    Returns:
+        dict or None: Diccionario con los datos del cliente o None si no existe.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -140,6 +209,12 @@ def obtener_cliente_por_id(cliente_id):
 
 
 def obtener_clientes():
+    """
+    Devuelve una lista completa de todos los clientes en formato diccionario.
+
+    Returns:
+        list[dict]: Lista de todos los clientes con sus datos.
+    """
     conexion = obtener_conexion()
     cursor = conexion.cursor()
     cursor.execute("SELECT * FROM clientes")
@@ -152,6 +227,16 @@ def obtener_clientes():
 
 def actualizar_cliente(cliente_id, nombre, apellido1, apellido2, dni, telefono, email,
                        direccion, cp, localidad, provincia, observaciones):
+    """
+    Actualiza los datos de un cliente existente.
+
+    Args:
+        cliente_id (int): ID del cliente a actualizar.
+        (Los demás parámetros son los nuevos datos a aplicar.)
+
+    Returns:
+        bool: True si la actualización fue exitosa, False si falló.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -200,6 +285,15 @@ def actualizar_cliente(cliente_id, nombre, apellido1, apellido2, dni, telefono, 
 
 
 def eliminar_cliente_por_id(cliente_id):
+    """
+    Elimina un cliente de la base de datos por su ID.
+
+    Args:
+        cliente_id (int): ID del cliente a eliminar.
+
+    Returns:
+        bool: True si se eliminó correctamente, False si hubo error.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -215,6 +309,15 @@ def eliminar_cliente_por_id(cliente_id):
 
 def crear_cliente_y_devolver_id(nombre, apellido1, apellido2, dni, telefono, email,
                                 direccion, cp, localidad, provincia, observaciones):
+    """
+    Crea un nuevo cliente y devuelve su ID generado automáticamente.
+
+    Args:
+        (Mismos que en crear_cliente)
+
+    Returns:
+        int or None: ID del cliente creado si tuvo éxito, o None si ocurrió un error.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()

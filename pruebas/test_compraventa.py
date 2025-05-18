@@ -1,3 +1,18 @@
+"""
+Tests para la ventana `VentanaCompraventa`.
+
+Este módulo valida la funcionalidad de la interfaz de compraventa, asegurando:
+
+- Inicialización correcta de campos.
+- Activación/ocultación de secciones según el tipo de operación (compra/venta).
+- Funcionamiento de botones de firma y sus indicadores visuales.
+- Interacción con el controlador en eventos como cambio de checkbox.
+- Captura de eventos de teclado (ENTER) para cerrar firmas activas.
+- Limpieza total del formulario al usar "borrar todo".
+
+Se usa una función `iniciar_ventana_compraventa()` para crear instancias limpias para cada test.
+"""
+
 from unittest.mock import MagicMock
 from PySide6.QtCore import Qt, QEvent
 from PySide6.QtGui import QKeyEvent
@@ -9,18 +24,16 @@ def iniciar_ventana_compraventa():
     """
     Inicializa la ventana de compraventa con un layout de prueba.
 
-    Se sustituyen dependencias externas como el controlador real por un mock.
-    Se configura el layout con las secciones y widgets necesarios para pruebas.
+    Sustituye el controlador real por un mock.
+    Crea y organiza las secciones manualmente para simular comportamiento real.
     """
     ventana = VentanaCompraventa(None)
     ventana.controlador = MagicMock()
 
-    # Crear manualmente las secciones necesarias para las pruebas
     ventana.seccion_cliente = ventana.crear_seccion_datos_cliente()
     ventana.seccion_vehiculo = ventana.crear_seccion_datos_vehiculo()
     ventana.seccion_operacion = ventana.crear_seccion_datos_operacion()
 
-    # En caso de que el combo no se haya inicializado aún, lo añadimos
     if not hasattr(ventana, "combo_operacion"):
         ventana.combo_operacion = QComboBox()
         ventana.combo_operacion.addItems([
@@ -45,7 +58,7 @@ def iniciar_ventana_compraventa():
 
 def test_ventana_compraventa_carga_correcta(qtbot):
     """
-    Verifica que los campos de cliente y vehículo se puedan establecer correctamente.
+    Verifica que los campos de cliente y vehículo pueden asignarse correctamente.
     """
     ventana = iniciar_ventana_compraventa()
     qtbot.addWidget(ventana)
@@ -61,7 +74,7 @@ def test_ventana_compraventa_carga_correcta(qtbot):
 
 def test_actualizar_secciones_compra(qtbot):
     """
-    Verifica que las secciones adecuadas se activen al seleccionar operación de compra.
+    Verifica que al seleccionar 'COMPRA', se activan solo las secciones correspondientes.
     """
     ventana = iniciar_ventana_compraventa()
     qtbot.addWidget(ventana)
@@ -77,7 +90,7 @@ def test_actualizar_secciones_compra(qtbot):
 
 def test_actualizar_secciones_venta(qtbot):
     """
-    Verifica que las secciones adecuadas se activen al seleccionar operación de venta.
+    Verifica que al seleccionar 'VENTA', se activan cliente y operación, pero no vehículo.
     """
     ventana = iniciar_ventana_compraventa()
     qtbot.addWidget(ventana)
@@ -93,7 +106,7 @@ def test_actualizar_secciones_venta(qtbot):
 
 def test_actualizar_secciones_seleccione(qtbot):
     """
-    Verifica que todas las secciones se oculten al seleccionar la opción por defecto.
+    Verifica que al seleccionar la opción por defecto, todas las secciones se ocultan.
     """
     ventana = iniciar_ventana_compraventa()
     qtbot.addWidget(ventana)
@@ -109,7 +122,7 @@ def test_actualizar_secciones_seleccione(qtbot):
 
 def test_toggle_firma_compra(qtbot):
     """
-    Verifica la activación y desactivación de la firma para la operación de compra.
+    Verifica que el botón de firma activa y desactiva la firma de compra correctamente.
     """
     ventana = iniciar_ventana_compraventa()
     qtbot.addWidget(ventana)
@@ -127,7 +140,7 @@ def test_toggle_firma_compra(qtbot):
 
 def test_toggle_firma_venta(qtbot):
     """
-    Verifica la activación y desactivación de la firma para la operación de venta.
+    Verifica que el botón de firma activa y desactiva la firma de venta correctamente.
     """
     ventana = iniciar_ventana_compraventa()
     qtbot.addWidget(ventana)
@@ -147,7 +160,8 @@ def test_toggle_firma_venta(qtbot):
 
 def test_toggle_ruta_guardado_compra(qtbot):
     """
-    Verifica que al desactivar el checkbox de ruta predeterminada se invoque correctamente el controlador.
+    Verifica que al desmarcar la casilla de ruta predeterminada,
+    se invoca el método del controlador con los argumentos correctos.
     """
     ventana = iniciar_ventana_compraventa()
     qtbot.addWidget(ventana)
@@ -166,7 +180,7 @@ def test_toggle_ruta_guardado_compra(qtbot):
 
 def test_event_filter_enter_key_cierra_firma(qtbot):
     """
-    Simula pulsación de tecla ENTER y verifica que se cierre la firma si está activa.
+    Simula pulsación de ENTER y verifica que si hay firma activa, se cierra.
     """
     ventana = iniciar_ventana_compraventa()
     qtbot.addWidget(ventana)
@@ -184,7 +198,8 @@ def test_event_filter_enter_key_cierra_firma(qtbot):
 
 def test_borrar_todo_resetea_campos(qtbot):
     """
-    Verifica que el método borrar_todo limpie correctamente todos los campos y estados.
+    Verifica que al ejecutar `borrar_todo()`, se limpian todos los campos
+    y se restablecen los estados visuales (incluidas firmas).
     """
     ventana = iniciar_ventana_compraventa()
     qtbot.addWidget(ventana)

@@ -1,7 +1,22 @@
+"""
+Módulo para la gestión de presupuestos en base a recepcionamientos.
+
+Incluye funciones para:
+- Obtener recepcionamientos pendientes de presupuesto.
+- Insertar presupuestos nuevos.
+- Registrar tareas asociadas a cada presupuesto.
+"""
 from modelos.conexion_bd import obtener_conexion
 
 
 def obtener_recepciones_para_presupuesto():
+    """
+    Recupera los recepcionamientos que aún no tienen un presupuesto asignado.
+
+    Returns:
+        list[dict]: Lista de diccionarios con datos del recepcionamiento,
+        incluyendo cliente, correo, matrícula, observaciones y precio máximo autorizado.
+    """
     conn = obtener_conexion()
     cursor = conn.cursor()
 
@@ -33,6 +48,18 @@ def obtener_recepciones_para_presupuesto():
 
 
 def insertar_presupuesto(recepcion_id, total, respuesta, ruta_pdf):
+    """
+    Inserta un nuevo presupuesto asociado a un recepcionamiento existente.
+
+    Args:
+        recepcion_id (int): ID del recepcionamiento al que se asocia el presupuesto.
+        total (float): Total estimado del presupuesto.
+        respuesta (str): Respuesta del cliente (puede ser "Pendiente", "Aceptado", etc.).
+        ruta_pdf (str): Ruta del documento PDF generado.
+
+    Returns:
+        int: ID del nuevo presupuesto insertado.
+    """
     conn = obtener_conexion()
     cursor = conn.cursor()
 
@@ -49,6 +76,19 @@ def insertar_presupuesto(recepcion_id, total, respuesta, ruta_pdf):
 
 
 def insertar_tarea_presupuesto(presupuesto_id, descripcion, horas, precio_hora, total):
+    """
+    Inserta una tarea individual asociada a un presupuesto determinado.
+
+    Args:
+        presupuesto_id (int): ID del presupuesto al que pertenece la tarea.
+        descripcion (str): Descripción de la tarea.
+        horas (float): Cantidad de horas estimadas.
+        precio_hora (float): Precio por hora de la tarea.
+        total (float): Coste total de la tarea.
+
+    Returns:
+        None
+    """
     conn = obtener_conexion()
     cursor = conn.cursor()
 

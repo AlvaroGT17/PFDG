@@ -1,11 +1,19 @@
 # pruebas/test_presupuesto.py
 """
-Pruebas para la interfaz VentanaPresupuesto.
+Pruebas para la interfaz `VentanaPresupuesto`.
 
-Se validan aspectos estructurales, de comportamiento y de lógica interna,
-como la gestión de tareas, el cálculo de coste total y el control del cierre.
+Este módulo contiene tests que verifican el comportamiento y la estructura 
+de la ventana de creación de presupuestos dentro del sistema ReyBoxes.
 
-Autor: Cresnik
+Se evalúan:
+- Visibilidad y estado inicial de la ventana.
+- Habilitación de botones.
+- Añadir y eliminar tareas en la tabla.
+- Actualización de costes totales y respuesta del cliente.
+- Comportamiento del cierre forzado.
+- Carga de datos de un presupuesto ya guardado.
+
+Autor: Cresnik  
 Proyecto: ReyBoxes - Taller Mecánico
 """
 
@@ -16,24 +24,44 @@ from vistas.ventana_presupuesto import VentanaPresupuesto
 
 @pytest.fixture
 def ventana(qtbot):
+    """
+    Crea una instancia de la ventana de presupuesto para pruebas.
+
+    Añade el widget al entorno de QtBot y lo muestra antes del test.
+    Se asegura de cerrar y liberar el widget tras cada prueba.
+    """
     ventana = VentanaPresupuesto()
     qtbot.addWidget(ventana)
     ventana.show()
-    return ventana
+    yield ventana
+    ventana.close()
+    ventana.deleteLater()
 
 
 def test_ventana_presupuesto_se_muestra(ventana):
+    """
+    Verifica que la ventana se muestre correctamente al instanciarla 
+    y que el título sea el esperado.
+    """
     assert ventana.isVisible()
     assert ventana.windowTitle() == "ReyBoxes - Presupuestos"
 
 
 def test_botones_estan_desactivados_por_defecto(ventana):
+    """
+    Comprueba que los botones de guardar y añadir tarea están desactivados
+    al iniciar la ventana, lo cual es el comportamiento esperado.
+    """
     assert not ventana.boton_guardar.isEnabled()
     assert not ventana.boton_anadir_tarea.isEnabled()
 
 
 def test_se_agrega_y_elimina_tarea(ventana):
-    # Simula recepción válida para activar botones
+    """
+    Simula el flujo completo de añadir una tarea a la tabla 
+    y posteriormente eliminarla, asegurando que la tabla refleja ambos cambios.
+    """
+    # Simula recepción válida para activar los botones
     ventana.combo_recepciones.addItem("Recepcion test")
     ventana.combo_recepciones.setCurrentIndex(1)
     ventana.controlador = type("Controlador", (), {"recepciones": [{
@@ -45,7 +73,7 @@ def test_se_agrega_y_elimina_tarea(ventana):
     }]})()
     ventana.recepcion_seleccionada(1)
 
-    # Simula datos de tarea insertando manualmente (sin usar DialogoTarea)
+    # Simula tarea añadida manualmente (sin usar el diálogo)
     fila = ventana.tabla_tareas.rowCount()
     ventana.tabla_tareas.insertRow(fila)
     ventana.tabla_tareas.setItem(fila, 0, QTableWidgetItem("Frenos"))
@@ -55,13 +83,18 @@ def test_se_agrega_y_elimina_tarea(ventana):
 
     assert ventana.tabla_tareas.rowCount() == 1
 
-    # Elimina
+    # Elimina la fila insertada
     ventana.tabla_tareas.selectRow(0)
     ventana.eliminar_tarea_seleccionada()
     assert ventana.tabla_tareas.rowCount() == 0
 
 
 def test_coste_total_y_respuesta_cliente(ventana):
+    """
+    Verifica que al introducir tareas y un límite de precio,
+    se actualiza el coste total y se selecciona automáticamente
+    la respuesta del cliente (aceptado o rechazado).
+    """
     ventana.campo_limite.setText("100.00 €")
 
     fila = ventana.tabla_tareas.rowCount()
@@ -74,10 +107,17 @@ def test_coste_total_y_respuesta_cliente(ventana):
 
 
 def test_control_cierre_con_flag(qtbot):
+    """
+    Simula el evento de cierre de la ventana verificando el uso del flag 
+    `forzar_cierre` para aceptar o ignorar el evento de cierre.
+    """
     ventana = VentanaPresupuesto()
     qtbot.addWidget(ventana)
-    evento = type("FakeEvent", (), {"accept": lambda self: setattr(
-        ventana, "_cerrado", True), "ignore": lambda self: setattr(ventana, "_cerrado", False)})()
+
+    evento = type("FakeEvent", (), {
+        "accept": lambda self: setattr(ventana, "_cerrado", True),
+        "ignore": lambda self: setattr(ventana, "_cerrado", False)
+    })()
 
     ventana.forzar_cierre = False
     ventana.closeEvent(evento)
@@ -89,6 +129,10 @@ def test_control_cierre_con_flag(qtbot):
 
 
 def test_cargar_presupuesto_datos(ventana):
+    """
+    Verifica que los datos de un presupuesto existente se cargan 
+    correctamente en los campos correspondientes de la interfaz.
+    """
     datos = {
         "cliente": "Juan Perez",
         "vehiculo": "Ford Focus",

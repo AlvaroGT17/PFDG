@@ -1,8 +1,29 @@
+"""
+Módulo de consultas relacionadas con vehículos.
+
+Proporciona funciones para buscar, crear, modificar y eliminar registros
+de vehículos en la base de datos, así como obtener datos auxiliares
+como tipos de vehículo, combustibles y categorías.
+
+Todas las operaciones utilizan la conexión proporcionada por `obtener_conexion`
+y gestionan errores de forma controlada.
+"""
+
 from modelos.conexion_bd import obtener_conexion
 from datetime import datetime
 
 
 def buscar_vehiculo_por_matricula(matricula):
+    """
+    Busca un vehículo en la base de datos a partir de su matrícula.
+
+    Args:
+        matricula (str): Matrícula del vehículo a buscar.
+
+    Returns:
+        dict or None: Diccionario con los datos del vehículo si se encuentra,
+        o None si no existe.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -44,6 +65,12 @@ def buscar_vehiculo_por_matricula(matricula):
 
 
 def obtener_combustibles():
+    """
+    Recupera todos los combustibles registrados en la base de datos.
+
+    Returns:
+        list[dict]: Lista de diccionarios con los combustibles (id y nombre).
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -59,6 +86,12 @@ def obtener_combustibles():
 
 
 def obtener_matriculas_existentes():
+    """
+    Obtiene todas las matrículas de vehículos registradas en la base de datos.
+
+    Returns:
+        list[str]: Lista de matrículas ordenadas alfabéticamente.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -73,6 +106,16 @@ def obtener_matriculas_existentes():
 
 
 def matricula_ya_existe(matricula, excluir_id=None):
+    """
+    Verifica si una matrícula ya está registrada, opcionalmente excluyendo un vehículo por ID.
+
+    Args:
+        matricula (str): Matrícula a verificar.
+        excluir_id (int, optional): ID de un vehículo a excluir de la comprobación.
+
+    Returns:
+        bool: True si la matrícula ya existe, False en caso contrario.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -97,6 +140,24 @@ def matricula_ya_existe(matricula, excluir_id=None):
 
 def crear_vehiculo(matricula, marca, modelo, color, tipo_vehiculo, cliente_id,
                    numero_bastidor, combustible_id, anyo, observaciones=None):
+    """
+    Inserta un nuevo vehículo en la base de datos.
+
+    Args:
+        matricula (str): Matrícula del vehículo.
+        marca (str): Marca del vehículo.
+        modelo (str): Modelo del vehículo.
+        color (str): Color del vehículo.
+        tipo_vehiculo (int): ID del tipo de vehículo.
+        cliente_id (int): ID del cliente asociado.
+        numero_bastidor (str): Número de bastidor del vehículo.
+        combustible_id (int): ID del tipo de combustible.
+        anyo (int): Año de matriculación o fabricación.
+        observaciones (str, optional): Comentarios adicionales.
+
+    Returns:
+        bool: True si se creó correctamente, False si hubo un error o matrícula duplicada.
+    """
     try:
         if matricula_ya_existe(matricula):
             return False
@@ -125,6 +186,25 @@ def crear_vehiculo(matricula, marca, modelo, color, tipo_vehiculo, cliente_id,
 
 def modificar_vehiculo(vehiculo_id, matricula, marca, modelo, color, tipo_vehiculo,
                        cliente_id, numero_bastidor, combustible_id, anyo, observaciones=None):
+    """
+    Actualiza los datos de un vehículo existente.
+
+    Args:
+        vehiculo_id (int): ID del vehículo a modificar.
+        matricula (str): Nueva matrícula.
+        marca (str): Nueva marca.
+        modelo (str): Nuevo modelo.
+        color (str): Nuevo color.
+        tipo_vehiculo (int): ID del nuevo tipo de vehículo.
+        cliente_id (int): ID del cliente.
+        numero_bastidor (str): Nuevo número de bastidor.
+        combustible_id (int): ID del nuevo combustible.
+        anyo (int): Año de matriculación o fabricación.
+        observaciones (str, optional): Nuevas observaciones.
+
+    Returns:
+        bool: True si la modificación fue exitosa, False si falló o la matrícula ya existe.
+    """
     try:
         if matricula_ya_existe(matricula, excluir_id=vehiculo_id):
             return False
@@ -160,6 +240,15 @@ def modificar_vehiculo(vehiculo_id, matricula, marca, modelo, color, tipo_vehicu
 
 
 def eliminar_vehiculo(vehiculo_id):
+    """
+    Elimina un vehículo de la base de datos por su ID.
+
+    Args:
+        vehiculo_id (int): ID del vehículo a eliminar.
+
+    Returns:
+        bool: True si se eliminó correctamente, False si hubo un error.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -174,6 +263,12 @@ def eliminar_vehiculo(vehiculo_id):
 
 
 def obtener_tipos_vehiculo_con_categoria():
+    """
+    Obtiene todos los tipos de vehículo registrados junto con su categoría.
+
+    Returns:
+        list[dict]: Lista de tipos con sus IDs, nombres y categorías.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -196,6 +291,15 @@ def obtener_tipos_vehiculo_con_categoria():
 
 
 def obtener_tipos_por_categoria(categoria):
+    """
+    Obtiene todos los tipos de vehículo correspondientes a una categoría dada.
+
+    Args:
+        categoria (str): Nombre de la categoría.
+
+    Returns:
+        list[str]: Lista de nombres de tipos de vehículo pertenecientes a la categoría.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -215,6 +319,12 @@ def obtener_tipos_por_categoria(categoria):
 
 
 def obtener_categorias():
+    """
+    Recupera todas las categorías de vehículos registradas en el sistema.
+
+    Returns:
+        list[str]: Lista de nombres de categorías, sin duplicados.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()

@@ -1,3 +1,15 @@
+"""
+Módulo de autenticación y recuperación de cuentas.
+
+Incluye funciones para:
+- Obtener datos de usuario por nombre o email.
+- Verificar contraseñas y códigos de recuperación.
+- Guardar o actualizar contraseñas cifradas.
+- Comprobar expiración de códigos OTP.
+
+Requiere conexión a la base de datos PostgreSQL y el uso de la librería `bcrypt`
+para cifrado y validación de contraseñas.
+"""
 import bcrypt
 from psycopg2 import sql
 from datetime import datetime, timedelta
@@ -6,8 +18,13 @@ from modelos.conexion_bd import obtener_conexion
 
 def obtener_usuario_por_nombre(nombre: str):
     """
-    Devuelve los datos del usuario con ese nombre (en mayúsculas),
-    incluyendo el rol asociado desde la tabla 'roles'.
+    Obtiene los datos de un usuario según su nombre en mayúsculas.
+
+    Args:
+        nombre (str): Nombre del usuario (no sensible a mayúsculas/minúsculas).
+
+    Returns:
+        dict or None: Diccionario con los datos del usuario y su rol si existe, None si no se encuentra.
     """
     try:
         conexion = obtener_conexion()
@@ -45,8 +62,15 @@ def obtener_usuario_por_nombre(nombre: str):
 
 def obtener_usuario_por_email(email: str):
     """
-    Devuelve los datos básicos del usuario por email (id y nombre).
-    Se usa para recuperación de cuenta.
+    Recupera el ID y nombre de un usuario a partir de su correo electrónico.
+
+    Se utiliza principalmente para la recuperación de contraseña.
+
+    Args:
+        email (str): Dirección de correo electrónico del usuario.
+
+    Returns:
+        dict or None: Diccionario con ID y nombre si existe, None si no.
     """
     try:
         conexion = obtener_conexion()
@@ -79,8 +103,15 @@ def obtener_usuario_por_email(email: str):
 
 def guardar_codigo_recuperacion(usuario_id: int, codigo: str):
     """
-    Guarda el código de recuperación y su tiempo de expiración
-    para el usuario especificado.
+    Guarda el código de recuperación generado y su fecha de expiración (5 minutos)
+    para el usuario indicado.
+
+    Args:
+        usuario_id (int): ID del usuario.
+        codigo (str): Código de recuperación (generalmente de 6 dígitos).
+
+    Returns:
+        bool: True si se guardó correctamente, False si ocurrió un error.
     """
     try:
         conexion = obtener_conexion()
@@ -112,13 +143,29 @@ def guardar_codigo_recuperacion(usuario_id: int, codigo: str):
 
 
 def verificar_contrasena(contrasena_plana: str, contrasena_hash: str) -> bool:
+    """
+    Compara una contraseña en texto plano con su versión cifrada usando bcrypt.
+
+    Args:
+        contrasena_plana (str): Contraseña ingresada por el usuario.
+        contrasena_hash (str): Contraseña almacenada en la base de datos (cifrada).
+
+    Returns:
+        bool: True si coinciden, False si no.
+    """
     return bcrypt.checkpw(contrasena_plana.encode("utf-8"), contrasena_hash.encode("utf-8"))
 
 
 def verificar_codigo_recuperacion(email: str, codigo: str) -> bool:
     """
-    Verifica si el código de recuperación es válido para el correo dado
-    y si no ha expirado.
+    Verifica que el código de recuperación sea válido para el usuario y no haya expirado.
+
+    Args:
+        email (str): Correo electrónico del usuario.
+        codigo (str): Código de recuperación introducido.
+
+    Returns:
+        bool: True si el código es correcto y está vigente, False en caso contrario.
     """
     try:
         conexion = obtener_conexion()
@@ -151,8 +198,16 @@ def verificar_codigo_recuperacion(email: str, codigo: str) -> bool:
 
 def actualizar_contrasena(email: str, nueva_contrasena: str) -> bool:
     """
-    Actualiza la contraseña de un usuario en la base de datos, cifrándola con bcrypt.
-    Devuelve True si fue exitoso, False en caso contrario.
+    Cifra y actualiza la nueva contraseña de un usuario.
+
+    También borra cualquier código de recuperación pendiente para ese usuario.
+
+    Args:
+        email (str): Correo del usuario a actualizar.
+        nueva_contrasena (str): Nueva contraseña en texto plano.
+
+    Returns:
+        bool: True si se actualizó correctamente, False si ocurrió un error.
     """
     try:
         conexion = obtener_conexion()
@@ -180,8 +235,12 @@ def actualizar_contrasena(email: str, nueva_contrasena: str) -> bool:
             conexion.close()
 
 
-# 🔧 Prueba desde consola
+# Prueba desde consola
 if __name__ == "__main__":
+    """
+    Permite probar el login por consola, solicitando nombre y contraseña.
+    Solo se ejecuta si el archivo se ejecuta directamente.
+    """
     print("🧪 Prueba de login por nombre de usuario")
 
     nombre = input("👤 Nombre de usuario: ")

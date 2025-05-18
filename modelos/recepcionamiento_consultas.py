@@ -1,8 +1,23 @@
+"""
+Módulo de consultas y operaciones relacionadas con clientes, vehículos y recepcionamientos.
+
+Incluye funciones para:
+- Obtener información de clientes y vehículos.
+- Consultar categorías, tipos y combustibles.
+- Verificar datos existentes por DNI o matrícula.
+- Generar y guardar recepcionamientos en la base de datos.
+"""
 import psycopg2
 from modelos.conexion_bd import obtener_conexion
 
 
 def obtener_clientes():
+    """
+    Obtiene todos los clientes registrados en la base de datos.
+
+    Returns:
+        list[dict]: Lista de clientes con campos como nombre, apellidos, DNI, teléfono, etc.
+    """
     conexion = obtener_conexion()
     cursor = conexion.cursor()
     cursor.execute("""
@@ -17,6 +32,12 @@ def obtener_clientes():
 
 
 def obtener_matriculas():
+    """
+    Recupera todas las matrículas de vehículos registradas, en mayúsculas y sin espacios.
+
+    Returns:
+        list[str]: Lista de matrículas.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -31,6 +52,15 @@ def obtener_matriculas():
 
 
 def obtener_datos_vehiculo_por_matricula(matricula):
+    """
+    Obtiene los datos detallados de un vehículo según su matrícula.
+
+    Args:
+        matricula (str): Matrícula del vehículo a buscar.
+
+    Returns:
+        dict or None: Diccionario con datos del vehículo si se encuentra, None en caso contrario.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -64,6 +94,12 @@ def obtener_datos_vehiculo_por_matricula(matricula):
 
 
 def obtener_categorias_vehiculo():
+    """
+    Devuelve una lista de categorías distintas de vehículo.
+
+    Returns:
+        list[str]: Lista de nombres de categorías.
+    """
     conexion = obtener_conexion()
     cursor = conexion.cursor()
     cursor.execute(
@@ -75,6 +111,12 @@ def obtener_categorias_vehiculo():
 
 
 def obtener_tipos_vehiculo():
+    """
+    Devuelve una lista de tipos de vehículo con su categoría asociada.
+
+    Returns:
+        list[dict]: Lista de diccionarios con categoría y tipo de vehículo.
+    """
     conexion = obtener_conexion()
     cursor = conexion.cursor()
     cursor.execute(
@@ -87,6 +129,12 @@ def obtener_tipos_vehiculo():
 
 
 def obtener_combustibles():
+    """
+    Recupera todos los nombres de combustibles disponibles.
+
+    Returns:
+        list[str]: Lista de combustibles.
+    """
     conexion = obtener_conexion()
     cursor = conexion.cursor()
     cursor.execute("SELECT nombre FROM combustibles ORDER BY id")
@@ -97,6 +145,12 @@ def obtener_combustibles():
 
 
 def obtener_matriculas_existentes():
+    """
+    Devuelve todas las matrículas registradas en la base de datos.
+
+    Returns:
+        list[str]: Lista de matrículas existentes.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -111,6 +165,15 @@ def obtener_matriculas_existentes():
 
 
 def obtener_matriculas_por_cliente(dni_cliente):
+    """
+    Devuelve todas las matrículas asociadas a un cliente dado su DNI.
+
+    Args:
+        dni_cliente (str): DNI del cliente.
+
+    Returns:
+        list[str]: Lista de matrículas vinculadas al cliente.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -130,6 +193,12 @@ def obtener_matriculas_por_cliente(dni_cliente):
 
 
 def obtener_siguiente_numero_recepcionamiento():
+    """
+    Calcula el siguiente número disponible para un nuevo recepcionamiento.
+
+    Returns:
+        int: Número siguiente para recepcionamiento (inicia en 1 si no hay registros).
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -149,6 +218,12 @@ def obtener_siguiente_numero_recepcionamiento():
 
 
 def obtener_motivos():
+    """
+    Obtiene los motivos de intervención disponibles.
+
+    Returns:
+        list[dict]: Lista de motivos con sus IDs y nombres.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -163,6 +238,12 @@ def obtener_motivos():
 
 
 def obtener_urgencias():
+    """
+    Obtiene los niveles de urgencia registrados.
+
+    Returns:
+        list[dict]: Lista con ID y descripción de cada urgencia.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -177,6 +258,13 @@ def obtener_urgencias():
 
 
 def obtener_datos_completos_recepcionamiento():
+    """
+    Obtiene todos los datos necesarios para completar un formulario de recepcionamiento,
+    incluyendo motivos, urgencias, categorías, tipos y combustibles.
+
+    Returns:
+        dict: Diccionario con claves 'motivos', 'urgencias', 'categorias', 'tipos' y 'combustibles'.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -234,6 +322,15 @@ def obtener_datos_completos_recepcionamiento():
 
 
 def obtener_cliente_id_por_dni(dni):
+    """
+    Recupera el ID de cliente a partir de su DNI.
+
+    Args:
+        dni (str): DNI del cliente.
+
+    Returns:
+        int or None: ID del cliente si existe, None en caso contrario.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -249,6 +346,15 @@ def obtener_cliente_id_por_dni(dni):
 
 
 def obtener_vehiculo_id_por_matricula(matricula):
+    """
+    Recupera el ID de un vehículo a partir de su matrícula.
+
+    Args:
+        matricula (str): Matrícula del vehículo.
+
+    Returns:
+        int or None: ID del vehículo si existe, None en caso contrario.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -264,6 +370,12 @@ def obtener_vehiculo_id_por_matricula(matricula):
 
 
 def obtener_estado_id_por_defecto():
+    """
+    Obtiene el ID del estado por defecto (normalmente 'Pendiente') para intervenciones.
+
+    Returns:
+        int or None: ID del estado si existe, None si no se encuentra.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()
@@ -280,6 +392,15 @@ def obtener_estado_id_por_defecto():
 
 
 def insertar_recepcionamiento_en_bd(datos):
+    """
+    Inserta un nuevo registro de recepcionamiento en la base de datos.
+
+    Args:
+        datos (dict): Diccionario con todos los datos necesarios del formulario de recepción.
+
+    Returns:
+        tuple: (True, None) si fue exitoso, o (False, error_str) si ocurrió un error.
+    """
     try:
         conexion = obtener_conexion()
         cursor = conexion.cursor()

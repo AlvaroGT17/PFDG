@@ -70,38 +70,87 @@
                     <h1 class="modulename">
 <a href="./../controladores.html">controladores</a><wbr>.fichar_controlador    </h1>
 
-                
+                        <div class="docstring"><p>Controlador del módulo de fichaje de empleados.</p>
+
+<p>Este módulo permite al usuario registrar un fichaje de entrada o salida,
+a través de una interfaz visual simple.</p>
+
+<p>Incluye validaciones básicas para asegurar que se seleccione un tipo de fichaje.</p>
+
+<p>Utiliza:</p>
+
+<ul>
+<li><code>VentanaFichar</code>: interfaz de usuario con selección de tipo y botones.</li>
+<li><code>registrar_fichaje</code>: función del modelo que guarda el registro en la base de datos.</li>
+</ul>
+</div>
+
                         <input id="mod-fichar_controlador-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-fichar_controlador-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QObject</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">vistas.ventana_fichar</span><span class="w"> </span><span class="kn">import</span> <span class="n">VentanaFichar</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">modelos.fichajes_consultas</span><span class="w"> </span><span class="kn">import</span> <span class="n">registrar_fichaje</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FicharControlador</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usuario</span><span class="p">):</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">usuario</span> <span class="o">=</span> <span class="n">usuario</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaFichar</span><span class="p">()</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_confirmar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fichar</span><span class="p">)</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">Controlador del módulo de fichaje de empleados.</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">Este módulo permite al usuario registrar un fichaje de entrada o salida,</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">a través de una interfaz visual simple.</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">Incluye validaciones básicas para asegurar que se seleccione un tipo de fichaje.</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">Utiliza:</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">- `VentanaFichar`: interfaz de usuario con selección de tipo y botones.</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">- `registrar_fichaje`: función del modelo que guarda el registro en la base de datos.</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">fichar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="n">tipo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">obtener_tipo_fichaje</span><span class="p">()</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">tipo</span><span class="p">:</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">mostrar_error</span><span class="p">(</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>                <span class="s2">&quot;Debes seleccionar &#39;Entrada&#39; o &#39;Salida&#39;&quot;</span><span class="p">)</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>            <span class="k">return</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="n">registrar_fichaje</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">usuario</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">tipo</span><span class="p">)</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">mostrar_confirmacion</span><span class="p">(</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>            <span class="sa">f</span><span class="s2">&quot;Fichaje de </span><span class="si">{</span><span class="n">tipo</span><span class="si">}</span><span class="s2"> registrado correctamente.&quot;</span><span class="p">)</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QObject</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">vistas.ventana_fichar</span><span class="w"> </span><span class="kn">import</span> <span class="n">VentanaFichar</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">modelos.fichajes_consultas</span><span class="w"> </span><span class="kn">import</span> <span class="n">registrar_fichaje</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FicharControlador</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">    Controlador responsable de gestionar la lógica de la ventana de fichaje.</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">    Permite al usuario registrar un fichaje (Entrada o Salida) y notifica al finalizar.</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usuario</span><span class="p">):</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">        Inicializa el controlador con los datos del usuario activo.</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="sd">        Args:</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="sd">            usuario (dict): Diccionario con la información del usuario (incluye al menos &#39;id&#39;).</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">usuario</span> <span class="o">=</span> <span class="n">usuario</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaFichar</span><span class="p">()</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_confirmar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fichar</span><span class="p">)</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="sd">        Muestra la ventana de fichaje.</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">fichar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="sd">        Ejecuta el fichaje tras validar el tipo seleccionado (Entrada o Salida).</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="sd">        - Muestra error si no se ha seleccionado ninguna opción.</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="sd">        - Registra el fichaje en la base de datos.</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="sd">        - Muestra confirmación y cierra la ventana.</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>        <span class="n">tipo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">obtener_tipo_fichaje</span><span class="p">()</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">tipo</span><span class="p">:</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">mostrar_error</span><span class="p">(</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>                <span class="s2">&quot;Debes seleccionar &#39;Entrada&#39; o &#39;Salida&#39;&quot;</span><span class="p">)</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>            <span class="k">return</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="n">registrar_fichaje</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">usuario</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">tipo</span><span class="p">)</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">mostrar_confirmacion</span><span class="p">(</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>            <span class="sa">f</span><span class="s2">&quot;Fichaje de </span><span class="si">{</span><span class="n">tipo</span><span class="si">}</span><span class="s2"> registrado correctamente.&quot;</span><span class="p">)</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -117,32 +166,56 @@
 
     </div>
     <a class="headerlink" href="#FicharControlador"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FicharControlador-7"><a href="#FicharControlador-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FicharControlador</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-</span><span id="FicharControlador-8"><a href="#FicharControlador-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usuario</span><span class="p">):</span>
-</span><span id="FicharControlador-9"><a href="#FicharControlador-9"><span class="linenos"> 9</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="FicharControlador-10"><a href="#FicharControlador-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">usuario</span> <span class="o">=</span> <span class="n">usuario</span>
-</span><span id="FicharControlador-11"><a href="#FicharControlador-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaFichar</span><span class="p">()</span>
-</span><span id="FicharControlador-12"><a href="#FicharControlador-12"><span class="linenos">12</span></a>
-</span><span id="FicharControlador-13"><a href="#FicharControlador-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_confirmar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fichar</span><span class="p">)</span>
-</span><span id="FicharControlador-14"><a href="#FicharControlador-14"><span class="linenos">14</span></a>
-</span><span id="FicharControlador-15"><a href="#FicharControlador-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FicharControlador-16"><a href="#FicharControlador-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span><span id="FicharControlador-17"><a href="#FicharControlador-17"><span class="linenos">17</span></a>
-</span><span id="FicharControlador-18"><a href="#FicharControlador-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">fichar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FicharControlador-19"><a href="#FicharControlador-19"><span class="linenos">19</span></a>        <span class="n">tipo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">obtener_tipo_fichaje</span><span class="p">()</span>
-</span><span id="FicharControlador-20"><a href="#FicharControlador-20"><span class="linenos">20</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">tipo</span><span class="p">:</span>
-</span><span id="FicharControlador-21"><a href="#FicharControlador-21"><span class="linenos">21</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">mostrar_error</span><span class="p">(</span>
-</span><span id="FicharControlador-22"><a href="#FicharControlador-22"><span class="linenos">22</span></a>                <span class="s2">&quot;Debes seleccionar &#39;Entrada&#39; o &#39;Salida&#39;&quot;</span><span class="p">)</span>
-</span><span id="FicharControlador-23"><a href="#FicharControlador-23"><span class="linenos">23</span></a>            <span class="k">return</span>
-</span><span id="FicharControlador-24"><a href="#FicharControlador-24"><span class="linenos">24</span></a>
-</span><span id="FicharControlador-25"><a href="#FicharControlador-25"><span class="linenos">25</span></a>        <span class="n">registrar_fichaje</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">usuario</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">tipo</span><span class="p">)</span>
-</span><span id="FicharControlador-26"><a href="#FicharControlador-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">mostrar_confirmacion</span><span class="p">(</span>
-</span><span id="FicharControlador-27"><a href="#FicharControlador-27"><span class="linenos">27</span></a>            <span class="sa">f</span><span class="s2">&quot;Fichaje de </span><span class="si">{</span><span class="n">tipo</span><span class="si">}</span><span class="s2"> registrado correctamente.&quot;</span><span class="p">)</span>
-</span><span id="FicharControlador-28"><a href="#FicharControlador-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FicharControlador-20"><a href="#FicharControlador-20"><span class="linenos">20</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FicharControlador</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+</span><span id="FicharControlador-21"><a href="#FicharControlador-21"><span class="linenos">21</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FicharControlador-22"><a href="#FicharControlador-22"><span class="linenos">22</span></a><span class="sd">    Controlador responsable de gestionar la lógica de la ventana de fichaje.</span>
+</span><span id="FicharControlador-23"><a href="#FicharControlador-23"><span class="linenos">23</span></a>
+</span><span id="FicharControlador-24"><a href="#FicharControlador-24"><span class="linenos">24</span></a><span class="sd">    Permite al usuario registrar un fichaje (Entrada o Salida) y notifica al finalizar.</span>
+</span><span id="FicharControlador-25"><a href="#FicharControlador-25"><span class="linenos">25</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="FicharControlador-26"><a href="#FicharControlador-26"><span class="linenos">26</span></a>
+</span><span id="FicharControlador-27"><a href="#FicharControlador-27"><span class="linenos">27</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usuario</span><span class="p">):</span>
+</span><span id="FicharControlador-28"><a href="#FicharControlador-28"><span class="linenos">28</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FicharControlador-29"><a href="#FicharControlador-29"><span class="linenos">29</span></a><span class="sd">        Inicializa el controlador con los datos del usuario activo.</span>
+</span><span id="FicharControlador-30"><a href="#FicharControlador-30"><span class="linenos">30</span></a>
+</span><span id="FicharControlador-31"><a href="#FicharControlador-31"><span class="linenos">31</span></a><span class="sd">        Args:</span>
+</span><span id="FicharControlador-32"><a href="#FicharControlador-32"><span class="linenos">32</span></a><span class="sd">            usuario (dict): Diccionario con la información del usuario (incluye al menos &#39;id&#39;).</span>
+</span><span id="FicharControlador-33"><a href="#FicharControlador-33"><span class="linenos">33</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FicharControlador-34"><a href="#FicharControlador-34"><span class="linenos">34</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="FicharControlador-35"><a href="#FicharControlador-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">usuario</span> <span class="o">=</span> <span class="n">usuario</span>
+</span><span id="FicharControlador-36"><a href="#FicharControlador-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaFichar</span><span class="p">()</span>
+</span><span id="FicharControlador-37"><a href="#FicharControlador-37"><span class="linenos">37</span></a>
+</span><span id="FicharControlador-38"><a href="#FicharControlador-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_confirmar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fichar</span><span class="p">)</span>
+</span><span id="FicharControlador-39"><a href="#FicharControlador-39"><span class="linenos">39</span></a>
+</span><span id="FicharControlador-40"><a href="#FicharControlador-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FicharControlador-41"><a href="#FicharControlador-41"><span class="linenos">41</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FicharControlador-42"><a href="#FicharControlador-42"><span class="linenos">42</span></a><span class="sd">        Muestra la ventana de fichaje.</span>
+</span><span id="FicharControlador-43"><a href="#FicharControlador-43"><span class="linenos">43</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FicharControlador-44"><a href="#FicharControlador-44"><span class="linenos">44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="FicharControlador-45"><a href="#FicharControlador-45"><span class="linenos">45</span></a>
+</span><span id="FicharControlador-46"><a href="#FicharControlador-46"><span class="linenos">46</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">fichar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FicharControlador-47"><a href="#FicharControlador-47"><span class="linenos">47</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FicharControlador-48"><a href="#FicharControlador-48"><span class="linenos">48</span></a><span class="sd">        Ejecuta el fichaje tras validar el tipo seleccionado (Entrada o Salida).</span>
+</span><span id="FicharControlador-49"><a href="#FicharControlador-49"><span class="linenos">49</span></a>
+</span><span id="FicharControlador-50"><a href="#FicharControlador-50"><span class="linenos">50</span></a><span class="sd">        - Muestra error si no se ha seleccionado ninguna opción.</span>
+</span><span id="FicharControlador-51"><a href="#FicharControlador-51"><span class="linenos">51</span></a><span class="sd">        - Registra el fichaje en la base de datos.</span>
+</span><span id="FicharControlador-52"><a href="#FicharControlador-52"><span class="linenos">52</span></a><span class="sd">        - Muestra confirmación y cierra la ventana.</span>
+</span><span id="FicharControlador-53"><a href="#FicharControlador-53"><span class="linenos">53</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FicharControlador-54"><a href="#FicharControlador-54"><span class="linenos">54</span></a>        <span class="n">tipo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">obtener_tipo_fichaje</span><span class="p">()</span>
+</span><span id="FicharControlador-55"><a href="#FicharControlador-55"><span class="linenos">55</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">tipo</span><span class="p">:</span>
+</span><span id="FicharControlador-56"><a href="#FicharControlador-56"><span class="linenos">56</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">mostrar_error</span><span class="p">(</span>
+</span><span id="FicharControlador-57"><a href="#FicharControlador-57"><span class="linenos">57</span></a>                <span class="s2">&quot;Debes seleccionar &#39;Entrada&#39; o &#39;Salida&#39;&quot;</span><span class="p">)</span>
+</span><span id="FicharControlador-58"><a href="#FicharControlador-58"><span class="linenos">58</span></a>            <span class="k">return</span>
+</span><span id="FicharControlador-59"><a href="#FicharControlador-59"><span class="linenos">59</span></a>
+</span><span id="FicharControlador-60"><a href="#FicharControlador-60"><span class="linenos">60</span></a>        <span class="n">registrar_fichaje</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">usuario</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">tipo</span><span class="p">)</span>
+</span><span id="FicharControlador-61"><a href="#FicharControlador-61"><span class="linenos">61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">mostrar_confirmacion</span><span class="p">(</span>
+</span><span id="FicharControlador-62"><a href="#FicharControlador-62"><span class="linenos">62</span></a>            <span class="sa">f</span><span class="s2">&quot;Fichaje de </span><span class="si">{</span><span class="n">tipo</span><span class="si">}</span><span class="s2"> registrado correctamente.&quot;</span><span class="p">)</span>
+</span><span id="FicharControlador-63"><a href="#FicharControlador-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>QObject(self, /, parent: PySide6.QtCore.QObject | None = None, *, objectName: str | None = None) -> None</p>
+            <div class="docstring"><p>Controlador responsable de gestionar la lógica de la ventana de fichaje.</p>
+
+<p>Permite al usuario registrar un fichaje (Entrada o Salida) y notifica al finalizar.</p>
 </div>
 
 
@@ -156,18 +229,25 @@
 
     </div>
     <a class="headerlink" href="#FicharControlador.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FicharControlador.__init__-8"><a href="#FicharControlador.__init__-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usuario</span><span class="p">):</span>
-</span><span id="FicharControlador.__init__-9"><a href="#FicharControlador.__init__-9"><span class="linenos"> 9</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="FicharControlador.__init__-10"><a href="#FicharControlador.__init__-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">usuario</span> <span class="o">=</span> <span class="n">usuario</span>
-</span><span id="FicharControlador.__init__-11"><a href="#FicharControlador.__init__-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaFichar</span><span class="p">()</span>
-</span><span id="FicharControlador.__init__-12"><a href="#FicharControlador.__init__-12"><span class="linenos">12</span></a>
-</span><span id="FicharControlador.__init__-13"><a href="#FicharControlador.__init__-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_confirmar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fichar</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FicharControlador.__init__-27"><a href="#FicharControlador.__init__-27"><span class="linenos">27</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usuario</span><span class="p">):</span>
+</span><span id="FicharControlador.__init__-28"><a href="#FicharControlador.__init__-28"><span class="linenos">28</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FicharControlador.__init__-29"><a href="#FicharControlador.__init__-29"><span class="linenos">29</span></a><span class="sd">        Inicializa el controlador con los datos del usuario activo.</span>
+</span><span id="FicharControlador.__init__-30"><a href="#FicharControlador.__init__-30"><span class="linenos">30</span></a>
+</span><span id="FicharControlador.__init__-31"><a href="#FicharControlador.__init__-31"><span class="linenos">31</span></a><span class="sd">        Args:</span>
+</span><span id="FicharControlador.__init__-32"><a href="#FicharControlador.__init__-32"><span class="linenos">32</span></a><span class="sd">            usuario (dict): Diccionario con la información del usuario (incluye al menos &#39;id&#39;).</span>
+</span><span id="FicharControlador.__init__-33"><a href="#FicharControlador.__init__-33"><span class="linenos">33</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FicharControlador.__init__-34"><a href="#FicharControlador.__init__-34"><span class="linenos">34</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="FicharControlador.__init__-35"><a href="#FicharControlador.__init__-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">usuario</span> <span class="o">=</span> <span class="n">usuario</span>
+</span><span id="FicharControlador.__init__-36"><a href="#FicharControlador.__init__-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaFichar</span><span class="p">()</span>
+</span><span id="FicharControlador.__init__-37"><a href="#FicharControlador.__init__-37"><span class="linenos">37</span></a>
+</span><span id="FicharControlador.__init__-38"><a href="#FicharControlador.__init__-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_confirmar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fichar</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>__init__(self, /, parent: PySide6.QtCore.QObject | None = None, *, objectName: str | None = None) -> None</p>
+            <div class="docstring"><p>Inicializa el controlador con los datos del usuario activo.</p>
 
-<p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<p>Args:
+    usuario (dict): Diccionario con la información del usuario (incluye al menos 'id').</p>
 </div>
 
 
@@ -205,12 +285,17 @@
 
     </div>
     <a class="headerlink" href="#FicharControlador.mostrar"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FicharControlador.mostrar-15"><a href="#FicharControlador.mostrar-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FicharControlador.mostrar-16"><a href="#FicharControlador.mostrar-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FicharControlador.mostrar-40"><a href="#FicharControlador.mostrar-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FicharControlador.mostrar-41"><a href="#FicharControlador.mostrar-41"><span class="linenos">41</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FicharControlador.mostrar-42"><a href="#FicharControlador.mostrar-42"><span class="linenos">42</span></a><span class="sd">        Muestra la ventana de fichaje.</span>
+</span><span id="FicharControlador.mostrar-43"><a href="#FicharControlador.mostrar-43"><span class="linenos">43</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FicharControlador.mostrar-44"><a href="#FicharControlador.mostrar-44"><span class="linenos">44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Muestra la ventana de fichaje.</p>
+</div>
+
 
                             </div>
                             <div id="FicharControlador.fichar" class="classattr">
@@ -224,21 +309,36 @@
 
     </div>
     <a class="headerlink" href="#FicharControlador.fichar"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FicharControlador.fichar-18"><a href="#FicharControlador.fichar-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">fichar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FicharControlador.fichar-19"><a href="#FicharControlador.fichar-19"><span class="linenos">19</span></a>        <span class="n">tipo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">obtener_tipo_fichaje</span><span class="p">()</span>
-</span><span id="FicharControlador.fichar-20"><a href="#FicharControlador.fichar-20"><span class="linenos">20</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">tipo</span><span class="p">:</span>
-</span><span id="FicharControlador.fichar-21"><a href="#FicharControlador.fichar-21"><span class="linenos">21</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">mostrar_error</span><span class="p">(</span>
-</span><span id="FicharControlador.fichar-22"><a href="#FicharControlador.fichar-22"><span class="linenos">22</span></a>                <span class="s2">&quot;Debes seleccionar &#39;Entrada&#39; o &#39;Salida&#39;&quot;</span><span class="p">)</span>
-</span><span id="FicharControlador.fichar-23"><a href="#FicharControlador.fichar-23"><span class="linenos">23</span></a>            <span class="k">return</span>
-</span><span id="FicharControlador.fichar-24"><a href="#FicharControlador.fichar-24"><span class="linenos">24</span></a>
-</span><span id="FicharControlador.fichar-25"><a href="#FicharControlador.fichar-25"><span class="linenos">25</span></a>        <span class="n">registrar_fichaje</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">usuario</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">tipo</span><span class="p">)</span>
-</span><span id="FicharControlador.fichar-26"><a href="#FicharControlador.fichar-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">mostrar_confirmacion</span><span class="p">(</span>
-</span><span id="FicharControlador.fichar-27"><a href="#FicharControlador.fichar-27"><span class="linenos">27</span></a>            <span class="sa">f</span><span class="s2">&quot;Fichaje de </span><span class="si">{</span><span class="n">tipo</span><span class="si">}</span><span class="s2"> registrado correctamente.&quot;</span><span class="p">)</span>
-</span><span id="FicharControlador.fichar-28"><a href="#FicharControlador.fichar-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FicharControlador.fichar-46"><a href="#FicharControlador.fichar-46"><span class="linenos">46</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">fichar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FicharControlador.fichar-47"><a href="#FicharControlador.fichar-47"><span class="linenos">47</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FicharControlador.fichar-48"><a href="#FicharControlador.fichar-48"><span class="linenos">48</span></a><span class="sd">        Ejecuta el fichaje tras validar el tipo seleccionado (Entrada o Salida).</span>
+</span><span id="FicharControlador.fichar-49"><a href="#FicharControlador.fichar-49"><span class="linenos">49</span></a>
+</span><span id="FicharControlador.fichar-50"><a href="#FicharControlador.fichar-50"><span class="linenos">50</span></a><span class="sd">        - Muestra error si no se ha seleccionado ninguna opción.</span>
+</span><span id="FicharControlador.fichar-51"><a href="#FicharControlador.fichar-51"><span class="linenos">51</span></a><span class="sd">        - Registra el fichaje en la base de datos.</span>
+</span><span id="FicharControlador.fichar-52"><a href="#FicharControlador.fichar-52"><span class="linenos">52</span></a><span class="sd">        - Muestra confirmación y cierra la ventana.</span>
+</span><span id="FicharControlador.fichar-53"><a href="#FicharControlador.fichar-53"><span class="linenos">53</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FicharControlador.fichar-54"><a href="#FicharControlador.fichar-54"><span class="linenos">54</span></a>        <span class="n">tipo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">obtener_tipo_fichaje</span><span class="p">()</span>
+</span><span id="FicharControlador.fichar-55"><a href="#FicharControlador.fichar-55"><span class="linenos">55</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">tipo</span><span class="p">:</span>
+</span><span id="FicharControlador.fichar-56"><a href="#FicharControlador.fichar-56"><span class="linenos">56</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">mostrar_error</span><span class="p">(</span>
+</span><span id="FicharControlador.fichar-57"><a href="#FicharControlador.fichar-57"><span class="linenos">57</span></a>                <span class="s2">&quot;Debes seleccionar &#39;Entrada&#39; o &#39;Salida&#39;&quot;</span><span class="p">)</span>
+</span><span id="FicharControlador.fichar-58"><a href="#FicharControlador.fichar-58"><span class="linenos">58</span></a>            <span class="k">return</span>
+</span><span id="FicharControlador.fichar-59"><a href="#FicharControlador.fichar-59"><span class="linenos">59</span></a>
+</span><span id="FicharControlador.fichar-60"><a href="#FicharControlador.fichar-60"><span class="linenos">60</span></a>        <span class="n">registrar_fichaje</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">usuario</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">tipo</span><span class="p">)</span>
+</span><span id="FicharControlador.fichar-61"><a href="#FicharControlador.fichar-61"><span class="linenos">61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">mostrar_confirmacion</span><span class="p">(</span>
+</span><span id="FicharControlador.fichar-62"><a href="#FicharControlador.fichar-62"><span class="linenos">62</span></a>            <span class="sa">f</span><span class="s2">&quot;Fichaje de </span><span class="si">{</span><span class="n">tipo</span><span class="si">}</span><span class="s2"> registrado correctamente.&quot;</span><span class="p">)</span>
+</span><span id="FicharControlador.fichar-63"><a href="#FicharControlador.fichar-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Ejecuta el fichaje tras validar el tipo seleccionado (Entrada o Salida).</p>
+
+<ul>
+<li>Muestra error si no se ha seleccionado ninguna opción.</li>
+<li>Registra el fichaje en la base de datos.</li>
+<li>Muestra confirmación y cierra la ventana.</li>
+</ul>
+</div>
+
 
                             </div>
                             <div id="FicharControlador.staticMetaObject" class="classattr">

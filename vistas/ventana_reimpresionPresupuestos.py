@@ -3,6 +3,9 @@ Módulo para la ventana de reimpresión de presupuestos en formato PDF.
 
 Permite a los usuarios consultar, abrir, reenviar o imprimir documentos generados
 durante la creación de presupuestos, accediendo a ellos por carpetas organizadas por mes.
+
+La interfaz presenta una tabla con todos los archivos PDF detectados y herramientas
+para su gestión visual.
 """
 
 import os
@@ -18,20 +21,35 @@ from utilidades.rutas import obtener_ruta_absoluta
 
 class VentanaReimpresionPresupuestos(QWidget):
     """
-    Ventana para gestionar la reimpresión de presupuestos.
+    Ventana para gestionar la reimpresión de presupuestos en PDF.
 
-    Ofrece funcionalidades para abrir, reenviar e imprimir documentos PDF
-    generados como presupuestos en el sistema.
+    Esta interfaz ofrece funciones para:
+    - Mostrar todos los presupuestos disponibles.
+    - Reenviar presupuestos seleccionados.
+    - Imprimirlos o abrirlos con doble clic.
+    - Volver al menú anterior con un callback personalizado.
+
+    Atributos:
+        nombre_usuario (str): Nombre del usuario activo.
+        rol_usuario (str): Rol del usuario (ej. "Administrador").
+        volver_callback (function): Función ejecutada al pulsar el botón "Volver".
+        tabla (QTableWidget): Tabla que muestra los documentos PDF.
+        btn_enviar (QToolButton): Botón para enviar documentos.
+        btn_imprimir (QToolButton): Botón para imprimir documentos.
+        btn_volver (QToolButton): Botón para volver a la ventana anterior.
     """
 
     def __init__(self, nombre_usuario, rol_usuario, volver_callback, parent=None):
         """
-        Inicializa la ventana con los datos del usuario y el callback de retorno.
+        Constructor de la ventana de reimpresión.
 
-        :param nombre_usuario: Nombre del usuario que accede.
-        :param rol_usuario: Rol asignado al usuario.
-        :param volver_callback: Función a ejecutar al pulsar el botón "Volver".
-        :param parent: Widget padre (opcional).
+        Configura los estilos, estructura visual y carga automática de documentos PDF.
+
+        Args:
+            nombre_usuario (str): Nombre del usuario que accede a la ventana.
+            rol_usuario (str): Rol del usuario actual.
+            volver_callback (function): Función que se ejecuta al hacer clic en "Volver".
+            parent (QWidget, optional): Widget padre (usualmente None).
         """
         super().__init__(parent)
         self.nombre_usuario = nombre_usuario
@@ -51,6 +69,11 @@ class VentanaReimpresionPresupuestos(QWidget):
     def init_ui(self):
         """
         Configura y organiza todos los elementos gráficos de la ventana.
+
+        Incluye:
+        - Título superior con estilo.
+        - Tabla para mostrar los documentos PDF.
+        - Botones para enviar, imprimir o volver, con iconos integrados.
         """
         layout_principal = QVBoxLayout()
 
@@ -107,7 +130,8 @@ class VentanaReimpresionPresupuestos(QWidget):
         """
         Carga y lista todos los documentos PDF disponibles en la carpeta de presupuestos.
 
-        Agrupa los archivos por carpeta (que representa un mes) para mayor claridad.
+        Escanea la ruta `documentos/presupuestos` en busca de archivos PDF,
+        y los agrupa según el nombre de la carpeta contenedora, que representa el mes.
         """
         print("🔄 Cargando documentos de presupuestos...")
         ruta_base = obtener_ruta_absoluta("documentos/presupuestos")
@@ -134,10 +158,11 @@ class VentanaReimpresionPresupuestos(QWidget):
 
     def abrir_documento_seleccionado(self, fila, columna):
         """
-        Intenta abrir el archivo PDF de la fila seleccionada usando el navegador por defecto.
+        Abre el documento PDF correspondiente a la fila seleccionada al hacer doble clic.
 
-        :param fila: Índice de la fila seleccionada.
-        :param columna: Índice de la columna seleccionada (no se utiliza).
+        Args:
+            fila (int): Índice de la fila seleccionada.
+            columna (int): Índice de la columna (no utilizado, pero requerido por la señal).
         """
         ruta_item = self.tabla.item(fila, 2)
         if ruta_item:

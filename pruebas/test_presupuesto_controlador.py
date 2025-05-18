@@ -2,10 +2,12 @@
 """
 Tests para el controlador de presupuestos (`PresupuestoControlador`).
 
-Objetivos:
-- Verificar la inicialización del controlador.
-- Verificar el comportamiento cuando no hay recepciones disponibles.
-- Comprobar que se genera correctamente un PDF simulado.
+Este módulo valida el comportamiento del controlador encargado de gestionar
+la lógica relacionada con la creación de presupuestos, incluyendo:
+
+- La correcta inicialización y enlace con la vista.
+- La carga de recepciones disponibles para selección.
+- La generación del archivo PDF simulado a partir de datos de ejemplo.
 
 Autor: Cresnik  
 Proyecto: ReyBoxes - Gestión de Taller Mecánico
@@ -18,14 +20,34 @@ from controladores.presupuesto_controlador import PresupuestoControlador
 from vistas.ventana_presupuesto import VentanaPresupuesto
 
 
+@pytest.fixture(autouse=True)
+def evitar_mostrar_qt(monkeypatch):
+    """
+    Evita que las ventanas se muestren gráficamente durante los tests,
+    sobrescribiendo el método `show()` de QWidget.
+    """
+    monkeypatch.setattr("PySide6.QtWidgets.QWidget.show", lambda self: None)
+
+
 @pytest.fixture
 def mock_ventana(qtbot):
+    """
+    Crea una instancia simulada de `VentanaPresupuesto` para pruebas.
+
+    Se asegura de agregar la ventana al entorno de pruebas Qt y cerrarla correctamente al finalizar.
+    """
     ventana = VentanaPresupuesto()
     qtbot.addWidget(ventana)
-    return ventana
+    yield ventana
+    ventana.close()
+    ventana.deleteLater()
 
 
 def test_init_conecta_controlador_y_boton(mock_ventana):
+    """
+    Verifica que al inicializar el `PresupuestoControlador`, este se conecta
+    correctamente con la vista, asigna su referencia, y prepara las recepciones.
+    """
     with patch("controladores.presupuesto_controlador.obtener_recepciones_para_presupuesto", return_value=[]):
         controlador = PresupuestoControlador(mock_ventana)
         assert controlador.ventana == mock_ventana
@@ -34,6 +56,10 @@ def test_init_conecta_controlador_y_boton(mock_ventana):
 
 
 def test_cargar_recepciones_vacia(mock_ventana):
+    """
+    Comprueba el comportamiento del controlador cuando no hay recepciones disponibles:
+    se debe deshabilitar el combo y mostrar un mensaje indicativo.
+    """
     with patch("controladores.presupuesto_controlador.obtener_recepciones_para_presupuesto", return_value=[]):
         controlador = PresupuestoControlador(mock_ventana)
         assert mock_ventana.combo_recepciones.count() == 1
@@ -42,6 +68,13 @@ def test_cargar_recepciones_vacia(mock_ventana):
 
 
 def test_generar_pdf_presupuesto_crea_archivo(tmp_path):
+    """
+    Verifica que el método `generar_pdf_presupuesto` genera correctamente un archivo PDF
+    simulado a partir de los datos del presupuesto, utilizando mocks para evitar
+    el renderizado y la escritura real del archivo.
+
+    Se comprueba que el método `write_pdf` se ha llamado una vez y que la ruta termina en `.pdf`.
+    """
     datos = {
         "cliente": "Juan Pérez",
         "matricula": "1234ABC",

@@ -82,69 +82,132 @@
                     <h1 class="modulename">
 <a href="./../controladores.html">controladores</a><wbr>.restablecer_controlador    </h1>
 
-                
+                        <div class="docstring"><p>Controlador para la ventana de restablecimiento de contraseña.</p>
+
+<p>Gestiona:</p>
+
+<ul>
+<li>La verificación de coincidencia entre la nueva contraseña y su confirmación.</li>
+<li>La actualización de la contraseña en la base de datos.</li>
+<li>El cierre correcto de la ventana y retorno al login tras una acción exitosa o cancelación.</li>
+</ul>
+
+<p>Utiliza la vista <code>VentanaRestaurar</code> y la función <code>actualizar_contrasena</code> del modelo.</p>
+</div>
+
                         <input id="mod-restablecer_controlador-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-restablecer_controlador-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">Signal</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QApplication</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">vistas.ventana_restaurar</span><span class="w"> </span><span class="kn">import</span> <span class="n">VentanaRestaurar</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">modelos.login_consultas</span><span class="w"> </span><span class="kn">import</span> <span class="n">actualizar_contrasena</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">RestablecerControlador</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="n">senal_volver_login</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaRestaurar</span><span class="p">()</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="c1"># Conexiones de botones</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_volver</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volver</span><span class="p">)</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_guardar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restablecer</span><span class="p">)</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">closeEvent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cerrar_ventana</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">volver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar_ventana</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">restablecer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="n">nueva</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_nueva</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="n">repetir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_repetir</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">nueva</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">repetir</span><span class="p">:</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Campos incompletos&quot;</span><span class="p">,</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>                                <span class="s2">&quot;Por favor completa ambos campos.&quot;</span><span class="p">)</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>            <span class="k">return</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="k">if</span> <span class="n">nueva</span> <span class="o">!=</span> <span class="n">repetir</span><span class="p">:</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;No coinciden&quot;</span><span class="p">,</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>                                <span class="s2">&quot;Las contraseñas no coinciden.&quot;</span><span class="p">)</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>            <span class="k">return</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="k">if</span> <span class="n">actualizar_contrasena</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">nueva</span><span class="p">):</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Contraseña actualizada&quot;</span><span class="p">,</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>                                    <span class="s2">&quot;✅ Tu contraseña se ha actualizado correctamente.&quot;</span><span class="p">)</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>            <span class="c1"># Cerrar todas las ventanas abiertas</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>            <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">topLevelWidgets</span><span class="p">():</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>                <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>                                 <span class="s2">&quot;❌ No se pudo actualizar la contraseña.&quot;</span><span class="p">)</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">Controlador para la ventana de restablecimiento de contraseña.</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">Gestiona:</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">- La verificación de coincidencia entre la nueva contraseña y su confirmación.</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="sd">- La actualización de la contraseña en la base de datos.</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="sd">- El cierre correcto de la ventana y retorno al login tras una acción exitosa o cancelación.</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="sd">Utiliza la vista `VentanaRestaurar` y la función `actualizar_contrasena` del modelo.</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">Signal</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QApplication</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">vistas.ventana_restaurar</span><span class="w"> </span><span class="kn">import</span> <span class="n">VentanaRestaurar</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">modelos.login_consultas</span><span class="w"> </span><span class="kn">import</span> <span class="n">actualizar_contrasena</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="k">class</span><span class="w"> </span><span class="nc">RestablecerControlador</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">    Controlador que gestiona la lógica de la ventana para restablecer una contraseña.</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">    Señales:</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">        senal_volver_login: Emitida para regresar al login tras restablecer o cancelar.</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">    Métodos:</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">        mostrar(): Muestra la ventana.</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">        cerrar(): Cierra la ventana.</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">        volver(): Emite señal y cierra la ventana (botón &quot;Volver&quot;).</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">        cerrar_ventana(event): Emite señal y acepta el cierre por aspa.</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="sd">        restablecer(): Verifica y guarda la nueva contraseña, mostrando mensajes al usuario.</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>    <span class="n">senal_volver_login</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">        Inicializa la ventana y conecta sus botones con la lógica correspondiente.</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="sd">        Args:</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">            email (str): Correo del usuario que va a restablecer su contraseña.</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaRestaurar</span><span class="p">()</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>        <span class="c1"># Conexiones de botones</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_volver</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volver</span><span class="p">)</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_guardar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restablecer</span><span class="p">)</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">closeEvent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cerrar_ventana</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">        Muestra la ventana de restablecimiento de contraseña.</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">        Cierra la ventana actual.</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">volver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">        Acción del botón &quot;Volver&quot;: cierra la ventana y emite señal para regresar al login.</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar_ventana</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">        Maneja el cierre de la ventana desde el botón de cerrar (❌).</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">        Args:</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">            event (QCloseEvent): Evento de cierre.</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>        <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">restablecer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">        Verifica que los campos de nueva contraseña coincidan y no estén vacíos.</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">        Si todo es correcto, actualiza la contraseña usando el modelo.</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">        Muestra mensajes según el resultado y cierra todas las ventanas si tiene éxito.</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>        <span class="n">nueva</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_nueva</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="n">repetir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_repetir</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">nueva</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">repetir</span><span class="p">:</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Campos incompletos&quot;</span><span class="p">,</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>                                <span class="s2">&quot;Por favor completa ambos campos.&quot;</span><span class="p">)</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>            <span class="k">return</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="k">if</span> <span class="n">nueva</span> <span class="o">!=</span> <span class="n">repetir</span><span class="p">:</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;No coinciden&quot;</span><span class="p">,</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>                                <span class="s2">&quot;Las contraseñas no coinciden.&quot;</span><span class="p">)</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>            <span class="k">return</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>        <span class="k">if</span> <span class="n">actualizar_contrasena</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">nueva</span><span class="p">):</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Contraseña actualizada&quot;</span><span class="p">,</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>                                    <span class="s2">&quot;✅ Tu contraseña se ha actualizado correctamente.&quot;</span><span class="p">)</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>            <span class="c1"># Cerrar todas las ventanas abiertas</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>            <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">topLevelWidgets</span><span class="p">():</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>                <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>                                 <span class="s2">&quot;❌ No se pudo actualizar la contraseña.&quot;</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -160,61 +223,112 @@
 
     </div>
     <a class="headerlink" href="#RestablecerControlador"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador-9"><a href="#RestablecerControlador-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">RestablecerControlador</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-</span><span id="RestablecerControlador-10"><a href="#RestablecerControlador-10"><span class="linenos">10</span></a>    <span class="n">senal_volver_login</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
-</span><span id="RestablecerControlador-11"><a href="#RestablecerControlador-11"><span class="linenos">11</span></a>
-</span><span id="RestablecerControlador-12"><a href="#RestablecerControlador-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
-</span><span id="RestablecerControlador-13"><a href="#RestablecerControlador-13"><span class="linenos">13</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="RestablecerControlador-14"><a href="#RestablecerControlador-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
-</span><span id="RestablecerControlador-15"><a href="#RestablecerControlador-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaRestaurar</span><span class="p">()</span>
-</span><span id="RestablecerControlador-16"><a href="#RestablecerControlador-16"><span class="linenos">16</span></a>
-</span><span id="RestablecerControlador-17"><a href="#RestablecerControlador-17"><span class="linenos">17</span></a>        <span class="c1"># Conexiones de botones</span>
-</span><span id="RestablecerControlador-18"><a href="#RestablecerControlador-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_volver</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volver</span><span class="p">)</span>
-</span><span id="RestablecerControlador-19"><a href="#RestablecerControlador-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_guardar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restablecer</span><span class="p">)</span>
-</span><span id="RestablecerControlador-20"><a href="#RestablecerControlador-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">closeEvent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cerrar_ventana</span>
-</span><span id="RestablecerControlador-21"><a href="#RestablecerControlador-21"><span class="linenos">21</span></a>
-</span><span id="RestablecerControlador-22"><a href="#RestablecerControlador-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="RestablecerControlador-23"><a href="#RestablecerControlador-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</span><span id="RestablecerControlador-24"><a href="#RestablecerControlador-24"><span class="linenos">24</span></a>
-</span><span id="RestablecerControlador-25"><a href="#RestablecerControlador-25"><span class="linenos">25</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="RestablecerControlador-26"><a href="#RestablecerControlador-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="RestablecerControlador-27"><a href="#RestablecerControlador-27"><span class="linenos">27</span></a>
-</span><span id="RestablecerControlador-28"><a href="#RestablecerControlador-28"><span class="linenos">28</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">volver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="RestablecerControlador-29"><a href="#RestablecerControlador-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
-</span><span id="RestablecerControlador-30"><a href="#RestablecerControlador-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-</span><span id="RestablecerControlador-31"><a href="#RestablecerControlador-31"><span class="linenos">31</span></a>
-</span><span id="RestablecerControlador-32"><a href="#RestablecerControlador-32"><span class="linenos">32</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar_ventana</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-</span><span id="RestablecerControlador-33"><a href="#RestablecerControlador-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-</span><span id="RestablecerControlador-34"><a href="#RestablecerControlador-34"><span class="linenos">34</span></a>        <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
-</span><span id="RestablecerControlador-35"><a href="#RestablecerControlador-35"><span class="linenos">35</span></a>
-</span><span id="RestablecerControlador-36"><a href="#RestablecerControlador-36"><span class="linenos">36</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">restablecer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="RestablecerControlador-37"><a href="#RestablecerControlador-37"><span class="linenos">37</span></a>        <span class="n">nueva</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_nueva</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-</span><span id="RestablecerControlador-38"><a href="#RestablecerControlador-38"><span class="linenos">38</span></a>        <span class="n">repetir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_repetir</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-</span><span id="RestablecerControlador-39"><a href="#RestablecerControlador-39"><span class="linenos">39</span></a>
-</span><span id="RestablecerControlador-40"><a href="#RestablecerControlador-40"><span class="linenos">40</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">nueva</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">repetir</span><span class="p">:</span>
-</span><span id="RestablecerControlador-41"><a href="#RestablecerControlador-41"><span class="linenos">41</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Campos incompletos&quot;</span><span class="p">,</span>
-</span><span id="RestablecerControlador-42"><a href="#RestablecerControlador-42"><span class="linenos">42</span></a>                                <span class="s2">&quot;Por favor completa ambos campos.&quot;</span><span class="p">)</span>
-</span><span id="RestablecerControlador-43"><a href="#RestablecerControlador-43"><span class="linenos">43</span></a>            <span class="k">return</span>
-</span><span id="RestablecerControlador-44"><a href="#RestablecerControlador-44"><span class="linenos">44</span></a>
-</span><span id="RestablecerControlador-45"><a href="#RestablecerControlador-45"><span class="linenos">45</span></a>        <span class="k">if</span> <span class="n">nueva</span> <span class="o">!=</span> <span class="n">repetir</span><span class="p">:</span>
-</span><span id="RestablecerControlador-46"><a href="#RestablecerControlador-46"><span class="linenos">46</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;No coinciden&quot;</span><span class="p">,</span>
-</span><span id="RestablecerControlador-47"><a href="#RestablecerControlador-47"><span class="linenos">47</span></a>                                <span class="s2">&quot;Las contraseñas no coinciden.&quot;</span><span class="p">)</span>
-</span><span id="RestablecerControlador-48"><a href="#RestablecerControlador-48"><span class="linenos">48</span></a>            <span class="k">return</span>
-</span><span id="RestablecerControlador-49"><a href="#RestablecerControlador-49"><span class="linenos">49</span></a>
-</span><span id="RestablecerControlador-50"><a href="#RestablecerControlador-50"><span class="linenos">50</span></a>        <span class="k">if</span> <span class="n">actualizar_contrasena</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">nueva</span><span class="p">):</span>
-</span><span id="RestablecerControlador-51"><a href="#RestablecerControlador-51"><span class="linenos">51</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Contraseña actualizada&quot;</span><span class="p">,</span>
-</span><span id="RestablecerControlador-52"><a href="#RestablecerControlador-52"><span class="linenos">52</span></a>                                    <span class="s2">&quot;✅ Tu contraseña se ha actualizado correctamente.&quot;</span><span class="p">)</span>
-</span><span id="RestablecerControlador-53"><a href="#RestablecerControlador-53"><span class="linenos">53</span></a>            <span class="c1"># Cerrar todas las ventanas abiertas</span>
-</span><span id="RestablecerControlador-54"><a href="#RestablecerControlador-54"><span class="linenos">54</span></a>            <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">topLevelWidgets</span><span class="p">():</span>
-</span><span id="RestablecerControlador-55"><a href="#RestablecerControlador-55"><span class="linenos">55</span></a>                <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="RestablecerControlador-56"><a href="#RestablecerControlador-56"><span class="linenos">56</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-</span><span id="RestablecerControlador-57"><a href="#RestablecerControlador-57"><span class="linenos">57</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="RestablecerControlador-58"><a href="#RestablecerControlador-58"><span class="linenos">58</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
-</span><span id="RestablecerControlador-59"><a href="#RestablecerControlador-59"><span class="linenos">59</span></a>                                 <span class="s2">&quot;❌ No se pudo actualizar la contraseña.&quot;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador-19"><a href="#RestablecerControlador-19"><span class="linenos"> 19</span></a><span class="k">class</span><span class="w"> </span><span class="nc">RestablecerControlador</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+</span><span id="RestablecerControlador-20"><a href="#RestablecerControlador-20"><span class="linenos"> 20</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-21"><a href="#RestablecerControlador-21"><span class="linenos"> 21</span></a><span class="sd">    Controlador que gestiona la lógica de la ventana para restablecer una contraseña.</span>
+</span><span id="RestablecerControlador-22"><a href="#RestablecerControlador-22"><span class="linenos"> 22</span></a>
+</span><span id="RestablecerControlador-23"><a href="#RestablecerControlador-23"><span class="linenos"> 23</span></a><span class="sd">    Señales:</span>
+</span><span id="RestablecerControlador-24"><a href="#RestablecerControlador-24"><span class="linenos"> 24</span></a><span class="sd">        senal_volver_login: Emitida para regresar al login tras restablecer o cancelar.</span>
+</span><span id="RestablecerControlador-25"><a href="#RestablecerControlador-25"><span class="linenos"> 25</span></a>
+</span><span id="RestablecerControlador-26"><a href="#RestablecerControlador-26"><span class="linenos"> 26</span></a><span class="sd">    Métodos:</span>
+</span><span id="RestablecerControlador-27"><a href="#RestablecerControlador-27"><span class="linenos"> 27</span></a><span class="sd">        mostrar(): Muestra la ventana.</span>
+</span><span id="RestablecerControlador-28"><a href="#RestablecerControlador-28"><span class="linenos"> 28</span></a><span class="sd">        cerrar(): Cierra la ventana.</span>
+</span><span id="RestablecerControlador-29"><a href="#RestablecerControlador-29"><span class="linenos"> 29</span></a><span class="sd">        volver(): Emite señal y cierra la ventana (botón &quot;Volver&quot;).</span>
+</span><span id="RestablecerControlador-30"><a href="#RestablecerControlador-30"><span class="linenos"> 30</span></a><span class="sd">        cerrar_ventana(event): Emite señal y acepta el cierre por aspa.</span>
+</span><span id="RestablecerControlador-31"><a href="#RestablecerControlador-31"><span class="linenos"> 31</span></a><span class="sd">        restablecer(): Verifica y guarda la nueva contraseña, mostrando mensajes al usuario.</span>
+</span><span id="RestablecerControlador-32"><a href="#RestablecerControlador-32"><span class="linenos"> 32</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-33"><a href="#RestablecerControlador-33"><span class="linenos"> 33</span></a>
+</span><span id="RestablecerControlador-34"><a href="#RestablecerControlador-34"><span class="linenos"> 34</span></a>    <span class="n">senal_volver_login</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+</span><span id="RestablecerControlador-35"><a href="#RestablecerControlador-35"><span class="linenos"> 35</span></a>
+</span><span id="RestablecerControlador-36"><a href="#RestablecerControlador-36"><span class="linenos"> 36</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+</span><span id="RestablecerControlador-37"><a href="#RestablecerControlador-37"><span class="linenos"> 37</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-38"><a href="#RestablecerControlador-38"><span class="linenos"> 38</span></a><span class="sd">        Inicializa la ventana y conecta sus botones con la lógica correspondiente.</span>
+</span><span id="RestablecerControlador-39"><a href="#RestablecerControlador-39"><span class="linenos"> 39</span></a>
+</span><span id="RestablecerControlador-40"><a href="#RestablecerControlador-40"><span class="linenos"> 40</span></a><span class="sd">        Args:</span>
+</span><span id="RestablecerControlador-41"><a href="#RestablecerControlador-41"><span class="linenos"> 41</span></a><span class="sd">            email (str): Correo del usuario que va a restablecer su contraseña.</span>
+</span><span id="RestablecerControlador-42"><a href="#RestablecerControlador-42"><span class="linenos"> 42</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-43"><a href="#RestablecerControlador-43"><span class="linenos"> 43</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="RestablecerControlador-44"><a href="#RestablecerControlador-44"><span class="linenos"> 44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
+</span><span id="RestablecerControlador-45"><a href="#RestablecerControlador-45"><span class="linenos"> 45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaRestaurar</span><span class="p">()</span>
+</span><span id="RestablecerControlador-46"><a href="#RestablecerControlador-46"><span class="linenos"> 46</span></a>
+</span><span id="RestablecerControlador-47"><a href="#RestablecerControlador-47"><span class="linenos"> 47</span></a>        <span class="c1"># Conexiones de botones</span>
+</span><span id="RestablecerControlador-48"><a href="#RestablecerControlador-48"><span class="linenos"> 48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_volver</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volver</span><span class="p">)</span>
+</span><span id="RestablecerControlador-49"><a href="#RestablecerControlador-49"><span class="linenos"> 49</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_guardar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restablecer</span><span class="p">)</span>
+</span><span id="RestablecerControlador-50"><a href="#RestablecerControlador-50"><span class="linenos"> 50</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">closeEvent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cerrar_ventana</span>
+</span><span id="RestablecerControlador-51"><a href="#RestablecerControlador-51"><span class="linenos"> 51</span></a>
+</span><span id="RestablecerControlador-52"><a href="#RestablecerControlador-52"><span class="linenos"> 52</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="RestablecerControlador-53"><a href="#RestablecerControlador-53"><span class="linenos"> 53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-54"><a href="#RestablecerControlador-54"><span class="linenos"> 54</span></a><span class="sd">        Muestra la ventana de restablecimiento de contraseña.</span>
+</span><span id="RestablecerControlador-55"><a href="#RestablecerControlador-55"><span class="linenos"> 55</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-56"><a href="#RestablecerControlador-56"><span class="linenos"> 56</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span><span id="RestablecerControlador-57"><a href="#RestablecerControlador-57"><span class="linenos"> 57</span></a>
+</span><span id="RestablecerControlador-58"><a href="#RestablecerControlador-58"><span class="linenos"> 58</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="RestablecerControlador-59"><a href="#RestablecerControlador-59"><span class="linenos"> 59</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-60"><a href="#RestablecerControlador-60"><span class="linenos"> 60</span></a><span class="sd">        Cierra la ventana actual.</span>
+</span><span id="RestablecerControlador-61"><a href="#RestablecerControlador-61"><span class="linenos"> 61</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-62"><a href="#RestablecerControlador-62"><span class="linenos"> 62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="RestablecerControlador-63"><a href="#RestablecerControlador-63"><span class="linenos"> 63</span></a>
+</span><span id="RestablecerControlador-64"><a href="#RestablecerControlador-64"><span class="linenos"> 64</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">volver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="RestablecerControlador-65"><a href="#RestablecerControlador-65"><span class="linenos"> 65</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-66"><a href="#RestablecerControlador-66"><span class="linenos"> 66</span></a><span class="sd">        Acción del botón &quot;Volver&quot;: cierra la ventana y emite señal para regresar al login.</span>
+</span><span id="RestablecerControlador-67"><a href="#RestablecerControlador-67"><span class="linenos"> 67</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-68"><a href="#RestablecerControlador-68"><span class="linenos"> 68</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
+</span><span id="RestablecerControlador-69"><a href="#RestablecerControlador-69"><span class="linenos"> 69</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+</span><span id="RestablecerControlador-70"><a href="#RestablecerControlador-70"><span class="linenos"> 70</span></a>
+</span><span id="RestablecerControlador-71"><a href="#RestablecerControlador-71"><span class="linenos"> 71</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar_ventana</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+</span><span id="RestablecerControlador-72"><a href="#RestablecerControlador-72"><span class="linenos"> 72</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-73"><a href="#RestablecerControlador-73"><span class="linenos"> 73</span></a><span class="sd">        Maneja el cierre de la ventana desde el botón de cerrar (❌).</span>
+</span><span id="RestablecerControlador-74"><a href="#RestablecerControlador-74"><span class="linenos"> 74</span></a>
+</span><span id="RestablecerControlador-75"><a href="#RestablecerControlador-75"><span class="linenos"> 75</span></a><span class="sd">        Args:</span>
+</span><span id="RestablecerControlador-76"><a href="#RestablecerControlador-76"><span class="linenos"> 76</span></a><span class="sd">            event (QCloseEvent): Evento de cierre.</span>
+</span><span id="RestablecerControlador-77"><a href="#RestablecerControlador-77"><span class="linenos"> 77</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-78"><a href="#RestablecerControlador-78"><span class="linenos"> 78</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+</span><span id="RestablecerControlador-79"><a href="#RestablecerControlador-79"><span class="linenos"> 79</span></a>        <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+</span><span id="RestablecerControlador-80"><a href="#RestablecerControlador-80"><span class="linenos"> 80</span></a>
+</span><span id="RestablecerControlador-81"><a href="#RestablecerControlador-81"><span class="linenos"> 81</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">restablecer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="RestablecerControlador-82"><a href="#RestablecerControlador-82"><span class="linenos"> 82</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-83"><a href="#RestablecerControlador-83"><span class="linenos"> 83</span></a><span class="sd">        Verifica que los campos de nueva contraseña coincidan y no estén vacíos.</span>
+</span><span id="RestablecerControlador-84"><a href="#RestablecerControlador-84"><span class="linenos"> 84</span></a>
+</span><span id="RestablecerControlador-85"><a href="#RestablecerControlador-85"><span class="linenos"> 85</span></a><span class="sd">        Si todo es correcto, actualiza la contraseña usando el modelo.</span>
+</span><span id="RestablecerControlador-86"><a href="#RestablecerControlador-86"><span class="linenos"> 86</span></a><span class="sd">        Muestra mensajes según el resultado y cierra todas las ventanas si tiene éxito.</span>
+</span><span id="RestablecerControlador-87"><a href="#RestablecerControlador-87"><span class="linenos"> 87</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador-88"><a href="#RestablecerControlador-88"><span class="linenos"> 88</span></a>        <span class="n">nueva</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_nueva</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span id="RestablecerControlador-89"><a href="#RestablecerControlador-89"><span class="linenos"> 89</span></a>        <span class="n">repetir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_repetir</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span id="RestablecerControlador-90"><a href="#RestablecerControlador-90"><span class="linenos"> 90</span></a>
+</span><span id="RestablecerControlador-91"><a href="#RestablecerControlador-91"><span class="linenos"> 91</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">nueva</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">repetir</span><span class="p">:</span>
+</span><span id="RestablecerControlador-92"><a href="#RestablecerControlador-92"><span class="linenos"> 92</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Campos incompletos&quot;</span><span class="p">,</span>
+</span><span id="RestablecerControlador-93"><a href="#RestablecerControlador-93"><span class="linenos"> 93</span></a>                                <span class="s2">&quot;Por favor completa ambos campos.&quot;</span><span class="p">)</span>
+</span><span id="RestablecerControlador-94"><a href="#RestablecerControlador-94"><span class="linenos"> 94</span></a>            <span class="k">return</span>
+</span><span id="RestablecerControlador-95"><a href="#RestablecerControlador-95"><span class="linenos"> 95</span></a>
+</span><span id="RestablecerControlador-96"><a href="#RestablecerControlador-96"><span class="linenos"> 96</span></a>        <span class="k">if</span> <span class="n">nueva</span> <span class="o">!=</span> <span class="n">repetir</span><span class="p">:</span>
+</span><span id="RestablecerControlador-97"><a href="#RestablecerControlador-97"><span class="linenos"> 97</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;No coinciden&quot;</span><span class="p">,</span>
+</span><span id="RestablecerControlador-98"><a href="#RestablecerControlador-98"><span class="linenos"> 98</span></a>                                <span class="s2">&quot;Las contraseñas no coinciden.&quot;</span><span class="p">)</span>
+</span><span id="RestablecerControlador-99"><a href="#RestablecerControlador-99"><span class="linenos"> 99</span></a>            <span class="k">return</span>
+</span><span id="RestablecerControlador-100"><a href="#RestablecerControlador-100"><span class="linenos">100</span></a>
+</span><span id="RestablecerControlador-101"><a href="#RestablecerControlador-101"><span class="linenos">101</span></a>        <span class="k">if</span> <span class="n">actualizar_contrasena</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">nueva</span><span class="p">):</span>
+</span><span id="RestablecerControlador-102"><a href="#RestablecerControlador-102"><span class="linenos">102</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Contraseña actualizada&quot;</span><span class="p">,</span>
+</span><span id="RestablecerControlador-103"><a href="#RestablecerControlador-103"><span class="linenos">103</span></a>                                    <span class="s2">&quot;✅ Tu contraseña se ha actualizado correctamente.&quot;</span><span class="p">)</span>
+</span><span id="RestablecerControlador-104"><a href="#RestablecerControlador-104"><span class="linenos">104</span></a>            <span class="c1"># Cerrar todas las ventanas abiertas</span>
+</span><span id="RestablecerControlador-105"><a href="#RestablecerControlador-105"><span class="linenos">105</span></a>            <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">topLevelWidgets</span><span class="p">():</span>
+</span><span id="RestablecerControlador-106"><a href="#RestablecerControlador-106"><span class="linenos">106</span></a>                <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="RestablecerControlador-107"><a href="#RestablecerControlador-107"><span class="linenos">107</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+</span><span id="RestablecerControlador-108"><a href="#RestablecerControlador-108"><span class="linenos">108</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="RestablecerControlador-109"><a href="#RestablecerControlador-109"><span class="linenos">109</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
+</span><span id="RestablecerControlador-110"><a href="#RestablecerControlador-110"><span class="linenos">110</span></a>                                 <span class="s2">&quot;❌ No se pudo actualizar la contraseña.&quot;</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>QObject(self, /, parent: PySide6.QtCore.QObject | None = None, *, objectName: str | None = None) -> None</p>
+            <div class="docstring"><p>Controlador que gestiona la lógica de la ventana para restablecer una contraseña.</p>
+
+<p>Señales:
+    senal_volver_login: Emitida para regresar al login tras restablecer o cancelar.</p>
+
+<p>Métodos:
+    mostrar(): Muestra la ventana.
+    cerrar(): Cierra la ventana.
+    volver(): Emite señal y cierra la ventana (botón "Volver").
+    cerrar_ventana(event): Emite señal y acepta el cierre por aspa.
+    restablecer(): Verifica y guarda la nueva contraseña, mostrando mensajes al usuario.</p>
 </div>
 
 
@@ -228,21 +342,28 @@
 
     </div>
     <a class="headerlink" href="#RestablecerControlador.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador.__init__-12"><a href="#RestablecerControlador.__init__-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
-</span><span id="RestablecerControlador.__init__-13"><a href="#RestablecerControlador.__init__-13"><span class="linenos">13</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="RestablecerControlador.__init__-14"><a href="#RestablecerControlador.__init__-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
-</span><span id="RestablecerControlador.__init__-15"><a href="#RestablecerControlador.__init__-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaRestaurar</span><span class="p">()</span>
-</span><span id="RestablecerControlador.__init__-16"><a href="#RestablecerControlador.__init__-16"><span class="linenos">16</span></a>
-</span><span id="RestablecerControlador.__init__-17"><a href="#RestablecerControlador.__init__-17"><span class="linenos">17</span></a>        <span class="c1"># Conexiones de botones</span>
-</span><span id="RestablecerControlador.__init__-18"><a href="#RestablecerControlador.__init__-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_volver</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volver</span><span class="p">)</span>
-</span><span id="RestablecerControlador.__init__-19"><a href="#RestablecerControlador.__init__-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_guardar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restablecer</span><span class="p">)</span>
-</span><span id="RestablecerControlador.__init__-20"><a href="#RestablecerControlador.__init__-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">closeEvent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cerrar_ventana</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador.__init__-36"><a href="#RestablecerControlador.__init__-36"><span class="linenos">36</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">):</span>
+</span><span id="RestablecerControlador.__init__-37"><a href="#RestablecerControlador.__init__-37"><span class="linenos">37</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador.__init__-38"><a href="#RestablecerControlador.__init__-38"><span class="linenos">38</span></a><span class="sd">        Inicializa la ventana y conecta sus botones con la lógica correspondiente.</span>
+</span><span id="RestablecerControlador.__init__-39"><a href="#RestablecerControlador.__init__-39"><span class="linenos">39</span></a>
+</span><span id="RestablecerControlador.__init__-40"><a href="#RestablecerControlador.__init__-40"><span class="linenos">40</span></a><span class="sd">        Args:</span>
+</span><span id="RestablecerControlador.__init__-41"><a href="#RestablecerControlador.__init__-41"><span class="linenos">41</span></a><span class="sd">            email (str): Correo del usuario que va a restablecer su contraseña.</span>
+</span><span id="RestablecerControlador.__init__-42"><a href="#RestablecerControlador.__init__-42"><span class="linenos">42</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador.__init__-43"><a href="#RestablecerControlador.__init__-43"><span class="linenos">43</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="RestablecerControlador.__init__-44"><a href="#RestablecerControlador.__init__-44"><span class="linenos">44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">email</span>
+</span><span id="RestablecerControlador.__init__-45"><a href="#RestablecerControlador.__init__-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span> <span class="o">=</span> <span class="n">VentanaRestaurar</span><span class="p">()</span>
+</span><span id="RestablecerControlador.__init__-46"><a href="#RestablecerControlador.__init__-46"><span class="linenos">46</span></a>
+</span><span id="RestablecerControlador.__init__-47"><a href="#RestablecerControlador.__init__-47"><span class="linenos">47</span></a>        <span class="c1"># Conexiones de botones</span>
+</span><span id="RestablecerControlador.__init__-48"><a href="#RestablecerControlador.__init__-48"><span class="linenos">48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_volver</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volver</span><span class="p">)</span>
+</span><span id="RestablecerControlador.__init__-49"><a href="#RestablecerControlador.__init__-49"><span class="linenos">49</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">btn_guardar</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restablecer</span><span class="p">)</span>
+</span><span id="RestablecerControlador.__init__-50"><a href="#RestablecerControlador.__init__-50"><span class="linenos">50</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">closeEvent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cerrar_ventana</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>__init__(self, /, parent: PySide6.QtCore.QObject | None = None, *, objectName: str | None = None) -> None</p>
+            <div class="docstring"><p>Inicializa la ventana y conecta sus botones con la lógica correspondiente.</p>
 
-<p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<p>Args:
+    email (str): Correo del usuario que va a restablecer su contraseña.</p>
 </div>
 
 
@@ -257,7 +378,9 @@
     </div>
     <a class="headerlink" href="#RestablecerControlador.senal_volver_login"></a>
     
-    
+            <div class="docstring"><p>The type of the None singleton.</p>
+</div>
+
 
                             </div>
                             <div id="RestablecerControlador.email" class="classattr">
@@ -293,12 +416,17 @@
 
     </div>
     <a class="headerlink" href="#RestablecerControlador.mostrar"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador.mostrar-22"><a href="#RestablecerControlador.mostrar-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="RestablecerControlador.mostrar-23"><a href="#RestablecerControlador.mostrar-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador.mostrar-52"><a href="#RestablecerControlador.mostrar-52"><span class="linenos">52</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mostrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="RestablecerControlador.mostrar-53"><a href="#RestablecerControlador.mostrar-53"><span class="linenos">53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador.mostrar-54"><a href="#RestablecerControlador.mostrar-54"><span class="linenos">54</span></a><span class="sd">        Muestra la ventana de restablecimiento de contraseña.</span>
+</span><span id="RestablecerControlador.mostrar-55"><a href="#RestablecerControlador.mostrar-55"><span class="linenos">55</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador.mostrar-56"><a href="#RestablecerControlador.mostrar-56"><span class="linenos">56</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Muestra la ventana de restablecimiento de contraseña.</p>
+</div>
+
 
                             </div>
                             <div id="RestablecerControlador.cerrar" class="classattr">
@@ -312,12 +440,17 @@
 
     </div>
     <a class="headerlink" href="#RestablecerControlador.cerrar"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador.cerrar-25"><a href="#RestablecerControlador.cerrar-25"><span class="linenos">25</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="RestablecerControlador.cerrar-26"><a href="#RestablecerControlador.cerrar-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador.cerrar-58"><a href="#RestablecerControlador.cerrar-58"><span class="linenos">58</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="RestablecerControlador.cerrar-59"><a href="#RestablecerControlador.cerrar-59"><span class="linenos">59</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador.cerrar-60"><a href="#RestablecerControlador.cerrar-60"><span class="linenos">60</span></a><span class="sd">        Cierra la ventana actual.</span>
+</span><span id="RestablecerControlador.cerrar-61"><a href="#RestablecerControlador.cerrar-61"><span class="linenos">61</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador.cerrar-62"><a href="#RestablecerControlador.cerrar-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Cierra la ventana actual.</p>
+</div>
+
 
                             </div>
                             <div id="RestablecerControlador.volver" class="classattr">
@@ -331,13 +464,18 @@
 
     </div>
     <a class="headerlink" href="#RestablecerControlador.volver"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador.volver-28"><a href="#RestablecerControlador.volver-28"><span class="linenos">28</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">volver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="RestablecerControlador.volver-29"><a href="#RestablecerControlador.volver-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
-</span><span id="RestablecerControlador.volver-30"><a href="#RestablecerControlador.volver-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador.volver-64"><a href="#RestablecerControlador.volver-64"><span class="linenos">64</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">volver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="RestablecerControlador.volver-65"><a href="#RestablecerControlador.volver-65"><span class="linenos">65</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador.volver-66"><a href="#RestablecerControlador.volver-66"><span class="linenos">66</span></a><span class="sd">        Acción del botón &quot;Volver&quot;: cierra la ventana y emite señal para regresar al login.</span>
+</span><span id="RestablecerControlador.volver-67"><a href="#RestablecerControlador.volver-67"><span class="linenos">67</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador.volver-68"><a href="#RestablecerControlador.volver-68"><span class="linenos">68</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cerrar</span><span class="p">()</span>
+</span><span id="RestablecerControlador.volver-69"><a href="#RestablecerControlador.volver-69"><span class="linenos">69</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Acción del botón "Volver": cierra la ventana y emite señal para regresar al login.</p>
+</div>
+
 
                             </div>
                             <div id="RestablecerControlador.cerrar_ventana" class="classattr">
@@ -351,13 +489,24 @@
 
     </div>
     <a class="headerlink" href="#RestablecerControlador.cerrar_ventana"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador.cerrar_ventana-32"><a href="#RestablecerControlador.cerrar_ventana-32"><span class="linenos">32</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar_ventana</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-</span><span id="RestablecerControlador.cerrar_ventana-33"><a href="#RestablecerControlador.cerrar_ventana-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-</span><span id="RestablecerControlador.cerrar_ventana-34"><a href="#RestablecerControlador.cerrar_ventana-34"><span class="linenos">34</span></a>        <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador.cerrar_ventana-71"><a href="#RestablecerControlador.cerrar_ventana-71"><span class="linenos">71</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cerrar_ventana</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+</span><span id="RestablecerControlador.cerrar_ventana-72"><a href="#RestablecerControlador.cerrar_ventana-72"><span class="linenos">72</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador.cerrar_ventana-73"><a href="#RestablecerControlador.cerrar_ventana-73"><span class="linenos">73</span></a><span class="sd">        Maneja el cierre de la ventana desde el botón de cerrar (❌).</span>
+</span><span id="RestablecerControlador.cerrar_ventana-74"><a href="#RestablecerControlador.cerrar_ventana-74"><span class="linenos">74</span></a>
+</span><span id="RestablecerControlador.cerrar_ventana-75"><a href="#RestablecerControlador.cerrar_ventana-75"><span class="linenos">75</span></a><span class="sd">        Args:</span>
+</span><span id="RestablecerControlador.cerrar_ventana-76"><a href="#RestablecerControlador.cerrar_ventana-76"><span class="linenos">76</span></a><span class="sd">            event (QCloseEvent): Evento de cierre.</span>
+</span><span id="RestablecerControlador.cerrar_ventana-77"><a href="#RestablecerControlador.cerrar_ventana-77"><span class="linenos">77</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador.cerrar_ventana-78"><a href="#RestablecerControlador.cerrar_ventana-78"><span class="linenos">78</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+</span><span id="RestablecerControlador.cerrar_ventana-79"><a href="#RestablecerControlador.cerrar_ventana-79"><span class="linenos">79</span></a>        <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Maneja el cierre de la ventana desde el botón de cerrar (❌).</p>
+
+<p>Args:
+    event (QCloseEvent): Evento de cierre.</p>
+</div>
+
 
                             </div>
                             <div id="RestablecerControlador.restablecer" class="classattr">
@@ -371,34 +520,45 @@
 
     </div>
     <a class="headerlink" href="#RestablecerControlador.restablecer"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador.restablecer-36"><a href="#RestablecerControlador.restablecer-36"><span class="linenos">36</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">restablecer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="RestablecerControlador.restablecer-37"><a href="#RestablecerControlador.restablecer-37"><span class="linenos">37</span></a>        <span class="n">nueva</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_nueva</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-</span><span id="RestablecerControlador.restablecer-38"><a href="#RestablecerControlador.restablecer-38"><span class="linenos">38</span></a>        <span class="n">repetir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_repetir</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-</span><span id="RestablecerControlador.restablecer-39"><a href="#RestablecerControlador.restablecer-39"><span class="linenos">39</span></a>
-</span><span id="RestablecerControlador.restablecer-40"><a href="#RestablecerControlador.restablecer-40"><span class="linenos">40</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">nueva</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">repetir</span><span class="p">:</span>
-</span><span id="RestablecerControlador.restablecer-41"><a href="#RestablecerControlador.restablecer-41"><span class="linenos">41</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Campos incompletos&quot;</span><span class="p">,</span>
-</span><span id="RestablecerControlador.restablecer-42"><a href="#RestablecerControlador.restablecer-42"><span class="linenos">42</span></a>                                <span class="s2">&quot;Por favor completa ambos campos.&quot;</span><span class="p">)</span>
-</span><span id="RestablecerControlador.restablecer-43"><a href="#RestablecerControlador.restablecer-43"><span class="linenos">43</span></a>            <span class="k">return</span>
-</span><span id="RestablecerControlador.restablecer-44"><a href="#RestablecerControlador.restablecer-44"><span class="linenos">44</span></a>
-</span><span id="RestablecerControlador.restablecer-45"><a href="#RestablecerControlador.restablecer-45"><span class="linenos">45</span></a>        <span class="k">if</span> <span class="n">nueva</span> <span class="o">!=</span> <span class="n">repetir</span><span class="p">:</span>
-</span><span id="RestablecerControlador.restablecer-46"><a href="#RestablecerControlador.restablecer-46"><span class="linenos">46</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;No coinciden&quot;</span><span class="p">,</span>
-</span><span id="RestablecerControlador.restablecer-47"><a href="#RestablecerControlador.restablecer-47"><span class="linenos">47</span></a>                                <span class="s2">&quot;Las contraseñas no coinciden.&quot;</span><span class="p">)</span>
-</span><span id="RestablecerControlador.restablecer-48"><a href="#RestablecerControlador.restablecer-48"><span class="linenos">48</span></a>            <span class="k">return</span>
-</span><span id="RestablecerControlador.restablecer-49"><a href="#RestablecerControlador.restablecer-49"><span class="linenos">49</span></a>
-</span><span id="RestablecerControlador.restablecer-50"><a href="#RestablecerControlador.restablecer-50"><span class="linenos">50</span></a>        <span class="k">if</span> <span class="n">actualizar_contrasena</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">nueva</span><span class="p">):</span>
-</span><span id="RestablecerControlador.restablecer-51"><a href="#RestablecerControlador.restablecer-51"><span class="linenos">51</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Contraseña actualizada&quot;</span><span class="p">,</span>
-</span><span id="RestablecerControlador.restablecer-52"><a href="#RestablecerControlador.restablecer-52"><span class="linenos">52</span></a>                                    <span class="s2">&quot;✅ Tu contraseña se ha actualizado correctamente.&quot;</span><span class="p">)</span>
-</span><span id="RestablecerControlador.restablecer-53"><a href="#RestablecerControlador.restablecer-53"><span class="linenos">53</span></a>            <span class="c1"># Cerrar todas las ventanas abiertas</span>
-</span><span id="RestablecerControlador.restablecer-54"><a href="#RestablecerControlador.restablecer-54"><span class="linenos">54</span></a>            <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">topLevelWidgets</span><span class="p">():</span>
-</span><span id="RestablecerControlador.restablecer-55"><a href="#RestablecerControlador.restablecer-55"><span class="linenos">55</span></a>                <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="RestablecerControlador.restablecer-56"><a href="#RestablecerControlador.restablecer-56"><span class="linenos">56</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-</span><span id="RestablecerControlador.restablecer-57"><a href="#RestablecerControlador.restablecer-57"><span class="linenos">57</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="RestablecerControlador.restablecer-58"><a href="#RestablecerControlador.restablecer-58"><span class="linenos">58</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
-</span><span id="RestablecerControlador.restablecer-59"><a href="#RestablecerControlador.restablecer-59"><span class="linenos">59</span></a>                                 <span class="s2">&quot;❌ No se pudo actualizar la contraseña.&quot;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RestablecerControlador.restablecer-81"><a href="#RestablecerControlador.restablecer-81"><span class="linenos"> 81</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">restablecer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="RestablecerControlador.restablecer-82"><a href="#RestablecerControlador.restablecer-82"><span class="linenos"> 82</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador.restablecer-83"><a href="#RestablecerControlador.restablecer-83"><span class="linenos"> 83</span></a><span class="sd">        Verifica que los campos de nueva contraseña coincidan y no estén vacíos.</span>
+</span><span id="RestablecerControlador.restablecer-84"><a href="#RestablecerControlador.restablecer-84"><span class="linenos"> 84</span></a>
+</span><span id="RestablecerControlador.restablecer-85"><a href="#RestablecerControlador.restablecer-85"><span class="linenos"> 85</span></a><span class="sd">        Si todo es correcto, actualiza la contraseña usando el modelo.</span>
+</span><span id="RestablecerControlador.restablecer-86"><a href="#RestablecerControlador.restablecer-86"><span class="linenos"> 86</span></a><span class="sd">        Muestra mensajes según el resultado y cierra todas las ventanas si tiene éxito.</span>
+</span><span id="RestablecerControlador.restablecer-87"><a href="#RestablecerControlador.restablecer-87"><span class="linenos"> 87</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RestablecerControlador.restablecer-88"><a href="#RestablecerControlador.restablecer-88"><span class="linenos"> 88</span></a>        <span class="n">nueva</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_nueva</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span id="RestablecerControlador.restablecer-89"><a href="#RestablecerControlador.restablecer-89"><span class="linenos"> 89</span></a>        <span class="n">repetir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="o">.</span><span class="n">input_repetir</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span id="RestablecerControlador.restablecer-90"><a href="#RestablecerControlador.restablecer-90"><span class="linenos"> 90</span></a>
+</span><span id="RestablecerControlador.restablecer-91"><a href="#RestablecerControlador.restablecer-91"><span class="linenos"> 91</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">nueva</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">repetir</span><span class="p">:</span>
+</span><span id="RestablecerControlador.restablecer-92"><a href="#RestablecerControlador.restablecer-92"><span class="linenos"> 92</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Campos incompletos&quot;</span><span class="p">,</span>
+</span><span id="RestablecerControlador.restablecer-93"><a href="#RestablecerControlador.restablecer-93"><span class="linenos"> 93</span></a>                                <span class="s2">&quot;Por favor completa ambos campos.&quot;</span><span class="p">)</span>
+</span><span id="RestablecerControlador.restablecer-94"><a href="#RestablecerControlador.restablecer-94"><span class="linenos"> 94</span></a>            <span class="k">return</span>
+</span><span id="RestablecerControlador.restablecer-95"><a href="#RestablecerControlador.restablecer-95"><span class="linenos"> 95</span></a>
+</span><span id="RestablecerControlador.restablecer-96"><a href="#RestablecerControlador.restablecer-96"><span class="linenos"> 96</span></a>        <span class="k">if</span> <span class="n">nueva</span> <span class="o">!=</span> <span class="n">repetir</span><span class="p">:</span>
+</span><span id="RestablecerControlador.restablecer-97"><a href="#RestablecerControlador.restablecer-97"><span class="linenos"> 97</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;No coinciden&quot;</span><span class="p">,</span>
+</span><span id="RestablecerControlador.restablecer-98"><a href="#RestablecerControlador.restablecer-98"><span class="linenos"> 98</span></a>                                <span class="s2">&quot;Las contraseñas no coinciden.&quot;</span><span class="p">)</span>
+</span><span id="RestablecerControlador.restablecer-99"><a href="#RestablecerControlador.restablecer-99"><span class="linenos"> 99</span></a>            <span class="k">return</span>
+</span><span id="RestablecerControlador.restablecer-100"><a href="#RestablecerControlador.restablecer-100"><span class="linenos">100</span></a>
+</span><span id="RestablecerControlador.restablecer-101"><a href="#RestablecerControlador.restablecer-101"><span class="linenos">101</span></a>        <span class="k">if</span> <span class="n">actualizar_contrasena</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">nueva</span><span class="p">):</span>
+</span><span id="RestablecerControlador.restablecer-102"><a href="#RestablecerControlador.restablecer-102"><span class="linenos">102</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Contraseña actualizada&quot;</span><span class="p">,</span>
+</span><span id="RestablecerControlador.restablecer-103"><a href="#RestablecerControlador.restablecer-103"><span class="linenos">103</span></a>                                    <span class="s2">&quot;✅ Tu contraseña se ha actualizado correctamente.&quot;</span><span class="p">)</span>
+</span><span id="RestablecerControlador.restablecer-104"><a href="#RestablecerControlador.restablecer-104"><span class="linenos">104</span></a>            <span class="c1"># Cerrar todas las ventanas abiertas</span>
+</span><span id="RestablecerControlador.restablecer-105"><a href="#RestablecerControlador.restablecer-105"><span class="linenos">105</span></a>            <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">topLevelWidgets</span><span class="p">():</span>
+</span><span id="RestablecerControlador.restablecer-106"><a href="#RestablecerControlador.restablecer-106"><span class="linenos">106</span></a>                <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="RestablecerControlador.restablecer-107"><a href="#RestablecerControlador.restablecer-107"><span class="linenos">107</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">senal_volver_login</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+</span><span id="RestablecerControlador.restablecer-108"><a href="#RestablecerControlador.restablecer-108"><span class="linenos">108</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="RestablecerControlador.restablecer-109"><a href="#RestablecerControlador.restablecer-109"><span class="linenos">109</span></a>            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ventana</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
+</span><span id="RestablecerControlador.restablecer-110"><a href="#RestablecerControlador.restablecer-110"><span class="linenos">110</span></a>                                 <span class="s2">&quot;❌ No se pudo actualizar la contraseña.&quot;</span><span class="p">)</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Verifica que los campos de nueva contraseña coincidan y no estén vacíos.</p>
+
+<p>Si todo es correcto, actualiza la contraseña usando el modelo.
+Muestra mensajes según el resultado y cierra todas las ventanas si tiene éxito.</p>
+</div>
+
 
                             </div>
                             <div id="RestablecerControlador.staticMetaObject" class="classattr">

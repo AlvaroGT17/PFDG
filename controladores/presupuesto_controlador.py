@@ -1,3 +1,17 @@
+"""
+Controlador para la gestión y generación de presupuestos dentro del sistema de taller.
+
+Este módulo permite:
+- Cargar recepciones disponibles para presupuestar.
+- Registrar presupuestos asociados a una recepción.
+- Generar documentos PDF estilizados con tareas y coste total.
+- Enviar presupuestos por correo electrónico.
+- Imprimir presupuestos directamente desde la aplicación.
+
+Requiere:
+- `jinja2`, `weasyprint` para la generación de PDFs.
+- `PySide6` para interacción con la interfaz gráfica.
+"""
 from modelos.presupuesto_consultas import (
     obtener_recepciones_para_presupuesto,
     insertar_presupuesto,
@@ -14,7 +28,23 @@ from calendar import month_name
 
 
 class PresupuestoControlador:
+    """
+    Controlador principal para la gestión de presupuestos.
+
+    Se encarga de:
+    - Cargar recepciones pendientes.
+    - Guardar presupuestos con tareas y totales.
+    - Enviar por correo o imprimir si está activado.
+    - Generar el PDF a partir de una plantilla HTML y CSS.
+    """
+
     def __init__(self, ventana):
+        """
+        Inicializa el controlador y conecta eventos de la ventana.
+
+        Args:
+            ventana: Instancia de la interfaz de presupuestos.
+        """
         print("🟢 PresupuestoControlador inicializado")
         self.ventana = ventana
         self.ventana.controlador = self
@@ -25,6 +55,10 @@ class PresupuestoControlador:
         self.ventana.boton_guardar.clicked.connect(self.guardar_presupuesto)
 
     def cargar_recepciones(self):
+        """
+        Carga todas las recepciones disponibles para asignarles un presupuesto.
+        Actualiza el combo desplegable con las opciones.
+        """
         print("🔄 Cargando recepciones...")
         self.ventana.combo_recepciones.clear()
         self.recepciones = obtener_recepciones_para_presupuesto()
@@ -46,6 +80,15 @@ class PresupuestoControlador:
                 texto, userData=recepcion["id"])
 
     def guardar_presupuesto(self):
+        """
+        Guarda un nuevo presupuesto basado en los datos del formulario.
+        Incluye tareas, total, respuesta del cliente y acciones como enviar o imprimir.
+
+        - Inserta el presupuesto y las tareas en la base de datos.
+        - Genera el PDF correspondiente.
+        - Envía por correo si se indica.
+        - Imprime si está activado.
+        """
         index = self.ventana.combo_recepciones.currentIndex()
         if index <= 0:
             QMessageBox.warning(self.ventana, "Aviso",
@@ -138,6 +181,15 @@ class PresupuestoControlador:
         self.cargar_recepciones()
 
     def generar_pdf_presupuesto(self, datos):
+        """
+        Genera un documento PDF del presupuesto usando HTML y CSS.
+
+        Args:
+            datos (dict): Diccionario con datos del cliente, tareas y totales.
+
+        Returns:
+            str: Ruta absoluta del archivo PDF generado.
+        """
         fecha_actual = datetime.now()
         mes = month_name[fecha_actual.month].capitalize()
         carpeta_mes = f"{mes}_{fecha_actual.year}"
@@ -184,6 +236,10 @@ class PresupuestoControlador:
         return ruta_pdf
 
     def resetear_formulario(self):
+        """
+        Restablece todos los campos del formulario a sus valores iniciales,
+        dejando la interfaz lista para un nuevo presupuesto.
+        """
         self.combo_recepciones.setCurrentIndex(0)
         self.combo_recepciones.setEnabled(True)
         self.campo_cliente.clear()

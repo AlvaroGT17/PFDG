@@ -9,8 +9,6 @@ Funciones:
     - encriptar_contrasena: genera un hash seguro a partir de una contraseña plana.
     - verificar_contrasena: compara una contraseña con su hash bcrypt.
 
-Autor: Cresnik
-Proyecto: ReyBoxes - Gestión de Taller Mecánico
 """
 
 import bcrypt
