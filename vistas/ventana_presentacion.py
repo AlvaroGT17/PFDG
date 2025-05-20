@@ -64,7 +64,7 @@ class VentanaPresentacion(QWidget):
         Lanza un temporizador muy corto tras finalizar la animación del logo,
         y transiciona posteriormente a la ventana de login.
         """
-        QTimer.singleShot(30, self.mostrar_login)
+        QTimer.singleShot(2000, self.mostrar_login)
 
     def mostrar_login(self):
         """

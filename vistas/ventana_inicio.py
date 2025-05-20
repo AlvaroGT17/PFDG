@@ -85,7 +85,6 @@ class VentanaInicio(QWidget):
         self.grid_layout = QGridLayout()
         self.grid_layout.setSpacing(15)
 
-        # Lista de botones definidos con texto e icono
         botones_definidos = [
             ("Fichar", "fichar.png"),
             ("Historial\nfichaje", "historial.png"),
@@ -95,19 +94,19 @@ class VentanaInicio(QWidget):
             ("Recepcionamiento", "recepcionamiento.png"),
             ("Compraventa", "compraventa.png"),
             ("Presupuestos", "presupuesto.png"),
-            ("Reimpresion\nrecepcionamientos", "reimprimir_recepcionamiento.png"),
+            ("Reimpresion\nrecepcionamientos",
+             "reimprimir_recepcionamiento.png"),
             ("Reimpresion\npresupuestos", "reimprimir_presupuestos.png"),
             ("Reimpresion\ncompras", "reimprimir_compra.png"),
             ("Reimpresion\nventas", "reimprimir_venta.png"),
             ("Cerrar sesión", "salir.png"),
         ]
 
-        # Accesos permitidos por rol (debes completar estos arrays según tu lógica)
         accesos_por_rol = {
-            "ADMINISTRADOR": [...],
-            "MECANICO": [...],
-            "COMPRA/VENTA": [...],
-            "ADMINISTRATIVO": [...],
+            "ADMINISTRADOR": ["fichar", "Historial\nfichaje", "crear usuarios", "clientes", "vehículos", "recepcionamiento", "Presupuestos", "compraventa", "Reimpresion\nrecepcionamientos", "Reimpresion\npresupuestos", "Reimpresion\ncompras", "Reimpresion\nventas", "cerrar sesión"],
+            "MECANICO": ["fichar", "Historial\nfichaje", "vehículos", "recepcionamiento", "Presupuestos", "reparaciones", "cerrar sesión"],
+            "COMPRA/VENTA": ["fichar", "Historial\nfichaje", "vehículos", "recepcionamiento", "compraventa", "reportes", "cerrar sesión"],
+            "ADMINISTRATIVO": ["fichar", "Historial\nfichaje", "clientes", "vehículos", "recepcionamiento", "Presupuestos", "Reimpresion\nrecepcionamientos", "Reimpresion\npresupuestos", "Reimpresion\ncompras", "Reimpresion\nventas", "cerrar sesión"]
         }
 
         rol_normalizado = self.rol.upper().strip()
