@@ -1,0 +1,280 @@
+@startuml
+package controladores {
+  class Clientes_Controlador <<controller>> {
+  -ventana: VentanaClientes
+  -ventana_anterior
+  -lista_clientes: list
+  -cliente_seleccionado_id: int
+  -dict_nombres: dict
+  -dict_dnis: dict
+  -dict_telefonos: dict
+  +__init__(ventana_anterior)
+  +eventFilter(source, event): bool
+  +volver()
+  +limpiar_campos()
+  +registrar_cliente()
+  +rellenar_campos(cliente: dict)
+  +validar_email(email: str): bool
+  +mostrar_error(mensaje: str)
+  +mostrar_info(mensaje: str)
+  +modificar_cliente()
+  +eliminar_cliente()
+  }
+  class Compraventa_Controlador <<controller>> {
+  -vista
+  -cliente_id: int
+  +__init__(vista)
+  +inicializar_autocompletado_nombre()
+  +inicializar_autocompletado_dni()
+  +buscar_cliente_por_nombre()
+  +comprobar_dni_manualmente()
+  +abrir_ventana_nuevo_cliente(nombre: str = "", dni: str = "")
+  +rellenar_datos_cliente(cliente: tuple)
+  +rellenar_datos_cliente_dict(cliente: dict)
+  +autocompletar_por_nombre(texto: str)
+  +autocompletar_por_dni(texto: str)
+  +recargar_vehiculos()
+  +llenar_valores_filtros()
+  +actualizar_tabla_vehiculos()
+  +cargar_tabla_filtrada()
+  +toggle_ruta_guardado(estado: bool, input_ruta, boton, tipo: str = "compra")
+  +seleccionar_ruta_guardado_compra()
+  +seleccionar_ruta_guardado_venta()
+  +inicializar_datos_vehiculos()
+  +simular_contrato(tipo: str)
+  +simular_contrato_compra()
+  +simular_contrato_venta()
+  +obtener_vehiculo_seleccionado(): dict
+  +aceptar_contrato_compra()
+  +generar_contrato_compra_html(datos_cliente: dict, datos_vehiculo: dict, firma_base64: str): str
+  +aceptar_contrato_venta()
+  }
+  class Crear_Cliente_Rapido_Controlador <<controller>> {
+  -ventana: VentanaCrearClienteRapido
+  +cliente_creado: Signal
+  +__init__(ventana_padre=None)
+  +crear_cliente()
+  +mostrar_mensaje(texto: str, titulo: str, exito=True)
+  }
+  class Fichar_Controlador <<controller>> {
+  -usuario: dict
+  -ventana: VentanaFichar
+  +__init__(usuario: dict)
+  +mostrar()
+  +fichar()
+  }
+  class Historial_Controlador <<controller>> {
+  -usuario_id: int
+  -es_admin: bool
+  -ventana: VentanaHistorial
+  -fichajes: list
+  +__init__(usuario_id: int, es_admin: bool = False)
+  +mostrar()
+  +cargar_datos()
+  +exportar_csv()
+  +exportar_pdf()
+  +crear_tabla_fichajes(datos: list)
+  +obtener_periodo(datos: list): str
+  }
+  class Inicio_Controlador <<controller>> {
+  -nombre: str
+  -rol: str
+  -usuario_id: int
+  -ventana: VentanaInicio
+  +senal_cerrar_sesion: Signal
+  +__init__(nombre: str, rol: str)
+  +mostrar()
+  +cerrar()
+  +abrir_fichaje()
+  +obtener_id_usuario(): int
+  +abrir_historial()
+  +abrir_gestion_usuarios()
+  +abrir_clientes()
+  +abrir_vehiculos()
+  +abrir_recepcionamiento()
+  +mostrar_recepcionamiento()
+  +abrir_compraventa()
+  +abrir_presupuestos()
+  +_abrir_ventana_reimpresion(clase_ventana, lista_documentos=None)
+  +abrir_reimpresion_recepcionamientos()
+  +abrir_reimpresion_presupuestos()
+  +abrir_reimpresion_compras()
+  +abrir_reimpresion_ventas()
+  +reimprimir_documento(doc_id: str)
+  +reenviar_documento(doc_id: str)
+  +mostrar_ventana_inicio(nombre: str, rol: str)
+  }
+  class Login_Controlador <<controller>> {
+  -ventana: VentanaLogin
+  -ventana_carga: VentanaCargaGif
+  +senal_abrir_recuperacion: Signal
+  +senal_login_exitoso: Signal(dict)
+  +__init__()
+  +mostrar()
+  +cerrar()
+  +abrir_recuperacion()
+  +iniciar_proceso_login()
+  +validar_login(nombre: str, contrasena: str)
+  }
+  class Presupuesto_Controlador <<controller>> {
+  -ventana
+  -recepciones: list
+  +__init__(ventana)
+  +cargar_recepciones()
+  +guardar_presupuesto()
+  +generar_pdf_presupuesto(datos: dict): str
+  +resetear_formulario()
+  }
+  class Recepcionamiento_Controlador <<controller>> {
+  -vista
+  -datos: dict
+  -tipos_vehiculos: list
+  -motivos_dict: dict
+  -urgencias_dict: dict
+  +__init__(vista, datos: dict)
+  +confirmar_recepcionamiento()
+  +_cargar_datos_completos()
+  +_recopilar_datos(): dict
+  +_configurar_autocompletado_clientes()
+  +_autocompletar_por_nombre()
+  +_autocompletar_por_dni()
+  +_rellenar_campos_cliente(cliente: dict)
+  +_autocompletar_datos_vehiculo(matricula: str)
+  +_filtrar_tipos_por_categoria()
+  +_configurar_autocompletado_matricula()
+  +_actualizar_autocompletado_matriculas(dni_cliente: str)
+  +_asignar_numero_recepcionamiento()
+  +_activar_ruta_predeterminada()
+  +_manejar_checkbox_ruta(estado: bool)
+  +_conectar_eventos()
+  }
+  class Recuperar_Controlador <<controller>> {
+  -vista: VentanaRecuperar
+  +senal_volver_login: Signal
+  +__init__()
+  +mostrar()
+  +cerrar()
+  +volver()
+  +handle_cierre_ventana(event)
+  +validar_correo()
+  +enviar_codigo()
+  +mostrar_otra_vez()
+  }
+  class ReimpresionCompras_Controlador <<controller>> {
+  -main_app
+  -nombre_usuario: str
+  -rol_usuario: str
+  -ventana: VentanaReimpresionCompras
+  +__init__(main_app, nombre_usuario: str, rol_usuario: str)
+  +volver_a_inicio()
+  +obtener_documento_seleccionado(): str
+  +imprimir_documento()
+  +enviar_documento()
+  }
+  class ReimpresionPresupuestos_Controlador <<controller>> {
+  -main_app
+  -nombre: str
+  -rol: str
+  -ventana: VentanaReimpresionPresupuestos
+  +__init__(main_app, nombre_usuario: str, rol_usuario: str)
+  +volver_a_inicio()
+  +cargar_documentos()
+  +obtener_documento_seleccionado(): str
+  +imprimir_documento()
+  +enviar_documento()
+  }
+  class ReimpresionRecepcionamiento_Controlador <<controller>> {
+  -main_app
+  -nombre: str
+  -rol: str
+  -ventana: VentanaReimpresionRecepcionamiento
+  +__init__(main_app, nombre_usuario: str, rol_usuario: str)
+  +obtener_documento_seleccionado(): str
+  +enviar_documento()
+  +imprimir_documento()
+  +volver_a_inicio()
+  +cargar_documentos()
+  }
+  class ReimpresionVentas_Controlador <<controller>> {
+  -main_app
+  -nombre_usuario: str
+  -rol_usuario: str
+  -ventana: VentanaReimpresionVentas
+  +__init__(main_app, nombre_usuario: str, rol_usuario: str)
+  +volver_a_inicio()
+  +obtener_documento_seleccionado(): str
+  +imprimir_documento()
+  +enviar_documento()
+  }
+  class Restablecer_Controlador <<controller>> {
+  -email: str
+  -ventana: VentanaRestaurar
+  +senal_volver_login: Signal
+  +__init__(email: str)
+  +mostrar()
+  +cerrar()
+  +volver()
+  +cerrar_ventana(event)
+  +restablecer()
+  }
+  class Usuarios_Controlador <<controller>> {
+  -ventana: VentanaUsuarios
+  -ventana_anterior
+  +__init__(ventana_anterior)
+  +cargar_roles()
+  +limpiar_campos()
+  +volver()
+  +crear_usuario()
+  +validar_email(email: str): bool
+  +mostrar_error(mensaje: str)
+  +mostrar_info(mensaje: str)
+  }
+  class VehiculosControlador <<controller>> {
+  -ventana: VentanaVehiculos
+  -ventana_anterior
+  -vehiculo_id_actual
+  -cliente_id_actual
+  -lista_clientes
+  -clientes_dict_nombre: dict
+  -clientes_dict_dni: dict
+  -lista_matriculas
+  -lista_combustibles
+  +__init__(ventana_anterior)
+  +eventFilter(source, event): bool
+  +buscar_vehiculo_desde_input()
+  +buscar_cliente_por_nombre()
+  +buscar_cliente_por_dni()
+  +rellenar_datos_cliente(cliente: dict)
+  +crear_cliente_dialogo(campo_foco)
+  +cliente_creado(datos_cliente: dict)
+  +buscar_vehiculo(matricula: str)
+  +guardar_vehiculo()
+  +modificar_vehiculo()
+  +eliminar_vehiculo()
+  +obtener_datos_y_validar(): bool
+  +limpiar_campos()
+  +volver()
+  +mostrar_error(mensaje: str)
+  +mostrar_info(mensaje: str)
+  +actualizar_tipos_por_categoria()
+  }
+  class VerificarControlador <<controller>> {
+    -email: str
+    -ventana: VentanaVerificar
+    -tiempo_restante: QTime
+    -timer: QTimer
+    -restablecer: RestablecerControlador
+    +senal_codigo_valido: Signal(str)
+    +senal_volver_recuperar: Signal()
+    +__init__(email: str)
+    +mostrar()
+    +cerrar()
+    +volver()
+    +handle_cierre_ventana(event)
+    +validar_codigo()
+    +verificar()
+    +actualizar_tiempo()
+    +volver_al_login()
+  }
+}
+@enduml

@@ -1,0 +1,49 @@
+@startuml
+' -------- Relaciones generales entre capas --------
+
+LoginControlador --> historial_consultas
+InicioControlador --> Usuarios_Controlador
+InicioControlador --> Clientes_Controlador
+InicioControlador --> VehiculosControlador
+Clientes_Controlador --> Clientes_Consultas
+Usuarios_Controlador --> usuarios_consultas
+VehiculosControlador --> vehiculos_consultas
+Fichar_Controlador --> Fichajes_Consultas
+Presupuesto_Controlador --> presupuesto_consultas
+Recepcionamiento_Controlador --> recepcionamiento_consultas
+Recuperar_Controlador --> recuperar_consultas
+VerificarControlador --> recuperar_consultas
+Restablecer_Controlador --> recuperar_consultas
+
+Presupuesto_Controlador --> correo_presupuesto
+Recepcionamiento_Controlador --> correo_recepcionamiento
+Recepcionamiento_Controlador --> recepcionamiento_utilidades
+Presupuesto_Controlador --> recepcionamiento_utilidades
+InicioControlador --> Abridor_Con_Carga
+VentanaInicio --> BotonAnimado
+Ventana_Recepcionamiento --> capturador_firma
+Ventana_Contrato --> capturador_firma
+ReimpresionCompras_Controlador --> correo_reenviarCompras
+ReimpresionVentas_Controlador --> correo_reenviarVentas
+ReimpresionRecepcionamiento_Controlador --> correo_recepcionamiento
+ReimpresionPresupuestos_Controlador --> correo_renviarPresupuestos
+ReimpresionCompras_Controlador --> imprimir
+ReimpresionVentas_Controlador --> imprimir
+ReimpresionRecepcionamiento_Controlador --> imprimir
+ReimpresionPresupuestos_Controlador --> imprimir
+Compraventa_Controlador --> mensajes
+Clientes_Controlador --> mensajes
+Usuarios_Controlador --> mensajes
+VehiculosControlador --> mensajes
+Presupuesto_Controlador --> mensajes
+Crear_Cliente_Rapido_Controlador --> correo
+Recuperar_Controlador --> correo
+VerificarControlador --> correo
+Presupuesto_Controlador --> pdf
+Compraventa_Controlador --> pdf
+Recepcionamiento_Controlador --> pdf
+Recepcionamiento_Controlador --> rutas
+Presupuesto_Controlador --> rutas
+Compraventa_Controlador --> rutas
+Historial_Controlador --> canvas_con_paginas
+@enduml

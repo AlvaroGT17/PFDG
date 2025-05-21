@@ -1,0 +1,331 @@
+@startuml DiagramaVistas
+  package vistas {
+  class ventana_anadirTareaPresupuesto <<dialog>> {
+    +__init__()
+    +cargar_estilos()
+    +init_ui()
+    +validar_horas_en_tiempo_real()
+    +validar_precio_en_tiempo_real()
+    +actualizar_estado_boton()
+    +validar_y_aceptar()
+    +obtener_datos(): tuple
+    -_mostrar_error(etiqueta, campo)
+    -_ocultar_error(etiqueta, campo)
+    -_animar_error(widget)
+  }
+  class VentanaCargaGif <<dialog>> {
+    +__init__()
+    +mostrar(ventana_padre=None)
+    +cerrar()
+    -label_gif: QLabel
+    -movie: QMovie
+  }
+  class VentanaClientes <<window>> {
+    +__init__()
+    +setup_ui()
+    +aplicar_estilos()
+    +actualizar_titulo(texto: str)
+    +closeEvent(event)
+    -input_buscar_nombre: QLineEdit
+    -input_buscar_dni: QLineEdit
+    -input_buscar_telefono: QLineEdit
+    -input_nombre: QLineEdit
+    -input_apellido1: QLineEdit
+    -input_apellido2: QLineEdit
+    -input_dni: QLineEdit
+    -input_telefono: QLineEdit
+    -input_email: QLineEdit
+    -input_direccion: QLineEdit
+    -input_cp: QLineEdit
+    -input_localidad: QLineEdit
+    -input_provincia: QLineEdit
+    -input_observaciones: QTextEdit
+    -boton_guardar: QToolButton
+    -boton_modificar: QToolButton
+    -boton_limpiar: QToolButton
+    -boton_eliminar: QToolButton
+    -boton_volver: QToolButton
+    -titulo: QLabel
+  }
+  class Ventana_Compraventa <<window>> {
+    +__init__(ventana_anterior)
+    +actualizar_secciones(tipo: str)
+    +crear_seccion_plegable(titulo: str): dict
+    +crear_seccion_datos_cliente(): dict
+    +crear_seccion_datos_vehiculo(): dict
+    +crear_seccion_datos_operacion(): dict
+    +volver()
+    +toggle_firma(capturador, boton)
+    +eventFilter(source, event): bool
+    +borrar_todo()
+  }
+  class Ventana_Contrato <<window>> {
+  +__init__(html_path: str, tipo_operacion: str, callback_aceptar: func)
+  +aceptar_contrato()
+  -vista_previa: QTextBrowser
+  -boton_aceptar: QPushButton
+  -boton_volver: QPushButton
+  -callback_aceptar: func
+  -tipo_operacion: str
+  }
+  class VentanaCorreoConfirmacion <<dialog>> {
+  +__init__(correo_defecto: str, parent=None)
+  +aceptar_envio()
+  +aplicar_estilos_personalizados()
+  -correo_seleccionado: str
+  -grupo_botones: QButtonGroup
+  -radio_defecto: QRadioButton
+  -radio_personalizado: QRadioButton
+  -input_personalizado: QLineEdit
+  }
+  class Ventana_Crear_Cliente_Rapido <<window>> {
+  +__init__()
+  +setup_ui()
+  +aplicar_estilos()
+  +conectar_eventos()
+  +verificar_campos()
+  -input_nombre: QLineEdit
+  -input_apellido1: QLineEdit
+  -input_dni: QLineEdit
+  -input_telefono: QLineEdit
+  -boton_crear: QPushButton
+  -boton_cancelar: QPushButton
+  }
+  class Ventana_DialogoCorreoPresupuesto <<dialog>> {
+  +__init__(correo_defecto: str = "", parent = None)
+  +obtener_correo(): str
+  -campo_correo: QLineEdit
+  }
+  class Ventana_Fichar <<window>> {
+  +__init__()
+  +inicializar_ui()
+  +iniciar_reloj()
+  +actualizar_reloj()
+  +obtener_tipo_fichaje(): str
+  +mostrar_error(mensaje: str)
+  +mostrar_confirmacion(mensaje: str)
+  -reloj_label: QLabel
+  -radio_entrada: QRadioButton
+  -radio_salida: QRadioButton
+  -btn_confirmar: QToolButton
+  -btn_volver: QToolButton
+  }
+  class VentanaHistorial <<window>> {
+  +__init__(es_admin: bool=False)
+  +inicializar_ui()
+  +cargar_datos(fichajes: list)
+  -es_admin: bool
+  -tabla: QTableWidget
+  -boton_csv: QToolButton
+  -boton_pdf: QToolButton
+  -boton_volver: QToolButton
+  }
+  class VentanaInicio <<window>> {
+  +__init__(nombre: str, rol: str)
+  +inicializar_ui()
+  +closeEvent(event)
+  -nombre: str
+  -rol: str
+  -botones: dict
+  -grid_layout: QGridLayout
+  }
+  class Ventana_Login <<window>> {
+  +__init__()
+  +inicializar_ui()
+  +crear_campo(ruta_icono: str, placeholder: str, es_password: bool): QHBoxLayout
+  +closeEvent(event)
+  +salir_aplicacion()
+  -input_usuario: QLineEdit
+  -input_contrasena: QLineEdit
+  -btn_entrar: QPushButton
+  -btn_salir: QPushButton
+  -enlace_recuperar: QLabel
+  -cierre_autorizado: bool
+  }
+  class Ventana_NuevoCliente_Compraventas <<window>> {
+  +__init__(callback_guardar=None)
+  +crear_cliente()
+  -callback_guardar: function
+  -nombre: QLineEdit
+  -primer_apellido: QLineEdit
+  -segundo_apellido: QLineEdit
+  -dni: QLineEdit
+  -telefono: QLineEdit
+  -email: QLineEdit
+  -direccion: QLineEdit
+  -codigo_postal: QLineEdit
+  -localidad: QLineEdit
+  -provincia: QLineEdit
+  -observaciones: QTextEdit
+  -boton_guardar: QPushButton
+  -boton_cancelar: QPushButton
+  }
+  class Ventana_Presentacion <<window>> {
+  +__init__()
+  +esperar_y_cambiar()
+  +mostrar_login()
+  -logo: QLabel
+  -animacion: QPropertyAnimation
+  }
+  class Ventana_Presupuesto <<dialog>> {
+  +__init__(ventana_padre=None)
+  +cargar_estilos()
+  +init_ui()
+  +recepcion_seleccionada(index: int)
+  +abrir_dialogo_tarea()
+  +eliminar_tarea_seleccionada()
+  +actualizar_coste_total()
+  +subir_fila()
+  +bajar_fila()
+  +guardar_presupuesto()
+  +cargar_presupuesto(datos_presupuesto: dict)
+  +volver()
+  +closeEvent(event)
+  -_intercambiar_filas(fila1: int, fila2: int)
+  -_actualizar_estado_guardar()
+  }
+  class Ventana_Recepcionamiento <<dialog>> {
+  +__init__()
+  +crear_seccion_plegable(titulo: str): dict
+  +crear_seccion_datos_cliente(): QGroupBox
+  +crear_seccion_datos_vehiculo(): QGroupBox
+  +crear_seccion_motivo_recepcionamiento(): QGroupBox
+  +crear_seccion_entrega_documento(): QGroupBox
+  +confirmar_borrado()
+  +borrar_todo()
+  +cargar_motivos_y_urgencias()
+  +seleccionar_ruta_guardado()
+  +activar_modo_firma()
+  +keyPressEvent(event)
+  +eventFilter(source, event): bool
+  }
+  class Ventana_Recuperar <<window>> {
+  +__init__()
+  +inicializar_ui()
+  -input_correo: QLineEdit
+  -btn_enviar: QPushButton
+  -btn_volver: QPushButton
+  }
+  class Ventana_ReimpresionCompras <<window>> {
+  +__init__(nombre_usuario: str, rol_usuario: str, volver_callback: function, parent=None)
+  +init_ui()
+  +cargar_documentos()
+  +abrir_documento_seleccionado(fila: int, columna: int)
+  -nombre_usuario: str
+  -rol_usuario: str
+  -volver_callback: function
+  -tabla: QTableWidget
+  -btn_enviar: QToolButton
+  -btn_imprimir: QToolButton
+  -btn_volver: QToolButton
+  }
+  class Ventana_ReimpresionPresupuestos <<window>> {
+  +__init__(nombre_usuario: str, rol_usuario: str, volver_callback: function, parent=None)
+  +init_ui()
+  +cargar_documentos()
+  +abrir_documento_seleccionado(fila: int, columna: int)
+  -nombre_usuario: str
+  -rol_usuario: str
+  -volver_callback: function
+  -tabla: QTableWidget
+  -btn_enviar: QToolButton
+  -btn_imprimir: QToolButton
+  -btn_volver: QToolButton
+  }
+  class VentanaReimpresionRecepcionamiento <<window>> {
+  +__init__(nombre_usuario: str, rol_usuario: str, volver_callback: function)
+  +init_ui()
+  +cargar_documentos()
+  +abrir_documento_seleccionado(fila: int, columna: int)
+  -nombre_usuario: str
+  -rol_usuario: str
+  -volver_callback: function
+  -tabla: QTableWidget
+  -btn_enviar: QToolButton
+  -btn_imprimir: QToolButton
+  -btn_volver: QToolButton
+  }
+  class Ventana_ReimpresionVentas <<window>> {
+  +__init__(nombre_usuario: str, rol_usuario: str, volver_callback: function)
+  +init_ui()
+  +cargar_documentos()
+  +abrir_documento_seleccionado(fila: int, columna: int)
+  -nombre_usuario: str
+  -rol_usuario: str
+  -volver_callback: function
+  -tabla: QTableWidget
+  -btn_enviar: QPushButton
+  -btn_imprimir: QPushButton
+  -btn_volver: QPushButton
+  }
+  class VentanaRestaurar <<window>> {
+  +__init__()
+  +inicializar_ui()
+  -input_nueva: QLineEdit
+  -input_repetir: QLineEdit
+  -btn_guardar: QPushButton
+  -btn_volver: QPushButton
+  }
+  class Ventana_Usuarios <<window>> {
+  +__init__()
+  +setup_ui()
+  +aplicar_estilos()
+  +actualizar_titulo(texto: str)
+  +closeEvent(event)
+  -cierre_autorizado: bool
+  -titulo: QLabel
+  -input_nombre: QLineEdit
+  -input_apellido: QLineEdit
+  -input_email: QLineEdit
+  -input_password: QLineEdit
+  -input_repetir: QLineEdit
+  -combo_rol: QComboBox
+  -boton_crear: QToolButton
+  -boton_limpiar: QToolButton
+  -boton_volver: QToolButton
+  }
+  class Ventana_Vehiculos <<window>> {
+  +__init__()
+  +setup_ui()
+  +aplicar_estilos()
+  +closeEvent(event)
+  -forzar_cierre: bool
+  -input_buscar_nombre: QLineEdit
+  -input_buscar_dni: QLineEdit
+  -input_buscar_matricula: QLineEdit
+  -input_nombre: QLineEdit
+  -input_apellido1: QLineEdit
+  -input_apellido2: QLineEdit
+  -input_dni: QLineEdit
+  -input_telefono: QLineEdit
+  -input_email: QLineEdit
+  -input_direccion: QLineEdit
+  -input_cp: QLineEdit
+  -input_localidad: QLineEdit
+  -input_provincia: QLineEdit
+  -input_matricula: QLineEdit
+  -input_marca: QLineEdit
+  -input_modelo: QLineEdit
+  -input_color: QLineEdit
+  -input_anyo: QLineEdit
+  -combo_combustible: QComboBox
+  -input_numero_bastidor: QLineEdit
+  -combo_categoria: QComboBox
+  -combo_tipo: QComboBox
+  -input_observaciones: QTextEdit
+  -boton_guardar: QToolButton
+  -boton_modificar: QToolButton
+  -boton_limpiar: QToolButton
+  -boton_eliminar: QToolButton
+  -boton_volver: QToolButton
+  }
+  class VentanaVerificar <<window>> {
+  +__init__()
+  +inicializar_ui()
+  -input_codigo: QLineEdit
+  -label_tiempo: QLabel
+  -btn_verificar: QPushButton
+  -btn_volver: QPushButton
+  }
+}
+@enduml

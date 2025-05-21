@@ -1,0 +1,93 @@
+@startuml
+package modelos {
+  class Clientes_Consultas {
+    +dni_ya_existe(dni: str): bool
+    +crear_cliente(...): bool
+    +crear_cliente_y_devolver_id(...): int
+    +obtener_nombres_completos(): List~str~
+    +obtener_datos_cliente_por_nombre(nombre_completo: str): tuple
+    +buscar_clientes_por_nombre(): List~(str, int)~
+    +obtener_cliente_por_id(cliente_id: int): dict
+    +obtener_clientes(): List~dict~
+    +actualizar_cliente(...): bool
+    +eliminar_cliente_por_id(cliente_id: int): bool
+  }
+  class Compraventa_Consultas {
+    +obtener_vehiculos_disponibles(): List~dict~
+    +insertar_nuevo_vehiculo(datos: dict): void
+    +obtener_id_cliente(dni: str): int
+    +registrar_venta(cliente_id: int, vehiculo_id: int, precio_final: float, ruta_pdf: str, dir_contrato: str): void
+  }
+  class ConexionBD {
+    +obtener_conexion(): psycopg2.connection
+  }
+  class Fichajes_Consultas {
+    +registrar_fichaje(usuario_id: int, tipo: str): void
+  }
+  class Fichajes_Consultas {
+    +obtener_fichajes_personales(usuario_id: int): list<tuple>
+    +obtener_fichajes_globales(): list<tuple>
+    +obtener_nombre_usuario(usuario_id: int): str
+  }
+  class historial_consultas {
+    +obtener_usuario_por_nombre(nombre: str): dict
+    +obtener_usuario_por_email(email: str): dict
+    +guardar_codigo_recuperacion(usuario_id: int, codigo: str): bool
+    +verificar_contrasena(contrasena_plana: str, contrasena_hash: str): bool
+    +verificar_codigo_recuperacion(email: str, codigo: str): bool
+    +actualizar_contrasena(email: str, nueva_contrasena: str): bool
+  }
+  class nuevoCliente_compraventa_consulta {
+    +dni_ya_existe(dni: str): bool
+    +crear_cliente_y_devolver_id(nombre, primer_apellido, segundo_apellido, dni, telefono, email, direccion, codigo_postal, localidad, provincia, observaciones): int
+    +obtener_datos_cliente_por_nombre(nombre_completo: str): tuple
+    +obtener_cliente_por_id(cliente_id: int): dict
+    +obtener_cliente_por_id_por_dni(dni: str): dict
+  }
+  class presupuesto_consultas {
+    +obtener_recepciones_para_presupuesto(): list[dict]
+    +insertar_presupuesto(recepcion_id: int, total: float, respuesta: str, ruta_pdf: str): int
+    +insertar_tarea_presupuesto(presupuesto_id: int, descripcion: str, horas: float, precio_hora: float, total: float): void
+  }
+  class recepcionamiento_consultas {
+    +obtener_clientes(): list[dict]
+    +obtener_matriculas(): list[str]
+    +obtener_datos_vehiculo_por_matricula(matricula: str): dict
+    +obtener_categorias_vehiculo(): list[str]
+    +obtener_tipos_vehiculo(): list[dict]
+    +obtener_combustibles(): list[str]
+    +obtener_matriculas_existentes(): list[str]
+    +obtener_matriculas_por_cliente(dni_cliente: str): list[str]
+    +obtener_siguiente_numero_recepcionamiento(): int
+    +obtener_motivos(): list[dict]
+    +obtener_urgencias(): list[dict]
+    +obtener_datos_completos_recepcionamiento(): dict
+    +obtener_cliente_id_por_dni(dni: str): int
+    +obtener_vehiculo_id_por_matricula(matricula: str): int
+    +obtener_estado_id_por_defecto(): int
+    +insertar_recepcionamiento_en_bd(datos: dict): tuple
+  }
+  class recuperar_consultas {
+    +enviar_codigo_recuperacion(correo_usuario: str): bool
+    +enviar_correo(nombre: str, destinatario: str, codigo: str): None
+  }
+  class usuarios_consultas {
+    +obtener_roles(): list[tuple]
+    +crear_usuario(nombre: str, apellido: str, email: str, contrasena: str, rol_id: int): bool
+    +existe_usuario_por_nombre(nombre: str): bool
+    +existe_usuario_por_email(email: str): bool
+  }
+  class vehiculos_consultas {
+    +buscar_vehiculo_por_matricula(matricula: str): dict
+    +obtener_combustibles(): list[dict]
+    +obtener_matriculas_existentes(): list[str]
+    +matricula_ya_existe(matricula: str, excluir_id: int = None): bool
+    +crear_vehiculo(...): bool
+    +modificar_vehiculo(...): bool
+    +eliminar_vehiculo(vehiculo_id: int): bool
+    +obtener_tipos_vehiculo_con_categoria(): list[dict]
+    +obtener_tipos_por_categoria(categoria: str): list[str]
+    +obtener_categorias(): list[str]
+  }
+}
+@enduml

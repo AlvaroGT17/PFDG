@@ -1,0 +1,114 @@
+@startuml Diagrama utilidades
+package utilidades {
+
+  class Abridor_Con_Carga {
+    -ventana_padre: QWidget
+    -clase_ventana: type
+    -clase_controlador: type
+    -funcion_carga: function
+    -ventana_carga: VentanaCargaGif
+    -hilo: HiloGenericoCarga
+    -ventana: QWidget
+    -controlador: Any
+
+    +__init__(ventana_padre: QWidget, clase_ventana: type, clase_controlador: type, funcion_carga: function)
+    +continuar(datos: Any): None
+  }
+
+  class BotonAnimado {
+    +__init__(texto: str, icono: str)
+    -icon_label: QLabel
+    -texto_label: QLabel
+    -layout: QVBoxLayout
+  }
+
+  class canvas_con_paginas {
+    -_saved_page_states: list
+    +__init__(*args, **kwargs)
+    +showPage()
+    +save()
+    +draw_page_number(total_pages: int)
+  }
+
+  class capturador_firma {
+    -puntos: list[list[QPoint]]
+    -firmando: bool
+    -activa: bool
+    +firma_finalizada: Signal
+    +__init__(): None
+    +activar_firma(activa: bool): None
+    +limpiar(): None
+    +mousePressEvent(event: QMouseEvent): None
+    +mouseMoveEvent(event: QMouseEvent): None
+    +mouseReleaseEvent(event: QMouseEvent): None
+    +paintEvent(event): None
+    +obtener_firma(): QPixmap
+    +obtener_firma_como_bytes(): bytes | None
+    +obtener_imagen_base64(): str
+    +keyPressEvent(event): None
+  }
+
+  class comprobar_dni {
+    -letras: str = "TRWAGMYFPDXBNJZSQVHLCKE"
+    +validar_dni(dni: str): bool
+    +generar_dni(): str
+  }
+
+  class correo_contratos {
+    +enviar_correo_contrato(destinatario: str, ruta_pdf: str, datos: dict, tipo: str = "compra"): tuple[bool, str or None]
+  }
+
+  class correo_presupuesto {
+    +enviar_correo_presupuesto(destinatario: str, ruta_pdf: str, datos: dict): tuple
+  }
+
+  class correo_recepcionamiento {
+    +enviar_correo_con_pdf(destinatario: str, ruta_pdf: str, datos: dict): tuple
+  }
+
+  class correo_reenviar_recepcionamiento {
+    +enviar_correo_recepcionamiento(destinatario: str, ruta_pdf: str, nombre_cliente: str): tuple
+  }
+
+  class correo_reenviarCompras {
+    +enviar_correo_reimpresion_compra(destinatario: str, ruta_pdf: str): tuple
+  }
+
+  class correo_reenviarVentas {
+    +enviar_correo_reimpresion_venta(destinatario: str, ruta_pdf: str): tuple
+  }
+
+  class correo_renviarPresupuestos {
+    +enviar_correo_presupuesto(destinatario: str, ruta_pdf: str, datos: dict): tuple
+  }
+
+  class correo {
+    +enviar_correo(destinatario: str, nombre_usuario: str, codigo: str): None
+  }
+
+  class imprimir {
+    +imprimir_pdf(ruta_pdf: str, parent: QWidget = None): None
+  }
+
+  class mensajes {
+    +mostrar_mensaje_personalizado(vista, titulo: str, texto: str, icono: QMessageBox.Icon, botones: QMessageBox.StandardButtons): int
+    +mostrar_error(vista, titulo: str, mensaje: str): None
+  }
+
+  class pdf {
+    +convertir_html_a_pdf(ruta_html: str, carpeta_destino: str, nombre_archivo_pdf: str): str | None
+  }
+
+  class recepcionamiento_utilidades {
+    +validar_correo(correo: str): Match | None
+    +generar_documento_pdf(datos: dict, firma_cliente_path: str, ruta_guardado: str = None): str
+    +limpiar_nombre_para_archivo(nombre: str): str
+  }
+
+  class rutas {
+    +obtener_ruta_absoluta(ruta_relativa: str): str
+    +obtener_ruta_predeterminada_compras(): str
+    +obtener_ruta_predeterminada_ventas(): str
+  }
+}
+@enduml

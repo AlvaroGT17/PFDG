@@ -1,0 +1,7 @@
+@startuml DiagramaPrincipal
+!include ./controladores.puml
+!include ./vistas.puml
+!include ./modelos.puml
+!include ./utilidades.puml
+!include ./relaciones.puml
+@enduml
